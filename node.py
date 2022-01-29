@@ -4,9 +4,9 @@ import socket
 class Node:
     def __init__(self):
         self._set_args()
-        # self._TCP_connect()
-        self.payload = []
-        self.splits = 1
+        self._TCP_connect()
+        # self.payload = []
+        # self.splits = 1
 
     # get the arguments: node name , logger ip, and logger port
     def _set_args(self):
@@ -28,9 +28,10 @@ class Node:
         # data = sys.stdout.readline() ?
         # s.sendall(bytes(data, "UTF-8"))
         for line in sys.stdin:
-            self.s.sendall(bytes(line,"UTF-8"))
-            print(f'Sending : {line} to Cluster')
+            send_data = f'{line} {self.name}'
+            self.s.sendall(bytes(send_data,"UTF-8"))
+            print(f'Sending : {send_data} to Cluster')
 
 if __name__ == '__main__':
     node = Node()
-    # node.read_send()
+    node.read_send()
