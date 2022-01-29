@@ -4,7 +4,7 @@ import threading
 import signal
 import time
 import sys
-from options import parse_options
+#from options import parse_options
 import logging as log
 from threading import Thread
 
@@ -27,22 +27,31 @@ class Logger:
     
     def _TCP_connect(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.bind(('172.30.124.143', self.port))
+        self.s.bind(('169.254.8.64', self.port))
         self.s.listen(1)
         self.conn, addr = self.s.accept()
-    
+        data = str(self.conn.recv(1024))
+        node_name = data[:-1]
+        time_stamp = time.time()
+        print(f'{time_stamp} - {node_name} connected')
+
     def read(self):
         while 1:
             data = str(self.conn.recv(1024)).split(' ')
             time_stamp = data[0][2:] # e.g 1643485243.730725
             content = data[1][:-2] # e.g fca892488ee6f38ff20fde9720056dc9c454c680b5aef171036fe0468f81fc08
             node_name = data[2][:-1] # e.g node1
-            print(f'{time_stamp} {node_name} {content}')
+            print(f'{time_stamp} {node_name} {content}')            
 
+def assignThread(conn,addr,node_name):
+    
 if __name__ == '__main__':
     logger = Logger()
     logger.read()
-    
+    threads = list()
+    t = threading.Thread(target=assignThread, args=(conn, addr, node_name))
+    t.start()
+    threads.append(t)
     '''
     The main loop should be running and serving as logger.
     '''

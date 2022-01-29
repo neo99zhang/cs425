@@ -22,6 +22,7 @@ class Node:
     def _TCP_connect(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((self.logger_ip, self.logger_port))
+        self.s.sendall(bytes(self.name))
 
     def read_send(self):
         # read the generator and send the data to logger.
