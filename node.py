@@ -1,6 +1,6 @@
 import sys
 import socket
-
+import time
 class Node:
     def __init__(self):
         self._set_args()
@@ -22,14 +22,15 @@ class Node:
     def _TCP_connect(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((self.logger_ip, self.logger_port))
-        self.s.sendall(bytes(self.name))
+        self.s.sendall(bytes(f'{time.time()} {self.name}', "UTF-8"))
 
     def read_send(self):
         # read the generator and send the data to logger.
         # data = sys.stdout.readline() ?
         # s.sendall(bytes(data, "UTF-8"))
         for line in sys.stdin:
-            send_data = f'{line} {self.name}'
+            
+            send_data = f'{line[:-1]} {self.name}'
             self.s.sendall(bytes(send_data,"UTF-8"))
             print(f'Sending : {send_data} to Cluster')
 
