@@ -1,5 +1,6 @@
 #!/usr/bin/env xonsh
 #To run, use xonsh run.xsh  --num <number of nodes> --freq <frequency>
+#test scripts copyright from this post https://campuswire.com/c/G3023A061/feed/48
 import argparse 
 import signal
 import time
