@@ -9,11 +9,7 @@ import logging as log
 from threading import Thread
 
 addr2node = dict()
-<<<<<<< HEAD
 #threads = []
-=======
-threads = []
->>>>>>> a7df47aad3eef758cb17714c38358025bf3bd8ed
 
 def create_socket():
     HOST = ''
@@ -30,15 +26,10 @@ def create_socket():
     return s
 
 def TCP_connect(s):
-<<<<<<< HEAD
     print("TCP")
     conn, addr = s.accept()
     addr = addr[0]
     print("connected")
-=======
-    conn, addr = s.accept()
-    addr = addr[0]
->>>>>>> a7df47aad3eef758cb17714c38358025bf3bd8ed
     data = conn.recv(1024).decode('utf-8').split(' ')
     time_stamp = data[0]
     node_name = data[1]
@@ -52,11 +43,7 @@ def read(conn):
     with conn:
         while 1:
             data = conn.recv(1024).decode('utf-8').split(' ')
-<<<<<<< HEAD
             if (not data) or (not len(data) == 3):
-=======
-            if not len(data) == 3:
->>>>>>> a7df47aad3eef758cb17714c38358025bf3bd8ed
                 break 
             time_stamp = data[0] # e.g 1643485243.730725
             content = data[1] # e.g fca892488ee6f38ff20fde9720056dc9c454c680b5aef171036fe0468f81fc08
@@ -73,11 +60,7 @@ if __name__ == '__main__':
         conn = TCP_connect(s)
         handleRequest = threading.Thread(target=read,args=(conn,))
         handleRequest.start()
-<<<<<<< HEAD
         #threads.append(handleRequest)
-=======
-        threads.append(handleRequest)
->>>>>>> a7df47aad3eef758cb17714c38358025bf3bd8ed
     #s.close() never going to use this line
     '''
     The main loop should be running and serving as logger.
