@@ -35,9 +35,9 @@ def TCP_connect(s):
     data = conn.recv(1024).decode('utf-8').split(' ')
     time_stamp = data[0]
     node_name = data[1]
-    if addr not in addr2node.keys():
-        addr2node[addr] = node_name
-        nodes_event_time[node_name] = list()
+    #if addr not in addr2node.keys():
+    #    addr2node[addr] = node_name
+    nodes_event_time[node_name] = list()
     print(f'{time_stamp} - {node_name} connected')
     return conn
 
