@@ -32,7 +32,7 @@ def TCP_connect(s):
     conn, addr = s.accept()
     addr = addr[0]
     #print("connected")
-    data = conn.recv(128).decode('utf-8').split(' ')
+    data = conn.recv(24).decode('utf-8').split(' ')
     time_stamp = data[0]
     node_name = data[1]
     #if addr not in addr2node.keys():
