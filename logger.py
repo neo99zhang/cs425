@@ -39,6 +39,7 @@ def TCP_connect(s):
     #    addr2node[addr] = node_name
     nodes_event_time[node_name] = list()
     print(f'{time_stamp} - {node_name} connected')
+    print(f'the node name is {node_name}')
     return conn
 
 def read(conn):
