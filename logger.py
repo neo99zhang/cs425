@@ -9,6 +9,8 @@ import logging as log
 from threading import Thread
 
 addr2node = dict()
+nodes_event_time = dict()
+
 #threads = []
 
 def create_socket():
@@ -35,7 +37,7 @@ def TCP_connect(s):
     node_name = data[1]
     if addr not in addr2node.keys():
         addr2node[addr] = node_name
-
+        nodes_event_time[node_name] = list()
     print(f'{time_stamp} - {node_name} connected')
     return conn
 
@@ -48,9 +50,16 @@ def read(conn):
             time_stamp = data[0] # e.g 1643485243.730725
             content = data[1] # e.g fca892488ee6f38ff20fde9720056dc9c454c680b5aef171036fe0468f81fc08
             node_name = data[2] # e.g node1
-            print(f'{time_stamp} {node_name} {content}')            
+            time_stamp_new = time.time()
+            print(f'{time_stamp} {node_name} {content}')
+            nodes_event_time[node_name].append(f'{time_stamp_new} {time_stamp} {content}')            
         conn.close()
-    print(f'{time.time()} - {node_name} disconnected')      
+    print(f'{time.time()} - {node_name} disconnected')   
+    with open("node" + str(node_name) + ".txt", "a") as fd:
+        for each in nodes_event_time[node_name]:
+            fd.write(str(each))
+            fd.write('\n')
+        fd.close()
 
     
 if __name__ == '__main__':
