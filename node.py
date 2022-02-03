@@ -23,6 +23,7 @@ class Node:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((self.logger_ip, self.logger_port))
         self.s.sendall(bytes(f'{time.time()} {self.name}', "UTF-8"))
+        print("The length of first packet is ",len(bytes(f'{time.time()} {self.name}', "UTF-8")))
 
     def read_send(self):
         # read the generator and send the data to logger.

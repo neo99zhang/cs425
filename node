@@ -1,1 +1,1 @@
-exec python3 node.py $@
+exec python3 -u node.py $@

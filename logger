@@ -1,1 +1,1 @@
-exec python3 logger.py $@
+exec python3 -u logger.py $@
