@@ -56,7 +56,7 @@ def read(conn):
             nodes_event_time[node_name].append(f'{time_stamp_new} {time_stamp} {content}')            
         conn.close()
     print(f'{time.time()} - {node_name} disconnected')   
-    with open(str(node_name) + ".txt", "a") as fd:
+    with open("scenerio2/",str(node_name) + ".txt", "a") as fd:
         for each in nodes_event_time[node_name]:
             fd.write(str(each))
             fd.write('\n')
