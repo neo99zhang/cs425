@@ -39,13 +39,14 @@ def TCP_connect(s):
     #    addr2node[addr] = node_name
     nodes_event_time[node_name] = list()
     print(f'{time_stamp} - {node_name} connected')
-    print(f'the node name is {node_name}')
     return conn
 
 def read(conn):
     with conn:
         while 1:
-            data = conn.recv(1024).decode('utf-8').split(' ')
+            data = conn.recv(1024)
+            data_size = len(data)
+            data=data.decode('utf-8').split(' ')
             if (not data) or (not len(data) == 3):
                 break 
             time_stamp = data[0] # e.g 1643485243.730725
@@ -53,7 +54,7 @@ def read(conn):
             node_name = data[2] # e.g node1
             time_stamp_new = time.time()
             print(f'{time_stamp} {node_name} {content}')
-            nodes_event_time[node_name].append(f'{time_stamp_new} {time_stamp} {content}')            
+            nodes_event_time[node_name].append(f'{time_stamp_new} {time_stamp} {content} {data_size}')            
         conn.close()
     print(f'{time.time()} - {node_name} disconnected')   
     with open(str(node_name) + ".txt", "a") as fd:
