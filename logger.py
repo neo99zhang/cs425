@@ -28,10 +28,10 @@ def create_socket():
     return s
 
 def TCP_connect(s):
-    print("TCP")
+    #print("TCP")
     conn, addr = s.accept()
     addr = addr[0]
-    print("connected")
+    #print("connected")
     data = conn.recv(1024).decode('utf-8').split(' ')
     time_stamp = data[0]
     node_name = data[1]
@@ -55,7 +55,7 @@ def read(conn):
             nodes_event_time[node_name].append(f'{time_stamp_new} {time_stamp} {content}')            
         conn.close()
     print(f'{time.time()} - {node_name} disconnected')   
-    with open("node" + str(node_name) + ".txt", "a") as fd:
+    with open(str(node_name) + ".txt", "a") as fd:
         for each in nodes_event_time[node_name]:
             fd.write(str(each))
             fd.write('\n')
