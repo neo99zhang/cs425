@@ -30,7 +30,7 @@ class Node:
         # s.sendall(bytes(data, "UTF-8"))
         for line in sys.stdin:
             
-            send_data = f'{line[:-1]} {self.name}'
+            send_data = f'{line.strip()} {self.name}'
             self.s.sendall(bytes(send_data,"UTF-8"))
             print(f'Sending : {send_data} to Cluster')
 

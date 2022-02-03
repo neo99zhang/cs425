@@ -15,10 +15,7 @@ class Logger:
         self._set_args()
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind(('172.22.94.8', self.port))
-        self.s.listen(1)
-
-    def addToIP(self,addr,nid):
-        self.ndict[addr] = nid
+        self.s.listen(50)
     
     def _set_args(self):
         try:
