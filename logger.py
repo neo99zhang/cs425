@@ -1,3 +1,4 @@
+#!/bin/bash
 import socket
 import _thread
 import threading
