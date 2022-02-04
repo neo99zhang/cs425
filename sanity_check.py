@@ -29,8 +29,8 @@ if not os.path.exists("logger") or not os.access("logger", os.X_OK):
 # run logger and node on port 2222
 try:
     logger_p = subprocess.Popen(["./logger", "2222"], stdout=subprocess.PIPE)
-except:
-    print("Unable to execute logger process")
+except Exception as e:    
+    print(e)
     sys.exit(1)
 
 # wait for logger to spin up before launching node
