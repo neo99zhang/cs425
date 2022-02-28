@@ -63,6 +63,7 @@ class node:
         for node_info in self.nodes_info:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             IP_addr = socket.gethostbyname(node_info[1])
+            print(node_info[1],IP_addr)
             s.connect((IP_addr, int(node_info[2])))
             self.send_s[node_info[0]]= s
         
