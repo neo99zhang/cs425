@@ -21,7 +21,7 @@ class node:
         self._parse_configuration()
         self._create_socket()
         self.mutex = threading.Lock()
-        self.connected_node = {}
+        self.connected_node =  set()
         # self.payload = []
         # self.splits = 1
 
@@ -48,42 +48,53 @@ class node:
     def _create_socket(self):
         for node_info in self.nodes_info:
             if node_info[0] == self.identifier:
-                HOST = node_info[1]
+                HOST = ""
                 PORT = int(node_info[2])
-
-        if HOST == "":
-            print("cannot find the node in the configuration file")
-            exit(1)
 
         self.listen_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_s.bind((HOST, PORT))
         self.listen_s.listen(1)
+        print(HOST, PORT)
+        bitmask = [0]*len(self.nodes_info)
 
-        time.sleep(5)
         self.send_s = defaultdict()
-        for node_info in self.nodes_info:
-            if self.identifier == node_info[0]:
-                continue
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            IP_addr = socket.gethostbyname(node_info[1])
-            s.connect((IP_addr, int(node_info[2])))
-            self.send_s[node_info[0]]= s
-        
+        while sum(bitmask) != len(bitmask):
+            print (bitmask)
+            for i in range(len(bitmask)):
+                if bitmask[i] == 1:
+                    continue
+                if self.identifier == self.nodes_info[i][0]:
+                    bitmask[i] =1
+                    continue
+                
+                try:
+                    node_info = self.nodes_info[i]
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    IP_addr = socket.gethostbyname(node_info[1])
+                    s.connect((IP_addr, int(node_info[2])))
+                    self.send_s[node_info[0]]= s
+                    bitmask[i] = 1
+                    print("connect to ", node_info[0])
+                except:
+                    continue
+            time.sleep(2)
+            
         self.b_broadcast("TCP connected")
 
     
     def b_broadcast(self, message):
-        for node_id, s in enumerate(self.send_s):
-            s.sendall(bytes(f'{self.identifier} {message}', "UTF-8"))
+        for node_id in self.send_s.keys():
+            self.send_s[node_id].sendall(bytes(f'{self.identifier} {message}', "UTF-8"))
     
     def run(self):
-        conn, addr = self.s.accept()
+        conn, addr = self.listen_s.accept()
         with conn:
             # loop untill connected all the nodes
             while True:
                 self.mutex.acquire()
                 if len(self.connected_node) == self.node_n -1:
                     self.mutex.release()
+                    print("all node conected")
                     break
                 self.mutex.release()
                 data = conn.recv(1024)
@@ -99,8 +110,8 @@ class node:
 if __name__ == "__main__":
     # node_n: int, nodes_info [node, 3],  [id, ip_name, port]
     node = node()
-    while True:
-        conn = node.TCP_connect()
+    thread = []
+    for i in range(node.node_n):
         handleRequest = threading.Thread(target=node.run,args=())
         handleRequest.start()
         
