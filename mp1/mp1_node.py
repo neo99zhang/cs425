@@ -63,8 +63,8 @@ class node:
         for node_info in self.nodes_info:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             IP_addr = socket.gethostbyname(node_info[1])
-            # s.connect((IP_addr, node_info[2]))
-            s.connect(('172.26.121.152',int(node_info[2])))
+            print(node_info[1],IP_addr)
+            s.connect((IP_addr, int(node_info[2])))
             self.send_s[node_info[0]]= s
         
         self.b_broadcast("TCP connected")
