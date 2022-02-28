@@ -58,12 +58,14 @@ class node:
         self.listen_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_s.bind((HOST, PORT))
         self.listen_s.listen(1)
-    
+
+        sleep(5)
         self.send_s = defaultdict()
         for node_info in self.nodes_info:
+            if self.identifier == node_info[0]:
+                continue
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             IP_addr = socket.gethostbyname(node_info[1])
-            print(node_info[1],IP_addr)
             s.connect((IP_addr, int(node_info[2])))
             self.send_s[node_info[0]]= s
         
