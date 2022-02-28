@@ -59,7 +59,7 @@ class node:
         self.listen_s.bind((HOST, PORT))
         self.listen_s.listen(1)
 
-        sleep(5)
+        time.sleep(5)
         self.send_s = defaultdict()
         for node_info in self.nodes_info:
             if self.identifier == node_info[0]:
