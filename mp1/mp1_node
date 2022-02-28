@@ -1,0 +1,2 @@
+#!/bin/bash
+exec python3 -u mp1_node.py $@
