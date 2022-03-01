@@ -126,6 +126,7 @@ class node:
                 if self.all_node_connected or len(self.connected_node) == self.node_n:
                     self.all_node_connected = True
                     self.mutex.release()
+                    self.all_node_connected = True
                     print("all node conected")
                     break
                 else:
