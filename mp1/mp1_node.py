@@ -23,9 +23,12 @@ class node:
         self._create_socket()
         self.mutex = threading.Lock()
         self.connected_node =  set()
+<<<<<<< HEAD
         self.acountCtl = AccountCtl()
         self.isis = Isis()
         self.all_node_connected = False
+=======
+>>>>>>> 48711eb38fc99b88866be2e02e6ae541a7125b6d
         # self.payload = []
         # self.splits = 1
 
@@ -90,7 +93,11 @@ class node:
         for node_id in self.send_s.keys():
             self.send_s[node_id].sendall(bytes(f'{self.identifier} {message}', "UTF-8"))
     
+<<<<<<< HEAD
     def listen(self):
+=======
+    def run(self):
+>>>>>>> 48711eb38fc99b88866be2e02e6ae541a7125b6d
         conn, addr = self.listen_s.accept()
         with conn:
             # loop until all the nodes have connected to other nodes
