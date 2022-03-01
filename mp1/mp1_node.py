@@ -19,20 +19,26 @@ nodes_event_time = dict()
 
 class node:
     def __init__(self):
-        self._set_args()
-        self._parse_configuration()
-        self._create_socket()
-        self.mutex = threading.Lock()
-        self.connected_node =  set()
-        self.acountCtl = AccountCtl()
-        self.isis = Isis()
-        self.all_node_connected = False
         self.node_id = None
         self.proSeq = None
         self.agrSeq = None
         self.node_n = None
-        self.allproposed = defaultdict(list())
+        self.all_node_connected = False
+        self._set_args()
+        self._parse_configuration()
+        self._create_socket()
+        self.mutex = threading.Lock()
+        self.isis_mutex = threading.Lock()
+        self.allproposed_mutex = threading.Lock()
+        self.recivedDict_mutex = threading.Lock()
+        self.agreedDict_mutex = threading.Lock()
+        self.acountCtl_mutex = threading.Lock()
+        self.connected_node =  set()
+        self.acountCtl = AccountCtl()
+        self.isis = Isis(self.node_id)
+        self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
+        self.agreedDict = defaultdict(int)
         self.broadcast_message = []
         self.unicast_message = []
         # self.holdback = []
@@ -72,7 +78,6 @@ class node:
         self.listen_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_s.bind((HOST, PORT))
         self.listen_s.listen(1)
-        print(HOST, PORT)
         bitmask = [0]*len(self.nodes_info)
 
         self.send_s = defaultdict()
@@ -87,100 +92,155 @@ class node:
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     IP_addr = socket.gethostbyname(node_info[1])
                     s.connect((IP_addr, int(node_info[2])))
-                    self.send_s[node_info[0]]= s
+                    self.send_s[i]= s
                     bitmask[i] = 1
                     print("connect to ", node_info[0])
                 except:
                     continue
             time.sleep(2)
             
-        self.b_broadcast("TCP connected")
+        self.b_broadcast(f"{self.identifier} TCP connected")
 
     
     def b_broadcast(self, message):
+        # print(" b-cast: ",self.node_id, ' ', message)
         for node_id in self.send_s.keys():
-            self.send_s[node_id].sendall(bytes(f'{self.identifier} {message}', "UTF-8"))
+            self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
+    
+    def unicast(self, message, target_id):
+        # print( "u-cast: ", self.node_id, ' to ', target_id, message)
+        self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
     
     def listen(self):
         conn, addr = self.listen_s.accept()
         with conn:
             # loop until all the nodes have connected to other nodes
+            
+            data = conn.recv(1024)
+            data = data.decode('utf-8').split(' ')[0]
+            self.mutex.acquire()
+            self.connected_node.add(data)
+            print(self.connected_node)
+            self.mutex.release()
+
             while True:
                 self.mutex.acquire()
-                if len(self.connected_node) == self.node_n:
+                if self.all_node_connected or len(self.connected_node) == self.node_n:
                     self.all_node_connected = True
                     self.mutex.release()
+                    self.all_node_connected = True
                     print("all node conected")
                     break
-                self.mutex.release()
-                data = conn.recv(1024)
-                data = data.decode('utf-8').split(' ')[0]
-                self.mutex.acquire()
-                self.connected_node.add(data)
-                print(self.connected_node)
-                self.mutex.release()
-                    
-            # listen messages from other nodes
-            message = conn.recv(1024).decode('utf-8')
-            msg = Message(message)
+                else:
+                    self.mutex.release()
+                time.sleep(1)
+            
+            time.sleep(5)
+            while True:
+                # listen messages from other nodes
+                messages = conn.recv(4096).decode('utf-8')
+                if messages == '':
+                    continue
+                messages = messages.strip().split('\n')
+                
+                for message in messages:
+                    msg = Message(message)
 
-            self.mutex.acquire()
-            if msg.isis_type == 'MESSAGE' and msg.id not in self.recivedDict.keys():
-                #propose
-                ##TODO
-                self.broadcast_message.append(msg)
-                proposed = self.isis.proposeSeq(msg)
-                msg.priority = proposed
-                msg.isis_type = 'PROPOSE'
-                # record the message
-                self.recivedDict[msg.id] = 1
-                
-            elif msg.isis_type == 'PROPOSE':
-                #agree
-                self.allproposed[msg.id].append[msg]
-                if len(self.allproposed[msg.id]) == self.node_n:
-                    decided_seq,message_id = self.isis.decideSeq(self.allproposed[msg.id])
-                    self.allproposed[msg.id] = []
-                    msg.priority = decided_seq
-                    self.broadcast_message.append(msg)
-                
-            elif msg.isis_type == 'AGREE':
-                deliverMsgs = self.isis.deliverMsgs(msg)
-                for deliver_msg in deliverMsgs:
-                    self.acountCtl.updateBalance(deliver_msg)
-            else:
-                print("Error, none of seq type got")
-            self.mutex.release()
+                    self.mutex.acquire()
+                    if msg.isis_type == 'MESSAGE':
+                        # self.recivedDict_mutex.acquire()
+                        if self.recivedDict[msg.id] == 0:
+                            # print("get: ", msg.construct_string())
+                            # self.recivedDict_mutex.release()
+                            # R-multicast implementation
+                            sender_id = msg.node_id
+                            msg.node_id = self.node_id
+                            self.b_broadcast(msg.construct_string())
+
+                            # unicast the priority
+                            # self.isis_mutex.acquire()
+                            proposed = self.isis.proposeSeq(msg)
+                            # self.isis_mutex.release()
+
+                            # self.recivedDict_mutex.acquire()
+                            self.recivedDict[msg.id] = 1
+                            # self.recivedDict_mutex.release()
+                            
+                            msg.priority = proposed
+                            msg.isis_type = 'PROPOSE'
+                            self.unicast(msg.construct_string(),sender_id)
+                            
+                            # record the message
+                        # else:
+                            # self.recivedDict_mutex.release()
+                    
+                        
+                        
+                    elif msg.isis_type == 'PROPOSE':
+                        # self.allproposed_mutex.acquire()
+                        self.allproposed[msg.id].append(msg)
+                        # print("get: ", msg.construct_string())
+                        if len(self.allproposed[msg.id]) == self.node_n:
+                            
+                            # get the agreed priority using isis algorithm
+                            # self.isis_mutex.acquire()
+                            decided_seq,message_id = self.isis.decideSeq(self.allproposed[msg.id])
+                            # self.isis_mutex.release()
+                            self.allproposed[msg.id] = []
+                            # self.allproposed_mutex.release()
+
+                            # send the message with agreed priority
+                            msg.priority = decided_seq
+                            msg.isis_type = 'AGREE'
+                            self.b_broadcast(msg.construct_string())
+                        # else:
+                            # self.allproposed_mutex.release()
+                        
+                    elif msg.isis_type == 'AGREE':
+                        # self.agreedDict_mutex.acquire()
+                        if self.agreedDict[msg.id] == 0: 
+                            print("get: ", msg.construct_string())
+                            self.agreedDict[msg.id] = 1
+                            # self.agreedDict_mutex.release()
+                            msg.node_id = self.node_id
+                            self.b_broadcast(msg.construct_string())
+                            # get the deliverable messages
+                            # self.isis_mutex.acquire()
+                            deliverMsgs = self.isis.deliverMsg(msg)
+                            # self.isis_mutex.release()
+
+                            # deliver the messages
+                            for deliver_msg in deliverMsgs:
+                                # self.acountCtl_mutex.acquire()
+                                self.acountCtl.updateBalance(deliver_msg)
+                                # self.acountCtl_mutex.release()
+                        # else:
+                            # self.agreedDict_mutex.release()
+
+                    self.mutex.release()
+
 
 
     
     def send(self):
         while not self.all_node_connected:
             time.sleep(1)
+        time.sleep(5)
         for line in sys.stdin: 
-            print('sending thread,',line)
             msg = Message(line)
-            self.mutex.acquire()    
+            # self.isis_mutex.acquire()    
+            self.mutex.acquire()
             proposed = self.isis.proposeSeq(msg)
-            msg.priority = proposed
-            self.allproposed[msg.id].append(msg)
-            self.b_broadcast(line.strip()+f" {self.node_id}")
-            
-            # broadcast message
-            while self.broadcast_message != []:
-                msg = self.broadcast_message.pop(0)
-                msg.node_id = self.node_id
-                self.b_broadcast(msg.construct_string())
-            
-            # unicast message
-            while self.unicast_message != []:
-                msg = self.unicast_message.pop(0)
-                target_id = msg.node_id
-                msg.node_id = self.node_id
-                self.send_s[target_id].sendall(bytes(msg.construct_string(), "UTF-8"))
+            # self.isis_mutex.release()
 
+            msg.priority = proposed
+            msg.node_id = self.node_id
+            # self.allproposed_mutex.acquire()
+            self.allproposed[msg.id].append(msg)
+            # self.allproposed_mutex.release()
             self.mutex.release()
-            # print(f'Sending : {send_data} to Cluster')
+            self.b_broadcast(msg.construct_string())
+            
 
 
 if __name__ == "__main__":

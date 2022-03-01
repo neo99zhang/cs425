@@ -14,17 +14,18 @@ class Isis:
         #p.agrSeq += self.counter
         self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
         Msg.deliverable = False
-        Msg.proSeq = self.proSeq
+        Msg.priority = self.proSeq
         heapq.heappush(self.queue,(self.proSeq,Msg))
         return self.proSeq
 
-    def decideSeq(ListMsg):
+    def decideSeq(self, ListMsg):
         '''
         input: a list of Msg, each with message id and proposed seq num
         output: agreed seq num, the message id selected
         '''
         id = ListMsg[0].id
-        max_priority = max(ListMsg, key=lambda x:x.proSeq)
+        max_msg = max(ListMsg, key=lambda x:x.priority)
+        max_priority = max_msg.priority
         return max_priority, id
 
     def deliverMsg(self,Msg):
@@ -35,11 +36,11 @@ class Isis:
             if m.id == Msg.id:
                 Msg.deliverable = True
                 self.queue.remove(pair)
-                heapq.heappush(self.queue,(Msg.agrSeq,Msg))
+                heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
 
         # deliver all the avaliable messages
-        while not (self.queue.empty()):
+        while not (self.queue == []):
             pair = self.queue.pop(0)
             m = pair[1]
             if m.deliverable is False:
