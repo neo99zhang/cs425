@@ -1,31 +1,51 @@
-class Isis:
-    def __init__(self):
-        self.counter = 0.0
+import heapq
 
-    def proposeSeq(self,p):
+class Isis:
+    def __init__(self, node_id):
+        self.queue = []
+        self.proSeq = float(node_id)*0.1
+        self.agrSeq = float(node_id)*0.1
+
+    def proposeSeq(self,Msg):
         '''
         input: a process
         output: proposed seq num
         '''
-        if p.proSeq is None or p.agrSeq is None:
-            print("Now proposing Seq Num"+str("0."+p.pid))
-            seq = self.counter + float(p.pid)*0.1
-            p.proSeq = seq
-            p.agrSeq = seq
-            self.counter += 1.0
-            return seq
-        self.counter += 1.0
-        p.proSeq += self.counter
-        p.agrSeq += self.counter
-        seq = max(p.proSeq,p.agrSeq) + self.counter
-        return seq
+        #p.agrSeq += self.counter
+        self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
+        Msg.deliverable = False
+        Msg.proSeq = self.proSeq
+        heapq.heappush(self.queue,(self.proSeq,Msg))
+        return self.proSeq
 
-    def decideSeq(ListProcess):
-        tempMax = 0.0
-        for proc in ListProcess:
-            if proc.proSeq > tempMax:
-                tempMax = proc.ProSeq
-        return (tempMax + 1.0)
+    def decideSeq(ListMsg):
+        '''
+        input: a list of Msg, each with message id and proposed seq num
+        output: agreed seq num, the message id selected
+        '''
+        id = ListMsg[0].id
+        max_priority = max(ListMsg, key=lambda x:x.proSeq)
+        return max_priority, id
 
-    def storeMsg(p,msg):
-        p.holdback.append(float(str(msg.proSeq)))
+    def deliverMsg(self,Msg):
+        deliverMsgs = []
+        # update the priority of the coming message
+        for pair in self.queue:
+            m = pair[1]
+            if m.id == Msg.id:
+                Msg.deliverable = True
+                self.queue.remove(pair)
+                heapq.heappush(self.queue,(Msg.agrSeq,Msg))
+                break
+
+        # deliver all the avaliable messages
+        while not (self.queue.empty()):
+            pair = self.queue.pop(0)
+            m = pair[1]
+            if m.deliverable is False:
+                heapq.heappush(self.queue,pair)
+                break
+            else:
+                deliverMsgs.append(m)
+        return deliverMsgs
+

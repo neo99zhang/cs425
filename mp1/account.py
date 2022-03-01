@@ -1,21 +1,18 @@
 from collections import defaultdict
+from message import Message
 class AccountCtl:
     def __init__(self):
         self.balance = defaultdict(int)
 
-    def updateBalance(self, message):
-        message = message.strip().split(' ')
-        if message[0] == 'DEPOSITE':
-            account = message[1]
-            amount = message[2]
-            self.balance[account] += amount 
-        elif message[0] == 'TRANSFER':
-            sender = message[1]
-            receiver = message[3]
-            amount = message[4]
-            if self.balance[sender] >= amount:
-                self.balance[sender] -= amount
-                self.balance[receiver] += amount
+    def updateBalance(self, msg):
+        if msg.type ==  'DEPOSIT':
+            self.balance[msg.source] += msg.amount 
+            self.printAccount()
+        elif msg.type == 'TRANSFER':
+            if self.balance[msg.source] >= msg.amount:
+                self.balance[msg.source] -= msg.amount
+                self.balance[msg.target] += msg.amount
+                self.printAccount()
         
     
     def printAccount(self):
@@ -23,7 +20,7 @@ class AccountCtl:
         accounts.sort()
         out = "BALANCES"
         for account in accounts:
-            out += f" {self.balance[account]}"
+            out += f" {account}:{self.balance[account]}"
         out += '\n'
         print(out)
 
