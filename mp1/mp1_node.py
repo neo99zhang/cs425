@@ -196,7 +196,8 @@ class node:
                         if self.agreedDict[msg.id] == 0: 
                             self.agreedDict[msg.id] = 1
                             self.agreedDict_mutex.release()
-
+                            msg.node_id = self.node_id
+                            self.b_broadcast(msg.construct_string())
                             # get the deliverable messages
                             self.isis_mutex.acquire()
                             deliverMsgs = self.isis.deliverMsg(msg)
