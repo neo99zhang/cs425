@@ -28,7 +28,6 @@ class Message:
             self.amount = int(message[2])
             self.isis_type = 'MESSAGE'
             self.id = time.time()
-            self.node_id = int(message[5])
 
         # read from terminal
         elif message[0] == 'TRANSFER':
@@ -38,23 +37,27 @@ class Message:
             self.amount = int(message[4])
             self.isis_type = 'MESSAGE'
             self.id = time.time()
-            self.node_id = int(message[6])
 
         # read from other nodes
         else:
-            if message[2] == 'DEPOSIT':      
-                self.isis_type = message[0]
-                self.id = message[1]
-                self.type = message[2]
+            self.isis_type = message[0]
+            self.id = message[1]
+            self.type = message[2]
+            self.source = message[3]
+            if message[0] == 'MESSAGE':
                 self.source = message[3]
+                if message[2] == 'DEPOSIT':
+                    self.amount = message[4]
+                    self.node_id = message[5]
+                else:
+                    self.target = message[4]
+                    self.amount = message[5]
+                    self.node_id = message[6]
+            elif message[2] == 'DEPOSIT':      
                 self.amount = message[4]
                 self.priority = message[5]
                 self.node_id = message[6]
             elif message[2] == 'TRANSFER':
-                self.isis_type = message[0]
-                self.id = message[1]
-                self.type = message[2]
-                self.source = message[3]
                 self.target = message[4]
                 self.amount = message[5]
                 self.priority = message[6]

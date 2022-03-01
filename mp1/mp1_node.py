@@ -19,19 +19,19 @@ nodes_event_time = dict()
 
 class node:
     def __init__(self):
+        self.node_id = None
+        self.proSeq = None
+        self.agrSeq = None
+        self.node_n = None
+        self.all_node_connected = False
         self._set_args()
         self._parse_configuration()
         self._create_socket()
         self.mutex = threading.Lock()
         self.connected_node =  set()
         self.acountCtl = AccountCtl()
-        self.isis = Isis()
-        self.all_node_connected = False
-        self.node_id = None
-        self.proSeq = None
-        self.agrSeq = None
-        self.node_n = None
-        self.allproposed = defaultdict(list())
+        self.isis = Isis(self.node_id)
+        self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
         self.broadcast_message = []
         self.unicast_message = []
@@ -74,7 +74,6 @@ class node:
         self.listen_s.listen(1)
         print(HOST, PORT)
         bitmask = [0]*len(self.nodes_info)
-        bitmask[self.node_id] =1
 
         self.send_s = defaultdict()
         while sum(bitmask) != len(bitmask):
@@ -100,7 +99,7 @@ class node:
     
     def b_broadcast(self, message):
         for node_id in self.send_s.keys():
-            self.send_s[node_id].sendall(bytes(f'{self.identifier} {message}', "UTF-8"))
+            self.send_s[node_id].sendall(bytes(message, "UTF-8"))
     
     def listen(self):
         conn, addr = self.listen_s.accept()
