@@ -11,7 +11,8 @@ from collections import defaultdict
 #from options import parse_options
 import logging as log
 from threading import Thread
-
+from account import AccountCtl
+from isis import Isis
 addr2node = dict()
 nodes_event_time = dict()
 
@@ -22,6 +23,9 @@ class node:
         self._create_socket()
         self.mutex = threading.Lock()
         self.connected_node =  set()
+        self.acountCtl = AccountCtl()
+        self.isis = Isis()
+        self.all_node_connected = False
         # self.payload = []
         # self.splits = 1
 
@@ -40,6 +44,10 @@ class node:
                 lines = f.readlines()
                 self.node_n = int(lines[0])
                 self.nodes_info = [line.strip().split(' ') for line in lines[1:]]
+                for i, node_info in enumerate(self.nodes_info):
+                    if self.identifier == node_info[0]:
+                        self.node_id = i
+
         except:
             print("can not read the file")
             exit(1)
@@ -56,17 +64,15 @@ class node:
         self.listen_s.listen(1)
         print(HOST, PORT)
         bitmask = [0]*len(self.nodes_info)
+        bitmask[self.node_id] =1
 
         self.send_s = defaultdict()
         while sum(bitmask) != len(bitmask):
-            print (bitmask)
             for i in range(len(bitmask)):
                 if bitmask[i] == 1:
                     continue
-                if self.identifier == self.nodes_info[i][0]:
-                    bitmask[i] =1
-                    continue
                 
+                # try to connect to 
                 try:
                     node_info = self.nodes_info[i]
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -86,14 +92,15 @@ class node:
         for node_id in self.send_s.keys():
             self.send_s[node_id].sendall(bytes(f'{self.identifier} {message}', "UTF-8"))
     
-    def run(self):
+    def listen(self):
         conn, addr = self.listen_s.accept()
         with conn:
-            # loop untill connected all the nodes
+            # loop until all the nodes have connected to other nodes
             while True:
                 self.mutex.acquire()
                 if len(self.connected_node) == self.node_n -1:
                     self.mutex.release()
+                    self.all_node_connected = True
                     print("all node conected")
                     break
                 self.mutex.release()
@@ -103,15 +110,22 @@ class node:
                 self.connected_node.add(data)
                 print(self.connected_node)
                 self.mutex.release()
-            
-
+    
+    def send(self):
+        while not self.all_node_connected:
+            time.sleep(1)
+        for line in sys.stdin: 
+            print('sending thread,',line)
+            # self.s.sendall(bytes(send_data,"UTF-8"))
+            # print(f'Sending : {send_data} to Cluster')
 
 
 if __name__ == "__main__":
     # node_n: int, nodes_info [node, 3],  [id, ip_name, port]
     node = node()
-    thread = []
     for i in range(node.node_n):
-        handleRequest = threading.Thread(target=node.run,args=())
+        handleRequest = threading.Thread(target=node.listen,args=())
         handleRequest.start()
-        
+    
+    sending_threads = threading.Thread(target=node.send,args=())
+    sending_threads.start()

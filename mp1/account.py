@@ -1,5 +1,5 @@
 from collections import defaultdict
-class Account:
+class AccountCtl:
     def __init__(self):
         self.balance = defaultdict(int)
 
