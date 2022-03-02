@@ -1,4 +1,15 @@
 import heapq
+import bisect 
+class KeyWrapper:
+    def __init__(self, iterable, key):
+        self.it = iterable
+        self.key = key
+
+    def __getitem__(self, i):
+        return self.key(self.it[i])
+
+    def __len__(self):
+        return len(self.it)
 
 class Isis:
     def __init__(self, node_id):
@@ -15,7 +26,9 @@ class Isis:
         self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
         Msg.deliverable = False
         Msg.priority = self.proSeq
-        heapq.heappush(self.queue,(self.proSeq,Msg))
+        bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
+        self.queue.insert(bslindex,(self.proSeq, Msg))
+
         return self.proSeq
 
     def decideSeq(self, ListMsg):
@@ -23,31 +36,31 @@ class Isis:
         input: a list of Msg, each with message id and proposed seq num
         output: agreed seq num, the message id selected
         '''
-        id = ListMsg[0].id
         max_msg = max(ListMsg, key=lambda x:x.priority)
         max_priority = max_msg.priority
         self.agrSeq = max(self.agrSeq,max_priority)
-        return max_priority, max_msg.id
+        return max_priority
 
     def deliverMsg(self,Msg):
         deliverMsgs = []
         # update the priority of the coming message
-        for pair in self.queue:
+        for i, pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
                 Msg.deliverable = True
-                self.queue.remove(pair)
-                heapq.heappush(self.queue,(Msg.priority,Msg))
+                self.queue.pop(i)
+                bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),Msg.priority)
+                self.queue.insert(bslindex,(Msg.priority, Msg))
                 break
 
         # deliver all the avaliable messages
         while not (self.queue == []):
-            pair = self.queue.pop(0)
-            m = pair[1]
-            if m.deliverable is False:
-                heapq.heappush(self.queue,pair)
-                break
-            else:
+            m = self.queue[0][1]
+            if m.deliverable:
+                self.queue.pop(0)
                 deliverMsgs.append(m)
+            else:
+                break
+        print(self.queue)
         return deliverMsgs
 
