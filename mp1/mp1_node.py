@@ -236,16 +236,16 @@ class node:
         for line in sys.stdin: 
             msg = Message(line)
             # self.isis_mutex.acquire()    
-            self.mutex.acquire()
-            proposed = self.isis.proposeSeq(msg)
+            #self.mutex.acquire()
+            #proposed = self.isis.proposeSeq(msg)
             # self.isis_mutex.release()
 
-            msg.priority = proposed
+            #msg.priority = proposed
             msg.node_id = self.node_id
             # self.allproposed_mutex.acquire()
-            self.allproposed[msg.id].append(msg)
+            #self.allproposed[msg.id].append(msg)
             # self.allproposed_mutex.release()
-            self.mutex.release()
+            #self.mutex.release()    
             self.b_broadcast(msg.construct_string())
             
 

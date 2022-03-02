@@ -58,7 +58,9 @@ class Isis:
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
-                heapq.heapify(self.queue)
+                if i < len(self.queue):
+                    heapq._siftup(self.queue, i)
+                    heapq._siftdown(self.queue, 0, i)
                 heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
 
