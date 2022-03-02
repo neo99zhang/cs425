@@ -191,7 +191,7 @@ class node:
                         
                         # get the agreed priority using isis algorithm
                         # self.isis_mutex.acquire()
-                        decided_seq,message_id = self.isis.decideSeq(self.allproposed[msg.id])
+                        decided_seq = self.isis.decideSeq(self.allproposed[msg.id])
                         # self.isis_mutex.release()
                         self.allproposed[msg.id] = []
                         # self.allproposed_mutex.release()
