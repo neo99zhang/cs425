@@ -32,11 +32,15 @@ class Isis:
     def deliverMsg(self,Msg):
         deliverMsgs = []
         # update the priority of the coming message
-        for pair in self.queue:
+        for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
                 Msg.deliverable = True
-                self.queue.remove(pair)
+                self.queue[i] = self.queue[-1]
+                self.queue.pop()
+                if i < len(self.queue):
+                    heapq._siftup(self.queue, i)
+                    heapq._siftdown(self.queue, 0, i)
                 heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
 
