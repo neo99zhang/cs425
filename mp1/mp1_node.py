@@ -138,10 +138,10 @@ class node:
             time.sleep(5)
             while True:
                 # listen messages from other nodes
-                messages = conn.recv(4096).decode('utf-8')
-                if messages == '':
-                    continue
-                messages = messages.strip().split('\n')
+                messages = conn.recv(256).decode('utf-8')
+                messages = messages.strip()
+                print(messages)
+                continue
                 
                 for message in messages:
                     msg = Message(message)
@@ -225,7 +225,7 @@ class node:
     def send(self):
         while not self.all_node_connected:
             time.sleep(1)
-        time.sleep(5)
+        time.sleep(10)
         for line in sys.stdin: 
             msg = Message(line)
             # self.isis_mutex.acquire()    

@@ -69,12 +69,14 @@ class Message:
     def construct_string(self):
         if self.isis_type == 'MESSAGE':
             if self.type == 'DEPOSIT':
-                return f'{self.isis_type} {self.id} DEPOSIT {self.source} {self.amount} {self.node_id}\n'
+                s =  f'{self.isis_type} {self.id} DEPOSIT {self.source} {self.amount} {self.node_id}'
             elif self.type == 'TRANSFER':
-                return f'{self.isis_type} {self.id} TRANSFER {self.source} {self.target} {self.amount} {self.node_id}\n'
+                s =  f'{self.isis_type} {self.id} TRANSFER {self.source} {self.target} {self.amount} {self.node_id}'
             
         else:
             if self.type == 'DEPOSIT':
-                return f'{self.isis_type} {self.id} DEPOSIT {self.source} {self.amount} {self.priority} {self.node_id}\n'
+                s =  f'{self.isis_type} {self.id} DEPOSIT {self.source} {self.amount} {self.priority} {self.node_id}'
             elif self.type == 'TRANSFER':
-                return f'{self.isis_type} {self.id} TRANSFER {self.source} {self.target} {self.amount} {self.priority} {self.node_id}\n'
+                s = f'{self.isis_type} {self.id} TRANSFER {self.source} {self.target} {self.amount} {self.priority} {self.node_id}'
+        s += (256 -33 - len(s))*' '
+        return s
