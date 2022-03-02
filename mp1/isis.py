@@ -26,8 +26,9 @@ class Isis:
         self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
         Msg.deliverable = False
         Msg.priority = self.proSeq
-        bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
-        self.queue.insert(bslindex,(self.proSeq, Msg))
+        heapq.heappush(self.queue,(Msg.priority,Msg))
+        #bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
+        #self.queue.insert(bslindex,(self.proSeq, Msg))
 
         return self.proSeq
 
@@ -47,6 +48,7 @@ class Isis:
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
+                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
