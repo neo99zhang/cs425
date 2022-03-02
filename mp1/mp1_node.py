@@ -138,8 +138,8 @@ class node:
             time.sleep(5)
             while True:
                 # listen messages from other nodes
-                messages = conn.recv().decode('utf-8')
-                #messages = conn.recv(4096).decode('utf-8')
+                #messages = conn.recv().decode('utf-8')
+                messages = conn.recv(4096).decode('utf-8')
                 if messages == '':
                     continue
                 messages = messages.strip().split('\n')
