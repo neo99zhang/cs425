@@ -57,7 +57,7 @@ class Isis:
                 print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
-                self.queue.pop()
+                heapq.heappop(self.queue)
                 if i < len(self.queue):
                     heapq._siftup(self.queue, i)
                     heapq._siftdown(self.queue, 0, i)
@@ -68,7 +68,7 @@ class Isis:
         while not (self.queue == []):
             m = self.queue[0][1]
             if m.deliverable:
-                self.queue.pop(0)
+                heapq.heappop(self.queue)
                 deliverMsgs.append(m)
             else:
                 break
