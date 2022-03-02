@@ -64,6 +64,7 @@ class Isis:
                 deliverMsgs.append(m)
             else:
                 break
-        print(self.queue)
+        for pair in self.queue:
+            print("The msg is",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
 
