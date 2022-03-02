@@ -26,6 +26,7 @@ class Isis:
         id = ListMsg[0].id
         max_msg = max(ListMsg, key=lambda x:x.priority)
         max_priority = max_msg.priority
+        self.agrSeq = max(self.agrSeq,max_priority)
         return max_priority, id
 
     def deliverMsg(self,Msg):
