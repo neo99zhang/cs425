@@ -58,7 +58,7 @@ class Isis:
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
-                # print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
+                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
@@ -81,8 +81,8 @@ class Isis:
             else:
                 break
 
-        # print("after the deliver")
-        # for pair in self.queue:
-        #     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("after the deliver")
+        for pair in self.queue:
+            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
 
