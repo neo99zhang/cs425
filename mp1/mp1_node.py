@@ -110,8 +110,8 @@ class node:
         for node_id in self.send_s.keys():
             try:
                 
-                self.unicast(self,message,node_id)
-                #self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
+                #self.unicast(self,message,node_id)
+                self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
             except:
                 print("error message: ", message)
                 print("length of message: ", len(message))
