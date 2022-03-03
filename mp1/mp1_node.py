@@ -40,7 +40,7 @@ class node:
         self.recivedDict = defaultdict(int)
         self.agreedDict = defaultdict(int)
         self.senderlock = threading.Lock()
-        self.recvlock = defaultdict(threading.Lock())
+        #self.recvlock = defaultdict(threading.Lock())
         self.broadcast_message = []
         self.unicast_message = []
         # self.holdback = []
