@@ -157,7 +157,7 @@ class node:
                 if msg.isis_type == 'MESSAGE':
                     # self.recivedDict_mutex.acquire()
                     if self.recivedDict[msg.id] == 0:
-                        print("get: ", msg.construct_string().strip())
+                        #print("get: ", msg.construct_string().strip())
                         # self.recivedDict_mutex.release()
                         # R-multicast implementation
                         sender_id = msg.node_id
@@ -206,7 +206,7 @@ class node:
                 elif msg.isis_type == 'AGREE':
                     # self.agreedDict_mutex.acquire()
                     if self.agreedDict[msg.id] == 0: 
-                        print("get: ", msg.construct_string().strip())
+                        #print("get: ", msg.construct_string().strip())
                         self.agreedDict[msg.id] = 1
                         # self.agreedDict_mutex.release()
                         msg.node_id = self.node_id
