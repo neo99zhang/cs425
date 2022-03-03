@@ -26,10 +26,14 @@ class Isis:
         self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
         Msg.deliverable = False
         Msg.priority = self.proSeq
-        bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
-        self.queue.insert(bslindex,(self.proSeq, Msg))
-        # for i in self.queue:
-        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
+        # print("before the push")
+        # for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        heapq.heappush(self.queue,(Msg.priority,Msg))
+        # print("after the push")
+        # for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+
 
         return self.proSeq
 
@@ -65,10 +69,10 @@ class Isis:
         for pair in self.queue:
            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
-        heapq.heapify(self.queue)
-        print("if we heapify here")
-        for pair in self.queue:
-           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        #heapq.heapify(self.queue)
+        # print("if we heapify here")
+        # for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
         # deliver all the avaliable messages
         while not (self.queue == []):
@@ -78,8 +82,9 @@ class Isis:
                 deliverMsgs.append(m)
             else:
                 break
-        # for i in self.queue:
-        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
 
+        print("after the deliver")
+        for pair in self.queue:
+            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
 
