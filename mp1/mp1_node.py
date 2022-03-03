@@ -39,9 +39,9 @@ class node:
         self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
         self.agreedDict = defaultdict(int)
-        self.senderlock = threading.Lock()
-        self.recvlock = []
-        self.node2idx = defaultdict(int)
+        #self.senderlock = threading.Lock()
+        #self.recvlock = []
+        #self.node2idx = defaultdict(int)
         self.broadcast_message = []
         self.unicast_message = []
         # self.holdback = []
