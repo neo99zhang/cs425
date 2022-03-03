@@ -28,6 +28,8 @@ class Isis:
         Msg.priority = self.proSeq
         bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
         self.queue.insert(bslindex,(self.proSeq, Msg))
+        # for i in self.queue:
+        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
 
         return self.proSeq
 
@@ -61,6 +63,8 @@ class Isis:
                 deliverMsgs.append(m)
             else:
                 break
-        print(self.queue)
+        # for i in self.queue:
+        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
+
         return deliverMsgs
 
