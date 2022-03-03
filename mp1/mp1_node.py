@@ -96,8 +96,8 @@ class node:
                     IP_addr = socket.gethostbyname(node_info[1])
                     s.connect((IP_addr, int(node_info[2])))
                     self.send_s[i]= s
-                    self.recvlock[i].append(threading.lock())
-                    self.node2idx[s] = i
+                    #self.recvlock[i].append(threading.lock())
+                    #self.node2idx[s] = i
                     bitmask[i] = 1
                     print("connect to ", node_info[0])
                 except:
@@ -111,9 +111,9 @@ class node:
         # print(" b-cast: ",self.node_id, ' ', message)
         for node_id in self.send_s.keys():
             try:
-                with self.recvlock[self.node2idx[node_id]]:
+                #with self.recvlock[self.node2idx[node_id]]:
                 #self.unicast(self,message,node_id)
-                    self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
+                self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
             except:
                 print("error message: ", message)
                 print("length of message: ", len(message))
@@ -122,8 +122,8 @@ class node:
     def unicast(self, message, target_id):
         # print( "u-cast: ", self.node_id, ' to ', target_id, message)
         # self.recvlock[target_id].acquire()
-        with self.recvlock[self.node2idx[target_id]]:
-            self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
+        #with self.recvlock[self.node2idx[target_id]]:
+        self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
         # self.recvlock[target_id].release()
     
     def listen(self):
