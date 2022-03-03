@@ -235,7 +235,7 @@ class node:
     def send(self):
         while not self.all_node_connected:
             time.sleep(1)
-        time.sleep(5)
+        time.sleep(1)
         for line in sys.stdin: 
             msg = Message(line)
             # self.isis_mutex.acquire()    
