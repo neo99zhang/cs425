@@ -5,7 +5,10 @@ import _thread
 import threading
 import signal
 import time
+import logging
 
+logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+logging.warning('This will get logged to a file')
 import sys
 from collections import defaultdict
 #from options import parse_options
@@ -65,7 +68,7 @@ class node:
                         self.node_id = i
 
         except:
-            print("can not read the file")
+            logging.de("can not read the file")
             exit(1)
         
 
@@ -103,7 +106,7 @@ class node:
 
     
     def b_broadcast(self, message):
-        # print(" b-cast: ",self.node_id, ' ', message)
+        # logging.warning(" b-cast: ",self.node_id, ' ', message)
         for node_id in self.send_s.keys():
             try:
                 self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
@@ -157,7 +160,7 @@ class node:
                 if msg.isis_type == 'MESSAGE':
                     # self.recivedDict_mutex.acquire()
                     if self.recivedDict[msg.id] == 0:
-                        # print("get: ", msg.construct_string().strip())
+                        logging.warning(f"get: {msg.construct_string().strip()} ")
                         # self.recivedDict_mutex.release()
                         # R-multicast implementation
                         sender_id = msg.node_id
@@ -186,7 +189,7 @@ class node:
                 elif msg.isis_type == 'PROPOSE':
                     # self.allproposed_mutex.acquire()
                     self.allproposed[msg.id].append(msg)
-                    # print("get: ", msg.construct_string().strip())
+                    logging.warning(f"get: {msg.construct_string().strip()} ")
                     if len(self.allproposed[msg.id]) == self.node_n:
                         
                         # get the agreed priority using isis algorithm
@@ -199,7 +202,7 @@ class node:
                         # send the message with agreed priority
                         msg.priority = decided_seq
                         msg.isis_type = 'AGREE'
-                        # print("send: ", msg.construct_string().strip())
+                        logging.warning(f"send: {msg.construct_string().strip()} ")
                         self.b_broadcast(msg.construct_string())
                     # else:
                         # self.allproposed_mutex.release()
@@ -207,7 +210,7 @@ class node:
                 elif msg.isis_type == 'AGREE':
                     # self.agreedDict_mutex.acquire()
                     if self.agreedDict[msg.id] == 0: 
-                        # print("get: ", msg.construct_string().strip())
+                        logging.warning(f"get: {msg.construct_string().strip()} ")
                         self.agreedDict[msg.id] = 1
                         # self.agreedDict_mutex.release()
                         msg.node_id = self.node_id
@@ -245,7 +248,7 @@ class node:
             # self.allproposed[msg.id].append(msg)
             # self.allproposed_mutex.release()
             # self.mutex.release()
-            # print("send: ", msg.construct_string().strip())
+            # logging.warning("send: ", msg.construct_string().strip())
             self.b_broadcast(msg.construct_string())
             
 

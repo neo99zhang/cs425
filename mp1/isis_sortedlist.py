@@ -1,9 +1,5 @@
 import heapq
 import bisect 
-import logging
-
-logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
-logging.warning('This will get logged to a file')
 class KeyWrapper:
     def __init__(self, iterable, key):
         self.it = iterable
@@ -32,8 +28,9 @@ class Isis:
         Msg.priority = self.proSeq
         bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
         self.queue.insert(bslindex,(self.proSeq, Msg))
-        for i in self.queue:
-            logging.warning(f"      {i[1].id} {i[1].priority} {i[1].deliverable} {i[1].node_id}")
+        # for i in self.queue:
+        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
+
         return self.proSeq
 
     def decideSeq(self, ListMsg):
@@ -52,16 +49,11 @@ class Isis:
         for i, pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
-                # logging.debug("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue.pop(i)
                 bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),Msg.priority)
                 self.queue.insert(bslindex,(Msg.priority, Msg))
                 break
-        # logging.debug("before the deliver")
-        # for pair in self.queue:
-        #    logging.debug("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-
 
         # deliver all the avaliable messages
         while not (self.queue == []):
@@ -71,8 +63,8 @@ class Isis:
                 deliverMsgs.append(m)
             else:
                 break
-        for i in self.queue:
-            logging.warning(f"      {i[1].id} {i[1].priority} {i[1].deliverable} {i[1].node_id}")
+        # for i in self.queue:
+        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
 
         return deliverMsgs
 
