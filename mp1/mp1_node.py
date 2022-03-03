@@ -186,6 +186,7 @@ class node:
                 elif msg.isis_type == 'PROPOSE':
                     # self.allproposed_mutex.acquire()
                     self.allproposed[msg.id].append(msg)
+                    print("The msg is",msg.id," And got",len(self.allproposed[msg.id]),"propose until now")
                     # print("get: ", msg.construct_string().strip())
                     if len(self.allproposed[msg.id]) == self.node_n:
                         
