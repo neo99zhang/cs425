@@ -66,6 +66,12 @@ class Isis:
         print("before the deliver")
         for pair in self.queue:
            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+
+        heapq.heapify(self.queue)
+        print("if we heapify here")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+
         # deliver all the avaliable messages
         while not (self.queue == []):
             m = self.queue[0][1]
@@ -74,6 +80,8 @@ class Isis:
                 deliverMsgs.append(m)
             else:
                 break
+            
+        print("after the deliver")
         for pair in self.queue:
             print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
