@@ -95,7 +95,7 @@ class node:
                     IP_addr = socket.gethostbyname(node_info[1])
                     s.connect((IP_addr, int(node_info[2])))
                     self.send_s[i]= s
-                    self.recvlock[s] = threading.lock()
+                    # self.recvlock[s] = threading.lock()
                     bitmask[i] = 1
                     print("connect to ", node_info[0])
                 except:
@@ -119,9 +119,9 @@ class node:
     
     def unicast(self, message, target_id):
         # print( "u-cast: ", self.node_id, ' to ', target_id, message)
-        self.recvlock[target_id].acquire()
+        # self.recvlock[target_id].acquire()
         self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
-        self.recvlock[target_id].release()
+        # self.recvlock[target_id].release()
     
     def listen(self):
         conn, addr = self.listen_s.accept()
