@@ -186,7 +186,7 @@ class node:
                 elif msg.isis_type == 'PROPOSE':
                     # self.allproposed_mutex.acquire()
                     self.allproposed[msg.id].append(msg)
-                    print("get: ", msg.construct_string().strip())
+                   # print("get: ", msg.construct_string().strip())
                     if len(self.allproposed[msg.id]) == self.node_n:
                         
                         # get the agreed priority using isis algorithm
