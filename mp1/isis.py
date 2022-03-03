@@ -51,6 +51,9 @@ class Isis:
     def deliverMsg(self,Msg):
         deliverMsgs = []
         # update the priority of the coming message
+        print("going to push the agreed")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
@@ -80,7 +83,7 @@ class Isis:
                 deliverMsgs.append(m)
             else:
                 break
-            
+
         print("after the deliver")
         for pair in self.queue:
             print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
