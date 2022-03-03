@@ -30,7 +30,7 @@ class Isis:
         # for pair in self.queue:
         #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         heapq.heappush(self.queue,(Msg.priority,Msg))
-        print("Just push","priority:Msg",Msg.priority,":",Msg.id)
+        # print("Just push","priority:Msg",Msg.priority,":",Msg.id)
         # for pair in self.queue:
         #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
@@ -53,11 +53,12 @@ class Isis:
         # print("going to push the agreed")
         # for pair in self.queue:
         #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-        print("Now going to put agreed",Msg.id,"with priority",Msg.priority)
+
+        #print("Now going to put agreed",Msg.id,"with priority",Msg.priority)
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
-                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
+                # print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
@@ -80,8 +81,8 @@ class Isis:
             else:
                 break
 
-        print("after the deliver")
-        for pair in self.queue:
-            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        # print("after the deliver")
+        # for pair in self.queue:
+        #     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
 
