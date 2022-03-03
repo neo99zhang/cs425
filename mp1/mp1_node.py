@@ -140,7 +140,7 @@ class node:
                     self.mutex.release()
                 time.sleep(1)
             
-            time.sleep(5)
+            #time.sleep(5)
             while True:
                 # listen messages from other nodes
                 #messages = conn.recv().decode('utf-8')
@@ -189,7 +189,8 @@ class node:
                     print("The msg is",msg.id," And got",len(self.allproposed[msg.id]),"propose until now")
                     # print("get: ", msg.construct_string().strip())
                     if len(self.allproposed[msg.id]) == self.node_n:
-                        
+                        print("The msg is",msg.id," And got",len(self.allproposed[msg.id]),"propose until now, which is enough")
+
                         # get the agreed priority using isis algorithm
                         # self.isis_mutex.acquire()
                         decided_seq = self.isis.decideSeq(self.allproposed[msg.id])
