@@ -39,6 +39,8 @@ class node:
         self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
         self.agreedDict = defaultdict(int)
+        self.senderlock = threading.Lock()
+        self.recvlock = defaultdict(threading.Lock())
         self.broadcast_message = []
         self.unicast_message = []
         # self.holdback = []
@@ -93,6 +95,7 @@ class node:
                     IP_addr = socket.gethostbyname(node_info[1])
                     s.connect((IP_addr, int(node_info[2])))
                     self.send_s[i]= s
+                    self.recvlock[s] = threading.lock()
                     bitmask[i] = 1
                     print("connect to ", node_info[0])
                 except:
@@ -106,7 +109,9 @@ class node:
         # print(" b-cast: ",self.node_id, ' ', message)
         for node_id in self.send_s.keys():
             try:
-                self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
+                
+                self.unicast(self,message,node_id)
+                #self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
             except:
                 print("error message: ", message)
                 print("length of message: ", len(message))
@@ -114,7 +119,9 @@ class node:
     
     def unicast(self, message, target_id):
         # print( "u-cast: ", self.node_id, ' to ', target_id, message)
+        self.recvlock[target_id].acquire()
         self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
+        self.recvlock[target_id].release()
     
     def listen(self):
         conn, addr = self.listen_s.accept()
