@@ -80,7 +80,7 @@ class node:
 
         self.listen_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_s.bind((HOST, PORT))
-        self.listen_s.listen(1)
+        self.listen_s.listen(32)
         bitmask = [0]*len(self.nodes_info)
 
         self.send_s = defaultdict()
