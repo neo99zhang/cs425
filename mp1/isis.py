@@ -26,15 +26,15 @@ class Isis:
         self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
         Msg.deliverable = False
         Msg.priority = self.proSeq
-        #print("before the push")
-        #for pair in self.queue:
-        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("before the push")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         heapq.heappush(self.queue,(Msg.priority,Msg))
-        #print("after the push")
-        #for pair in self.queue:
-        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-        #bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
-        #self.queue.insert(bslindex,(self.proSeq, Msg))
+        print("after the push")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
+        self.queue.insert(bslindex,(self.proSeq, Msg))
 
         return self.proSeq
 
@@ -51,13 +51,13 @@ class Isis:
     def deliverMsg(self,Msg):
         deliverMsgs = []
         # update the priority of the coming message
-        # print("going to push the agreed")
-        # for pair in self.queue:
-        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("going to push the agreed")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
-                # print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
+                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
@@ -66,14 +66,14 @@ class Isis:
                     heapq._siftdown(self.queue, 0, i)
                 heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
-        # print("before the deliver")
-        # for pair in self.queue:
-        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("before the deliver")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
         heapq.heapify(self.queue)
-        # print("if we heapify here")
-        # for pair in self.queue:
-        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("if we heapify here")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
         # deliver all the avaliable messages
         while not (self.queue == []):
@@ -84,8 +84,8 @@ class Isis:
             else:
                 break
 
-        # print("after the deliver")
-        # for pair in self.queue:
-        #     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("after the deliver")
+        for pair in self.queue:
+            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
 
