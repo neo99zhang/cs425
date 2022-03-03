@@ -140,7 +140,7 @@ class node:
                     self.mutex.release()
                 time.sleep(1)
             
-            time.sleep(20)
+            time.sleep(5)
             while True:
                 # listen messages from other nodes
                 #messages = conn.recv().decode('utf-8')
@@ -233,7 +233,7 @@ class node:
     def send(self):
         while not self.all_node_connected:
             time.sleep(1)
-        time.sleep(40)
+        time.sleep(10)
         for line in sys.stdin: 
             msg = Message(line)
             # self.isis_mutex.acquire()    

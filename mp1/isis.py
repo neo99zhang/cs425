@@ -26,10 +26,14 @@ class Isis:
         self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
         Msg.deliverable = False
         Msg.priority = self.proSeq
-        bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),self.proSeq)
-        self.queue.insert(bslindex,(self.proSeq, Msg))
-        # for i in self.queue:
-        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
+        # print("before the push")
+        # for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        heapq.heappush(self.queue,(Msg.priority,Msg))
+        # print("after the push")
+        # for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+
 
         return self.proSeq
 
@@ -46,25 +50,37 @@ class Isis:
     def deliverMsg(self,Msg):
         deliverMsgs = []
         # update the priority of the coming message
-        for i, pair in enumerate(self.queue):
+        # print("going to push the agreed")
+        # for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
+                # print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
-                self.queue.pop(i)
-                bslindex = bisect.bisect_left(KeyWrapper(self.queue,key = lambda x:x[0]),Msg.priority)
-                self.queue.insert(bslindex,(Msg.priority, Msg))
+                self.queue[i] = self.queue[-1]
+                self.queue.pop()
+                if i < len(self.queue):
+                    heapq._siftup(self.queue, i)
+                    heapq._siftdown(self.queue, 0, i)
+                heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
+        print("before the deliver")
+        for pair in self.queue:
+           print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+
 
         # deliver all the avaliable messages
         while not (self.queue == []):
             m = self.queue[0][1]
             if m.deliverable:
-                self.queue.pop(0)
+                heapq.heappop(self.queue)
                 deliverMsgs.append(m)
             else:
                 break
-        # for i in self.queue:
-        #     print("        ", i[1].id, i[1].priority, i[1].deliverable, i[1].node_id)
 
+        print("after the deliver")
+        for pair in self.queue:
+            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
 
