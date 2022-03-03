@@ -30,7 +30,7 @@ class Isis:
         # for pair in self.queue:
         #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         heapq.heappush(self.queue,(Msg.priority,Msg))
-        # print("Just push","priority:Msg",Msg.priority,":",Msg.id)
+        print("Just push","priority:Msg",Msg.priority,":",Msg.id)
         # for pair in self.queue:
         #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
@@ -54,7 +54,7 @@ class Isis:
         # for pair in self.queue:
         #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
-        #print("Now going to put agreed",Msg.id,"with priority",Msg.priority)
+        print("Now going to put agreed",Msg.id,"with priority",Msg.priority)
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
@@ -67,9 +67,9 @@ class Isis:
                     heapq._siftdown(self.queue, 0, i)
                 heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
-        # print("before the deliver")
-        # for pair in self.queue:
-        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        print("before the deliver")
+        for pair in self.queue:
+            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
 
         # deliver all the avaliable messages
