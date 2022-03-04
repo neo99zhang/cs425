@@ -40,18 +40,7 @@ class node:
         self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
         self.agreedDict = defaultdict(int)
-<<<<<<< HEAD
         
-=======
-        #self.senderlock = threading.Lock()
-        #self.recvlock = []
-        #self.node2idx = defaultdict(int)
-        self.broadcast_message = []
-        self.unicast_message = []
-        # self.holdback = []
-        # self.payload = []
-        # self.splits = 1
->>>>>>> 901e39a17270afee27159c8e999138b7e2079814
 
     # get the arguments: node name , logger ip, and logger port
     def _set_args(self):
@@ -117,29 +106,15 @@ class node:
         # print(" b-cast: ",self.node_id, ' ', message)
         for node_id in self.send_s.keys():
             try:
-<<<<<<< HEAD
                 self.unicast(message,node_id)
-=======
-                #with self.recvlock[self.node2idx[node_id]]:
-                #self.unicast(self,message,node_id)
-                self.send_s[node_id].sendall(bytes(f'{message}', "UTF-8"))
->>>>>>> 901e39a17270afee27159c8e999138b7e2079814
             except:
                 print("error message: ", message)
                 print("length of message: ", len(message))
                 exit(1)
     
     def unicast(self, message, target_id):
-<<<<<<< HEAD
         with self.senderlock[target_id]:
             self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
-=======
-        # print( "u-cast: ", self.node_id, ' to ', target_id, message)
-        # self.recvlock[target_id].acquire()
-        #with self.recvlock[self.node2idx[target_id]]:
-        self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
-        # self.recvlock[target_id].release()
->>>>>>> 901e39a17270afee27159c8e999138b7e2079814
     
     def listen(self):
         conn, addr = self.listen_s.accept()
