@@ -1,6 +1,7 @@
 import heapq
 import bisect 
 import logging as log
+import math
 class KeyWrapper:
     def __init__(self, iterable, key):
         self.it = iterable
@@ -15,6 +16,7 @@ class KeyWrapper:
 class Isis:
     def __init__(self, node_id):
         self.queue = []
+        self.node_id = node_id
         self.proSeq = float(node_id)*0.1
         self.agrSeq = float(node_id)*0.1
 
@@ -24,7 +26,7 @@ class Isis:
         output: proposed seq num
         '''
         #p.agrSeq += self.counter
-        self.proSeq = max(self.proSeq,self.agrSeq) + 1.0
+        self.proSeq = math.floor(max(self.proSeq,self.agrSeq)) + 1.0 + float(self.node_id)*0.1
         Msg.deliverable = False
         Msg.priority = self.proSeq
         # print("before the push")
@@ -70,17 +72,17 @@ class Isis:
                         heapq._siftup(self.queue, i)
                         heapq._siftdown(self.queue, 0, i)
                     except:
-                        for i,pair in enumerate(self.queue):
+                        for k,pair in enumerate(self.queue):
                             for j,pair2 in enumerate(self.queue):
-                                if pair2[0] == pair[0] and i != j:
+                                if pair2[0] == pair[0] and k != j:
                                     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0],"msg",pair[1].construct_string().strip())
                                     print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0],"msg",pair2[1].construct_string().strip())  
                 try:
                     heapq.heappush(self.queue,(Msg.priority,Msg))
                 except:
-                    for i,pair in enumerate(self.queue):
+                    for k,pair in enumerate(self.queue):
                         for j,pair2 in enumerate(self.queue):
-                            if pair2[0] == pair[0] and i != j:
+                            if pair2[0] == pair[0] and k != j:
                                 print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0],"msg",pair[1].construct_string().strip())
                                 print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0],"msg",pair2[1].construct_string().strip())      
                 break
