@@ -153,16 +153,17 @@ class node:
                 else:
                     self.mutex.release()
                 time.sleep(1)
-            
+
+            conn.settimeout(4)
             #time.sleep(5)
             while True:
                 # listen messages from other nodes
                 #messages = conn.recv().decode('utf-8')
                 #message = conn.recv(256).decode('utf-8')
-                conn.settimeout(4)
+                
                 try:
                     message = conn.recv(256).decode('utf-8')
-                except conn.Timeouterror:
+                except socket.timeout:
                     self.deadnode.append(connected_node_id)
                     #if node dead
                     # delete the related entries in the queue
