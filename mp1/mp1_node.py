@@ -154,7 +154,7 @@ class node:
                     self.mutex.release()
                 time.sleep(1)
 
-            conn.settimeout(4)
+            #conn.settimeout(4)
             #time.sleep(5)
             while True:
                 # listen messages from other nodes
@@ -186,6 +186,9 @@ class node:
                     with self.isis_mutex:
                         
                         self.isis.delete_node(connected_node_id)
+                    # for key in self.allproposed
+                    # self.allproposed[msg.id].append(msg)
+
                     # decrese the number of nodes
                     with self.senderlock[connected_node_id]:
                         self.send_s.pop(connected_node_id)
