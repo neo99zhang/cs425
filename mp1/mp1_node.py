@@ -44,6 +44,7 @@ class node:
         self.agreedDict = defaultdict(int)
         self.identifier2id = defaultdict(int)
         self.deadnode = []
+        self.sends_lock = threading.Lock()
 
     # get the arguments: node name , logger ip, and logger port
     def _set_args(self):
@@ -108,13 +109,14 @@ class node:
     
     def b_broadcast(self, message):
         # print(" b-cast: ",self.node_id, ' ', message)
-        for node_id in self.send_s.keys():
-            try:
-                self.unicast(message,node_id)
-            except:
-                print("error message: ", message)
-                print("length of message: ", len(message))
-                exit(1)
+        with self.sends_lock:
+            for node_id in self.send_s.keys():
+                try:
+                    self.unicast(message,node_id)
+                except:
+                    print("error message: ", message)
+                    print("length of message: ", len(message))
+                    exit(1)
     
     def unicast(self, message, target_id):
         with self.senderlock[target_id]:
