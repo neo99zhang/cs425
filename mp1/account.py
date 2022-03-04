@@ -23,5 +23,6 @@ class AccountCtl:
             if self.balance[account] == 0:
                 continue
             out += f" {account}:{self.balance[account]}"
+
         print(out)
 
