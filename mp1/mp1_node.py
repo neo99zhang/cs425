@@ -268,5 +268,5 @@ if __name__ == "__main__":
         handleRequest = threading.Thread(target=my_node.listen,args=())
         handleRequest.start()
     
-    sending_threads = threading.Thread(target=node.send,args=())
+    sending_threads = threading.Thread(target=my_node.send,args=())
     sending_threads.start()
