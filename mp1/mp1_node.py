@@ -163,31 +163,16 @@ class node:
             #time.sleep(5)
             while True:
                 # listen messages from other nodes
-                #messages = conn.recv().decode('utf-8')
-
-                
-                # try:
-                #     message = conn.recv(256).decode('utf-8')
-                # except socket.timeout:
-                #     self.deadnode.append(connected_node_id)
-                #     #if node dead
-                #     # delete the related entries in the queue
-                #     print("before isis delete")
-                #     with self.isis_mutex:
-                        
-                #         self.isis.delete_node(connected_node_id)
-                #     # decrese the number of nodes
-                #     with self.senderlock[connected_node_id]:
-                #         self.send_s.pop(connected_node_id)
-                #     self.node_n -= 1
-
-                #     break
                 message = conn.recv(256).decode('utf-8')
                 if not message:
                     self.deadnode.append(connected_node_id)
                     #if node dead
                     # delete the related entries in the queue
                     #print("before isis delete")
+                    self.node_n -= 1
+                    # decrese the number of nodes
+                    with self.senderlock[connected_node_id]:
+                        self.send_s.pop(connected_node_id)
                     with self.isis_mutex:
                         self.isis.delete_node(connected_node_id)
                     with self.allproposed_mutex:
@@ -196,14 +181,19 @@ class node:
                                 if msg.node_id in self.deadnode:
                                     self.allproposed[key].pop(i)
                                     break
+                        for key in self.allproposed.keys():
+                            if len(self.allproposed[msg.id]) == self.node_n:
+                                # get the agreed priority using isis algorithm
+                                with self.isis_mutex:
+                                    decided_seq = self.isis.decideSeq(self.allproposed[msg.id])
+                                self.allproposed[msg.id] = []
 
-
-                    # decrese the number of nodes
-                    with self.senderlock[connected_node_id]:
-                        self.send_s.pop(connected_node_id)
-                    self.node_n -= 1
-
+                                # send the message with agreed priority
+                                msg.priority = decided_seq
+                                msg.isis_type = 'AGREE'
+                                self.b_broadcast(msg.construct_string())                    
                     break
+
                 message = message.strip()
                 if message == '':
                     time.sleep(0.2)
@@ -234,7 +224,6 @@ class node:
                         msg.isis_type = 'PROPOSE'
                         
                         self.unicast(msg.construct_string(),sender_id)
-                        log.info(f"SEND: {msg.construct_string().strip()}")
                         # record the message
                     else:
                         self.recivedDict_mutex.release()
@@ -259,8 +248,6 @@ class node:
                         # send the message with agreed priority
                         msg.priority = decided_seq
                         msg.isis_type = 'AGREE'
-                        # print("send: ", msg.construct_string().strip())
-                        log.info(f"Send: {msg.construct_string().strip()}")
                         self.b_broadcast(msg.construct_string())
                     else:
                         self.allproposed_mutex.release()
@@ -268,8 +255,6 @@ class node:
                 elif msg.isis_type == 'AGREE':
                     self.agreedDict_mutex.acquire()
                     if self.agreedDict[msg.id] == 0: 
-                        # print("get: ", msg.construct_string().strip())
-                        log.info(f"GET: {msg.construct_string().strip()}")
                         self.agreedDict[msg.id] = 1
                         self.agreedDict_mutex.release()
                         self.b_broadcast(msg.construct_string())
@@ -299,8 +284,6 @@ class node:
         for line in sys.stdin: 
             msg = Message(line)
             msg.node_id = self.node_id
-            # print("send: ", msg.construct_string().strip())
-            log.info(f"SEND: {msg.construct_string().strip()}")
             self.b_broadcast(msg.construct_string())
             
 
