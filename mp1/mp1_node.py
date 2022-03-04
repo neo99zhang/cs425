@@ -184,10 +184,14 @@ class node:
                     # delete the related entries in the queue
                     #print("before isis delete")
                     with self.isis_mutex:
-                        
                         self.isis.delete_node(connected_node_id)
-                    # for key in self.allproposed
-                    # self.allproposed[msg.id].append(msg)
+                    with self.allproposed_mutex:
+                        for key in self.allproposed.keys():
+                            for i, msg in enumerate(self.allproposed[key]):
+                                if msg.node_id in self.deadnode:
+                                    self.allproposed[key].pop(i)
+                                    break
+
 
                     # decrese the number of nodes
                     with self.senderlock[connected_node_id]:
@@ -196,9 +200,9 @@ class node:
 
                     break
                 message = message.strip()
-                # if message == '':
-                #     time.sleep(0.2)
-                #     continue
+                if message == '':
+                    time.sleep(0.2)
+                    continue
 
                 if connected_node_id in self.deadnode:
                     continue
