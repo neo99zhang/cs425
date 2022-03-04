@@ -20,6 +20,7 @@ class Isis:
         self.proSeq = float(node_id)*0.1
         self.agrSeq = float(node_id)*0.1
 
+
     def proposeSeq(self,Msg):
         '''
         input: a process
@@ -118,7 +119,6 @@ class Isis:
         print('the queue size is ', len(self.queue))
         for pair in self.queue:
             print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to")
-                
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if (m.node_id == node_id) and (m.deliverable == False):
