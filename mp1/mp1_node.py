@@ -162,7 +162,7 @@ class node:
                 conn.settimeout(4)
                 try:
                     message = conn.recv(256).decode('utf-8')
-                except conn.timeout:
+                except conn.Timeouterror:
                     self.deadnode.append(connected_node_id)
                     #if node dead
                     # delete the related entries in the queue
