@@ -189,9 +189,9 @@ class node:
                         #print("The msg is",msg.id," And got",len(self.allproposed[msg.id]),"propose until now, which is enough")
 
                         # get the agreed priority using isis algorithm
-                        # self.isis_mutex.acquire()
+                        self.isis_mutex.acquire()
                         decided_seq = self.isis.decideSeq(self.allproposed[msg.id])
-                        # self.isis_mutex.release()
+                        self.isis_mutex.release()
                         self.allproposed[msg.id] = []
                         self.allproposed_mutex.release()
 
