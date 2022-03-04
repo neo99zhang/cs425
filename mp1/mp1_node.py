@@ -5,7 +5,7 @@ import _thread
 import threading
 import signal
 import time
-
+import os
 import sys
 from collections import defaultdict
 #from options import parse_options
@@ -148,9 +148,11 @@ class node:
                 #messages = conn.recv().decode('utf-8')
                 message = conn.recv(256).decode('utf-8')
                 if not message:
+                    time.sleep(0.5)
                     continue
                 message = message.strip()
                 if message == '':
+                    time.sleep(0.5)
                     continue
             
                 msg = Message(message)
@@ -162,7 +164,6 @@ class node:
                         self.recivedDict[msg.id] = 1
                         # print("get: ", msg.construct_string().strip())
                         self.recivedDict_mutex.release()
-                        log.info(f"GET: {msg.construct_string().strip()}")
                         # R-multicast implementation
                         sender_id = msg.node_id
                         msg.node_id = self.node_id
@@ -249,6 +250,7 @@ class node:
 
 if __name__ == "__main__":
     # node_n: int, nodes_info [node, 3],  [id, ip_name, port]
+    os.remove(r"transaction.txt")
     my_node = node()
     for i in range(my_node.node_n):
         handleRequest = threading.Thread(target=my_node.listen,args=())

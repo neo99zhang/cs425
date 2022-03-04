@@ -69,7 +69,8 @@ class Isis:
                 heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
         #print("before the deliver")
-        
+        #for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
 
         # deliver all the avaliable messages
