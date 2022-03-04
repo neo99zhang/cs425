@@ -7,9 +7,10 @@ class AccountCtl:
 
     def updateBalance(self, msg):
         #get transaction time:
-        with open('transaction.txt', 'wt') as f:
+        with open('transaction.txt', 'wt',mode = 'a') as f:
             trans_time = time.time() - float(msg.id)
             print('Transaction: ',trans_time," Transaction time: ",msg.id,file=f)
+            print("\n")
         if msg.type ==  'DEPOSIT':
             self.balance[msg.source] += msg.amount 
             self.printAccount()
