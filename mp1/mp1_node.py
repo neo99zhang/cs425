@@ -27,15 +27,18 @@ class node:
         self.node_n = None
         self.all_node_connected = False
         self.senderlock = None
-        self._set_args()
-        self._parse_configuration()
-        self._create_socket()
         self.mutex = threading.Lock()
         self.isis_mutex = threading.Lock()
         self.allproposed_mutex = threading.Lock()
         self.recivedDict_mutex = threading.Lock()
         self.agreedDict_mutex = threading.Lock()
         self.acountCtl_mutex = threading.Lock()
+        self.sends_lock = threading.Lock()
+        
+        self._set_args()
+        self._parse_configuration()
+        self._create_socket()
+
         self.connected_node =  set()
         self.acountCtl = AccountCtl()
         self.isis = Isis(self.node_id)
@@ -44,7 +47,7 @@ class node:
         self.agreedDict = defaultdict(int)
         self.identifier2id = defaultdict(int)
         self.deadnode = []
-        self.sends_lock = threading.Lock()
+
 
     # get the arguments: node name , logger ip, and logger port
     def _set_args(self):
