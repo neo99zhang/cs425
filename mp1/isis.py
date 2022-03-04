@@ -73,16 +73,16 @@ class Isis:
                         for pair in self.queue:
                             for pair2 in self.queue:
                                 if pair2[0] == pair[0]:
-                                    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-                                    print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0])    
+                                    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0],"msg",pair[1].construct_string().strip())
+                                    print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0],"msg",pair2[1].construct_string().strip())  
                 try:
                     heapq.heappush(self.queue,(Msg.priority,Msg))
                 except:
                     for pair in self.queue:
                         for pair2 in self.queue:
                             if pair2[0] == pair[0]:
-                                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-                                print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0])     
+                                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0],"msg",pair[1].construct_string().strip())
+                                print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0],"msg",pair2[1].construct_string().strip())      
                 break
         #print("before the deliver")
         
@@ -98,8 +98,8 @@ class Isis:
                     for pair in self.queue:
                         for pair2 in self.queue:
                             if pair2[0] == pair[0]:
-                                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-                                print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0])                       
+                                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0],"msg",pair[1].construct_string().strip())
+                                print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0],"msg",pair2[1].construct_string().strip())                       
                 deliverMsgs.append(m)
             else:
                 break
