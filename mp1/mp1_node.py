@@ -183,11 +183,11 @@ class node:
                                     self.allproposed[key].pop(i)
                                     break
                         for key in self.allproposed.keys():
-                            if len(self.allproposed[msg.id]) == self.node_n:
+                            if len(self.allproposed[key]) == self.node_n:
                                 # get the agreed priority using isis algorithm
                                 with self.isis_mutex:
-                                    decided_seq = self.isis.decideSeq(self.allproposed[msg.id])
-                                self.allproposed[msg.id] = []
+                                    decided_seq = self.isis.decideSeq(self.allproposed[key])
+                                self.allproposed[key] = []
 
                                 # send the message with agreed priority
                                 msg.priority = decided_seq
