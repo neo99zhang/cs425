@@ -82,8 +82,8 @@ class Isis:
             else:
                 break
 
-        for pair in self.queue:
-           log.info(f"    {pair[1].id} {pair[1].priority} {pair[1].deliverable}")
+        #for pair in self.queue:
+        #   log.info(f"    {pair[1].id} {pair[1].priority} {pair[1].deliverable}")
         #print("after the deliver")
         #for pair in self.queue:
             #print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
