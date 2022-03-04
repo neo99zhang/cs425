@@ -84,6 +84,24 @@ class Isis:
         #for pair in self.queue:
         #   log.info(f"    {pair[1].id} {pair[1].priority} {pair[1].deliverable}")
         #print("after the deliver")
-        #for pair in self.queue:
-            #print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        # for pair in self.queue:
+        #     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
         return deliverMsgs
+    
+    def delete_node(self,node_id):
+        print('enter delete_node')
+        print('the queue size is ', len(self.queue))
+        for pair in self.queue:
+            print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to")
+                
+        for i,pair in enumerate(self.queue):
+            m = pair[1]
+            if (m.node_id == node_id) and (m.deliverable == False):
+                self.queue[i] = self.queue[-1]
+                self.queue.pop()
+                if i < len(self.queue):
+                    heapq._siftup(self.queue, i)
+                    heapq._siftdown(self.queue, 0, i)
+        for pair in self.queue:
+            print("   ",pair[1].construct_string().strip())
+            

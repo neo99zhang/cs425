@@ -42,6 +42,7 @@ class node:
         self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
         self.agreedDict = defaultdict(int)
+        self.identifier2id = defaultdict(int)
         
 
     # get the arguments: node name , logger ip, and logger port
@@ -62,6 +63,7 @@ class node:
                 for i, node_info in enumerate(self.nodes_info):
                     if self.identifier == node_info[0]:
                         self.node_id = i
+                    
             self.senderlock = [threading.Lock() for _ in range(self.node_n)]
 
         except:
@@ -116,10 +118,20 @@ class node:
     
     def unicast(self, message, target_id):
         with self.senderlock[target_id]:
-            self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
+            try:
+                self.send_s[target_id].sendall(bytes(f'{message}', "UTF-8"))
+            except:
+                pass
+    
     
     def listen(self):
         conn, addr = self.listen_s.accept()
+
+        for i, node_info in enumerate(self.nodes_info):
+            IP_address = socket.gethostbyname(node_info[1])
+            if IP_address == addr[0]:
+                connected_node_id = i
+
         with conn:
             # loop until all the nodes have connected to other nodes
             
@@ -148,8 +160,18 @@ class node:
                 #messages = conn.recv().decode('utf-8')
                 message = conn.recv(256).decode('utf-8')
                 if not message:
-                    time.sleep(0.2)
-                    continue
+                    #if node dead
+                    # delete the related entries in the queue
+                    print("before isis delete")
+                    with self.isis_mutex:
+                        
+                        self.isis.delete_node(connected_node_id)
+                    # decrese the number of nodes
+                    with self.senderlock[connected_node_id]:
+                        self.send_s.pop(connected_node_id)
+                    self.node_n -= 1
+
+                    break
                 message = message.strip()
                 if message == '':
                     time.sleep(0.2)
@@ -254,6 +276,6 @@ if __name__ == "__main__":
     for i in range(my_node.node_n):
         handleRequest = threading.Thread(target=my_node.listen,args=())
         handleRequest.start()
-    
+    print(my_node.senderlock)
     sending_threads = threading.Thread(target=my_node.send,args=())
     sending_threads.start()
