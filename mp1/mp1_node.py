@@ -171,8 +171,9 @@ class node:
                     #print("before isis delete")
                     self.node_n -= 1
                     # decrese the number of nodes
-                    with self.senderlock[connected_node_id]:
-                        self.send_s.pop(connected_node_id)
+                    with self.sends_lock:
+                        with self.senderlock[connected_node_id]:
+                            self.send_s.pop(connected_node_id)
                     with self.isis_mutex:
                         self.isis.delete_node(connected_node_id)
                     with self.allproposed_mutex:
