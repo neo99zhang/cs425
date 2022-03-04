@@ -1,0 +1,4 @@
+3
+node1 sp22-cs425-g03-01.cs.illinois.edu 7001
+node2 sp22-cs425-g03-02.cs.illinois.edu 7001
+node3 sp22-cs425-g03-03.cs.illinois.edu 7001
