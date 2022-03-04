@@ -163,20 +163,19 @@ class node:
                 try:
                     message = conn.recv(256).decode('utf-8')
                 except conn.timeout:
-                    if not message:
-                        self.deadnode.append(connected_node_id)
-                        #if node dead
-                        # delete the related entries in the queue
-                        print("before isis delete")
-                        with self.isis_mutex:
-                            
-                            self.isis.delete_node(connected_node_id)
-                        # decrese the number of nodes
-                        with self.senderlock[connected_node_id]:
-                            self.send_s.pop(connected_node_id)
-                        self.node_n -= 1
+                    self.deadnode.append(connected_node_id)
+                    #if node dead
+                    # delete the related entries in the queue
+                    print("before isis delete")
+                    with self.isis_mutex:
+                        
+                        self.isis.delete_node(connected_node_id)
+                    # decrese the number of nodes
+                    with self.senderlock[connected_node_id]:
+                        self.send_s.pop(connected_node_id)
+                    self.node_n -= 1
 
-                        break
+                    break
 
                 # if not message:
                 #     self.deadnode.append(connected_node_id)
