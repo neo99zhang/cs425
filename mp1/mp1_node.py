@@ -148,11 +148,11 @@ class node:
                 #messages = conn.recv().decode('utf-8')
                 message = conn.recv(256).decode('utf-8')
                 if not message:
-                    time.sleep(0.5)
+                    time.sleep(0.2)
                     continue
                 message = message.strip()
                 if message == '':
-                    time.sleep(0.5)
+                    time.sleep(0.2)
                     continue
             
                 msg = Message(message)
@@ -163,10 +163,10 @@ class node:
                     if self.recivedDict[msg.id] == 0:
                         self.recivedDict[msg.id] = 1
                         # print("get: ", msg.construct_string().strip())
+                        log.info(f"GET: {msg.construct_string().strip()}")
                         self.recivedDict_mutex.release()
                         # R-multicast implementation
                         sender_id = msg.node_id
-                        msg.node_id = self.node_id
                         self.b_broadcast(msg.construct_string())
 
                         # unicast the priority
@@ -204,7 +204,7 @@ class node:
                         msg.priority = decided_seq
                         msg.isis_type = 'AGREE'
                         # print("send: ", msg.construct_string().strip())
-                        log.info(f"Send: {msg.construct_string().strip()}")
+                        log.info(f"SEND: {msg.construct_string().strip()}")
                         self.b_broadcast(msg.construct_string())
                     else:
                         self.allproposed_mutex.release()
@@ -216,7 +216,7 @@ class node:
                         log.info(f"GET: {msg.construct_string().strip()}")
                         self.agreedDict[msg.id] = 1
                         self.agreedDict_mutex.release()
-                        msg.node_id = self.node_id
+                        log.info(f"SEND: {msg.construct_string().strip()}")
                         self.b_broadcast(msg.construct_string())
                         # get the deliverable messages
                         self.isis_mutex.acquire()
@@ -244,13 +244,14 @@ class node:
             msg = Message(line)
             msg.node_id = self.node_id
             # print("send: ", msg.construct_string().strip())
+            log.info(f"SEND: {msg.construct_string().strip()}")
             self.b_broadcast(msg.construct_string())
             
 
 
 if __name__ == "__main__":
     # node_n: int, nodes_info [node, 3],  [id, ip_name, port]
-    os.remove(r"transaction.txt")
+    # os.remove(r"transaction.txt")
     my_node = node()
     for i in range(my_node.node_n):
         handleRequest = threading.Thread(target=my_node.listen,args=())

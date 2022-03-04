@@ -1,9 +1,9 @@
 8
-node1 sp22-cs425-g03-01.cs.illinois.edu 7000
-node2 sp22-cs425-g03-02.cs.illinois.edu 7000
-node3 sp22-cs425-g03-03.cs.illinois.edu 7000
-node4 sp22-cs425-g03-04.cs.illinois.edu 7000
-node5 sp22-cs425-g03-05.cs.illinois.edu 7000
-node6 sp22-cs425-g03-06.cs.illinois.edu 7000
-node7 sp22-cs425-g03-07.cs.illinois.edu 7000
-node8 sp22-cs425-g03-08.cs.illinois.edu 7000
+node1 sp22-cs425-g03-01.cs.illinois.edu 4000
+node2 sp22-cs425-g03-02.cs.illinois.edu 4000
+node3 sp22-cs425-g03-03.cs.illinois.edu 4000
+node4 sp22-cs425-g03-04.cs.illinois.edu 4000
+node5 sp22-cs425-g03-05.cs.illinois.edu 4000
+node6 sp22-cs425-g03-06.cs.illinois.edu 4000
+node7 sp22-cs425-g03-07.cs.illinois.edu 4000
+node8 sp22-cs425-g03-08.cs.illinois.edu 4000
