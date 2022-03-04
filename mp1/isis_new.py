@@ -1,6 +1,5 @@
 import heapq
 import bisect 
-import logging as log
 class KeyWrapper:
     def __init__(self, iterable, key):
         self.it = iterable
@@ -59,7 +58,7 @@ class Isis:
         for i,pair in enumerate(self.queue):
             m = pair[1]
             if m.id == Msg.id:
-                # print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
+                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with proposed priotiy",pair[0],"now we change it to",Msg.priority)
                 Msg.deliverable = True
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
@@ -68,9 +67,9 @@ class Isis:
                     heapq._siftdown(self.queue, 0, i)
                 heapq.heappush(self.queue,(Msg.priority,Msg))
                 break
-        # print("before the deliver")
-        # for pair in self.queue:
-        #     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+        #print("before the deliver")
+        #for pair in self.queue:
+        #    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
 
 
         # deliver all the avaliable messages
@@ -82,16 +81,7 @@ class Isis:
             else:
                 break
 
-<<<<<<< HEAD
-        for pair in self.queue:
-           log.info(f"    {pair[1].id} {pair[1].priority} {pair[1].deliverable}")
         #print("after the deliver")
         #for pair in self.queue:
             #print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
-=======
-        # print("after the deliver")
-        # for pair in self.queue:
-        #     print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
->>>>>>> e3c1796c8fe6ab63f9b7cfed19a49039ba0efc7c
         return deliverMsgs
-
