@@ -5,7 +5,7 @@ import _thread
 import threading
 import signal
 import time
-
+import os
 import sys
 from collections import defaultdict
 #from options import parse_options
@@ -243,6 +243,7 @@ class node:
 
 if __name__ == "__main__":
     # node_n: int, nodes_info [node, 3],  [id, ip_name, port]
+    os.remove(r"transaction.txt")
     my_node = node()
     for i in range(my_node.node_n):
         handleRequest = threading.Thread(target=my_node.listen,args=())
