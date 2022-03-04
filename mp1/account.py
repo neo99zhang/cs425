@@ -1,10 +1,14 @@
 from collections import defaultdict
 from message import Message
+import time
 class AccountCtl:
     def __init__(self):
         self.balance = defaultdict(int)
 
     def updateBalance(self, msg):
+        #get transaction time:
+        with open('transaction.txt', mode = 'a') as f:
+            trans_time = time.time() - float(msg.id)
         if msg.type ==  'DEPOSIT':
             self.balance[msg.source] += msg.amount 
             self.printAccount()
