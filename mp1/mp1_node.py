@@ -246,6 +246,7 @@ class node:
                         # deliver the messages
                         for deliver_msg in deliverMsgs:
                             self.acountCtl_mutex.acquire()
+                            
                             self.acountCtl.updateBalance(deliver_msg)
                             self.acountCtl_mutex.release()
                     else:

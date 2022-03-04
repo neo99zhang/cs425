@@ -64,13 +64,25 @@ class Isis:
                 self.queue[i] = self.queue[-1]
                 self.queue.pop()
                 if i < len(self.queue):
-                    heapq._siftup(self.queue, i)
-                    heapq._siftdown(self.queue, 0, i)
+                    # heapq._siftup(self.queue, i)
+                    # heapq._siftdown(self.queue, 0, i)
+                    try:
+                        heapq._siftup(self.queue, i)
+                        heapq._siftdown(self.queue, 0, i)
+                    except:
+                        for pair in self.queue:
+                            for pair2 in self.queue:
+                                if pair2[0] == pair[0]:
+                                    print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+                                    print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0])    
                 try:
                     heapq.heappush(self.queue,(Msg.priority,Msg))
                 except:
                     for pair in self.queue:
-                        print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])      
+                        for pair2 in self.queue:
+                            if pair2[0] == pair[0]:
+                                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+                                print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0])     
                 break
         #print("before the deliver")
         
@@ -84,7 +96,10 @@ class Isis:
                     heapq.heappop(self.queue)
                 except:
                     for pair in self.queue:
-                        print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])                    
+                        for pair2 in self.queue:
+                            if pair2[0] == pair[0]:
+                                print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])
+                                print("The msg is",pair2[1].id,"and it's deliverable status is:",pair2[1].deliverable," with priotiy",pair2[0])                       
                 deliverMsgs.append(m)
             else:
                 break
