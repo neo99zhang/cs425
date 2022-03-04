@@ -302,7 +302,7 @@ class node:
 
 if __name__ == "__main__":
     # node_n: int, nodes_info [node, 3],  [id, ip_name, port]
-    # os.remove(r"transaction.txt")
+    os.remove(r"transaction.txt")
     my_node = node()
     for i in range(my_node.node_n):
         handleRequest = threading.Thread(target=my_node.listen,args=())
