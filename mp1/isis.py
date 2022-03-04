@@ -66,7 +66,11 @@ class Isis:
                 if i < len(self.queue):
                     heapq._siftup(self.queue, i)
                     heapq._siftdown(self.queue, 0, i)
-                heapq.heappush(self.queue,(Msg.priority,Msg))
+                try:
+                    heapq.heappush(self.queue,(Msg.priority,Msg))
+                except:
+                    for pair in self.queue:
+                        print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])      
                 break
         #print("before the deliver")
         
@@ -76,7 +80,11 @@ class Isis:
         while not (self.queue == []):
             m = self.queue[0][1]
             if m.deliverable:
-                heapq.heappop(self.queue)
+                try:
+                    heapq.heappop(self.queue)
+                except:
+                    for pair in self.queue:
+                        print("The msg is",pair[1].id,"and it's deliverable status is:",pair[1].deliverable," with priotiy",pair[0])                    
                 deliverMsgs.append(m)
             else:
                 break
