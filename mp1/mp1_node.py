@@ -31,7 +31,7 @@ class node:
         self.proSeq = None
         self.agrSeq = None
         self.node_n = None
-        self.allproposed = defaultdict(list())
+        self.allproposed = defaultdict(list)
         self.recivedDict = defaultdict(int)
         self.broadcast_message = []
         self.unicast_message = []
