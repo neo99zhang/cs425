@@ -17,9 +17,12 @@ package raft
 //   in the same server.
 //
 
-import "sync"
-import "sync/atomic"
-import "../labrpc"
+import (
+	"sync"
+	"sync/atomic"
+
+	"../labrpc"
+)
 
 //
 // as each Raft peer becomes aware that successive log entries are
@@ -32,6 +35,13 @@ type ApplyMsg struct {
 	CommandValid bool
 	Command      interface{}
 	CommandIndex int
+}
+
+// Some extra structs needed defined here
+type LogEntry struct {
+	term	int
+	index 	int
+	Command	interface{}
 }
 
 //
@@ -48,15 +58,45 @@ type Raft struct {
 	// state a Raft server must maintain.
 	// You may also need to add other state, as per your implementation.
 
+	// Persistent state on all servers
+	//Start: {0:Leader,1:Candidate,2:Follower}
+	state 		int 
+	currentTerm int
+	votedFor	int
+	log			[]
+	//TODO some timer for timeout?
+
+	// Volatile state on all servers:
+	commitIndex	int
+	lastApplied	int
+
+	// Volatile state on leaders:
+	nextIndex	[]int
+	matchIndex	[]int
 }
+
+const (
+	LEADER = 0
+	CANDIDATE = 1
+	FOLLOWER = 2
+	NULL = -1
+)
 
 // return currentTerm and whether this server
 // believes it is the leader.
 func (rf *Raft) GetState() (int, bool) {
 
-	var term int
+	var term	 int
 	var isleader bool
-	// Your code here (2A).
+	// Your code here (2A).	
+	rf.mu.Lock()
+	term = rf.currentTerm
+	if rf.state == LEADER {
+		isleader = true
+	}	else {
+		isleader = false
+	}
+	rf.mu.Unlock()	
 	return term, isleader
 }
 
@@ -67,6 +107,10 @@ func (rf *Raft) GetState() (int, bool) {
 //
 type RequestVoteArgs struct {
 	// Your data here (2A, 2B).
+	term 			int
+	candidateId		int
+	lastLogIndex	int
+	lastLogTerm		int
 }
 
 //
@@ -75,6 +119,22 @@ type RequestVoteArgs struct {
 //
 type RequestVoteReply struct {
 	// Your data here (2A).
+	term		int
+	voteGranted	bool
+}
+
+type AppendEntriesArgs struct {
+	term			int
+	leaderId		int
+	prevLogIndex	int
+	prevLogTerm 	int
+	entries 		[]LogEntry	
+	leaderCommit 	int
+}
+
+type AppendEntriesReply struct {
+	term		int
+	success		bool
 }
 
 //
@@ -84,6 +144,36 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	// Read the fields in "args", 
 	// and accordingly assign the values for fields in "reply".
+	
+	rf.mu.Lock()
+	// 1. Reply false if term < currentTerm (§5.1)
+	if args.term < rf.currentTerm  {
+		reply.voteGranted = false
+		reply.term = rf.currentTerm
+		rf.mu.Unlock()
+		return
+	}
+	if args.term > rf.currentTerm{
+		//set as follower 
+		rf.state = FOLLOWER
+		rf.currentTerm = args.term
+		rf.votedFor = NULL
+	}
+	// 2. If votedFor is null or candidateId, and candidate’s log is at
+	// least as up-to-date as receiver’s log, grant vote (§5.2, §5.4)
+	reply.term = rf.currentTerm	
+	if (rf.votedFor==NULL || rf.votedFor == args.candidateId){
+		if len(rf.log) == 0 || rf.log[len(rf.log)-1].term < args.lastLogTerm || 
+			(rf.log[len(rf.log)-1].term == args.lastLogTerm && len(rf.log) - 1 <= args.lastLogIndex)
+		{
+			rf.votedFor = args.candidateId
+			reply.voteGranted = true
+			rf.mu.Unlock()
+			return
+		}
+	} 
+	reply.voteGranted = false
+	rf.mu.Unlock()
 }
 
 //
@@ -120,6 +210,11 @@ func (rf *Raft) sendRequestVote(server int, args *RequestVoteArgs, reply *Reques
 	return ok
 }
 
+func (rf *Raft) sendAppendEntries(server int, args *AppendEntriesArgs, reply *AppendEntriesReply) bool {
+	ok := rf.peers[server].Call("Raft.AppendEntries", args, reply)
+	return ok
+}
+
 
 //
 // the service using Raft (e.g. a k/v server) wants to start
@@ -141,6 +236,7 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	isLeader := true
 
 	// Your code here (2B).
+	
 
 
 	return index, term, isLeader
