@@ -63,7 +63,7 @@ type Raft struct {
 	state 		int 
 	currentTerm int
 	votedFor	int
-	log			[]
+	log			[]LogEntry
 	//TODO some timer for timeout?
 
 	// Volatile state on all servers:
@@ -164,8 +164,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	reply.term = rf.currentTerm	
 	if (rf.votedFor==NULL || rf.votedFor == args.candidateId){
 		if len(rf.log) == 0 || rf.log[len(rf.log)-1].term < args.lastLogTerm || 
-			(rf.log[len(rf.log)-1].term == args.lastLogTerm && len(rf.log) - 1 <= args.lastLogIndex)
-		{
+			(rf.log[len(rf.log)-1].term == args.lastLogTerm && len(rf.log) - 1 <= args.lastLogIndex){
 			rf.votedFor = args.candidateId
 			reply.voteGranted = true
 			rf.mu.Unlock()
