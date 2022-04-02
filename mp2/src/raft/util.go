@@ -2,6 +2,7 @@ package raft
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -9,6 +10,13 @@ import (
 
 // Debugging
 const Debug = 0
+
+func DPrintln(a ...interface{}) (n int, err error) {
+	if Debug > 0 {
+		log.Println(a...)
+	}
+	return
+}
 
 func DPrintf(format string, a ...interface{}) {
     if Debug > 0 {
