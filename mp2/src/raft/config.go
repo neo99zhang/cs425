@@ -9,7 +9,6 @@ package raft
 //
 
 import (
-	"log"
 	"math/rand"
 	"runtime"
 	"sync"
@@ -150,8 +149,9 @@ func (cfg *config) start1(i int) {
 			}
 
 			if err_msg != "" {
-				log.Fatalf("apply error: %v\n", err_msg)
+				fmt.Sprintf("apply error: %v\n", err_msg)
 				cfg.applyErr[i] = err_msg
+				break
 				// keep reading after error so that Raft doesn't block
 				// holding locks...
 			}

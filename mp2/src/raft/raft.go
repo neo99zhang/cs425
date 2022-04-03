@@ -147,7 +147,7 @@ func (rf *Raft) TurnFollower(Term int, voteFor int) {
 	if rf.state == FOLLOWER {
 		return
 	}
-	fmt.Print("Sever: ", rf.me, " becomes follower\n")
+	fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
 	rf.state = FOLLOWER
 	rf.currentTerm = Term
 	rf.votedFor = voteFor
@@ -157,6 +157,7 @@ func (rf *Raft) TurnFollower(Term int, voteFor int) {
 
 func (rf *Raft) TurnCandidate() {
 	rf.state = CANDIDATE
+	fmt.Print("Server: ", rf.me, " becomes candidate at term: ", rf.currentTerm, "\n")
 	rf.currentTerm += 1
 	rf.votedFor = rf.me
 	rf.heartBeatTimer.Stop()
@@ -166,6 +167,7 @@ func (rf *Raft) TurnCandidate() {
 func (rf *Raft) TurnLeader() {
 	rf.mu.Lock()
 	rf.state = LEADER
+	fmt.Print("Server: ", rf.me, " becomes Leader at term: ", rf.currentTerm, "\n")
 	rf.electionTimer.Stop()
 
 	for i := range rf.peers {
@@ -266,10 +268,10 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	if point != NULL {
 		rf.log = append(rf.log[:point], args.Entries[point-1-args.PrevLogIndex:]...)
 	} else {
-		// fmt.Printf("Point is NULL, PrevLogIndex: %v, PrevLogTerm: %v, entries length: %v, self log length: %v \n", args.PrevLogIndex, args.PrevLogTerm, len(args.Entries), len(rf.log))
+		fmt.Printf("Point is NULL, PrevLogIndex: %v, PrevLogTerm: %v, entries length: %v, self log length: %v \n", args.PrevLogIndex, args.PrevLogTerm, len(args.Entries), len(rf.log))
 	}
 	// 8. Advance state machine with newly committed Entries
-	reply.Success = true
+
 	if args.LeaderCommit > rf.commitIndex {
 		fmt.Print("Server: ", rf.me, "match at point: ", point, "\n")
 		fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
@@ -277,6 +279,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	}
 
 	rf.applymsg()
+	reply.Success = true
 }
 
 //
@@ -454,7 +457,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 		return
 	}
 	if !Success {
-		fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " cannot send entry to ", peerId, "\n")
+		// fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " cannot send entry to ", peerId, "\n")
 		return
 	}
 	//fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " successfully sent entry to ", peerId, "\n")
@@ -484,9 +487,9 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 			}
 			half := len(rf.peers) / 2
 			if total > half {
-				fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i, "\n")
+				fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i)
 				rf.commitIndex = Max(i, rf.commitIndex)
-				fmt.Print("with the last commited log's term is: ", rf.log[rf.commitIndex].Term, "\n")
+				fmt.Print(" with the last commited log's term is: ", rf.log[rf.commitIndex].Term, "\n")
 				break
 			}
 		}
@@ -533,7 +536,7 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 		return
 	}
 	if !Success {
-		fmt.Print("Candidate: ", rf.me, "cannot send requestvote to ", peerId, "\n")
+		// fmt.Print("Candidate: ", rf.me, "cannot send requestvote to ", peerId, "\n")
 		return
 	}
 	// step down if get a larger Term
@@ -542,13 +545,17 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 		rf.TurnFollower(reply.Term, NULL)
 		rf.mu.Unlock()
 	}
+	rf.mu.Lock()
 	if reply.VoteGranted && (rf.state == CANDIDATE) {
 		atomic.AddInt32(voteNum, 1)
 		if atomic.LoadInt32(voteNum) > int32(len(rf.peers)/2) {
-			fmt.Print("Candidate: ", rf.me, " become leader with term", rf.currentTerm, "\n")
+			rf.state = LEADER
+			rf.mu.Unlock()
 			rf.TurnLeader()
+			return
 		}
 	}
+	rf.mu.Unlock()
 
 }
 
@@ -625,7 +632,12 @@ func (rf *Raft) applymsg() {
 		}
 
 		rf.applyMsgCh <- msg
-		fmt.Print("Server: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		if rf.state == LEADER {
+			fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		} else {
+			fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		}
+
 	}
 	// rf.mu.Lock()
 	rf.lastApplied = rf.commitIndex
