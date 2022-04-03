@@ -8,17 +8,21 @@ package raft
 // test with the original before submitting.
 //
 
-import "../labrpc"
-import "log"
-import "sync"
-import "testing"
-import "runtime"
-import "math/rand"
-import crand "crypto/rand"
-import "math/big"
-import "encoding/base64"
-import "time"
-import "fmt"
+import (
+	"log"
+	"math/rand"
+	"runtime"
+	"sync"
+	"testing"
+
+	"../labrpc"
+
+	crand "crypto/rand"
+	"encoding/base64"
+	"fmt"
+	"math/big"
+	"time"
+)
 
 func randstring(n int) string {
 	b := make([]byte, 2*n)
@@ -40,8 +44,8 @@ type config struct {
 	net       *labrpc.Network
 	n         int
 	rafts     []*Raft
-	applyErr  []string // from apply channel readers
-	connected []bool   // whether each server is on the net
+	applyErr  []string              // from apply channel readers
+	connected []bool                // whether each server is on the net
 	endnames  [][]string            // the port file names each sends to
 	logs      []map[int]interface{} // copy of each server's committed entries
 	start     time.Time             // time at which make_config() was called

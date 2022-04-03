@@ -1,0 +1,3180 @@
+Test (2A): initial election ...
+Server: 0 Timeout
+Candidate: 0 become leader with term
+1  ... Passed --   3.1  3   54   13732    0
+Found 1 just killed
+Found 2 just killed
+Test (2A): election after network failure ...
+Found 0 just killed
+Server: 0 Timeout
+Server: 2 Timeout
+Candidate: 0 become leader with term
+1Sever: 2 becomes follower
+Server: 1 Timeout
+Server: 2 Timeout
+Server: 1 Timeout
+Sever: 2 becomes follower
+Candidate: 1 become leader with term
+3Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Sever: 0 becomes follower
+Leader: 1with term3 cannot send entry to 0
+Leader: 0with term3 cannot send entry to 2
+Leader: 1with term3 cannot send entry to 0
+Leader: 1with term3 cannot send entry to 0
+Server: 2 Timeout
+Leader: 0with term3 cannot send entry to 1
+Leader: 0with term3 cannot send entry to 1
+Server: 2 Timeout
+Leader: 0with term3 cannot send entry to 2
+Candidate: 1cannot send requestvote to 0
+Server: 2 Timeout
+Leader: 1with term3 cannot send entry to 2
+Leader: 1with term3 cannot send entry to 0
+Server: 2 Timeout
+Leader: 1with term3 cannot send entry to 0
+Server: 2 Timeout
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term3 cannot send entry to 2
+Server: 2 Timeout
+Leader: 1with term3 cannot send entry to 2
+Leader: 1with term3 cannot send entry to 2
+Leader: 0with term3 cannot send entry to 1
+Leader: 0with term3 cannot send entry to 1
+Server: 2 Timeout
+Server: 2 Timeout
+Candidate: 2 become leader with term
+11Leader: 1with term3 cannot send entry to 2
+Leader: 1with term3 cannot send entry to 0
+Leader: 1with term3 cannot send entry to 2
+Leader: 1with term3 cannot send entry to 2
+Candidate: 2cannot send requestvote to 1
+Sever: 1 becomes follower
+Leader: 0with term11 cannot send entry to 2
+Leader: 0with term11 cannot send entry to 1
+Leader: 0with term11 cannot send entry to 1
+Leader: 1with term11 cannot send entry to 0
+  ... Passed --   5.0  3  134   26884    0
+Test (2B): basic agreement ...
+Found 2 just killed
+Server: 2 Timeout
+Candidate: 2 become leader with term
+1Server: 2 commitIndex change from 0 to 1
+with the last commited log's term is: 1
+apply msg with Index 1
+Server: 0 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 1 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 2 commitIndex change from 1 to 2
+with the last commited log's term is: 1
+apply msg with Index 2
+Server: 0 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 1 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 2 commitIndex change from 2 to 3
+with the last commited log's term is: 1
+apply msg with Index 3
+Server: 1 commitIndex change from 2 to 3
+apply msg with Index 3
+Server: 0 commitIndex change from 2 to 3
+apply msg with Index 3
+  ... Passed --   1.1  3   18    4634    3
+Found 1 just killed
+Found 0 just killed
+Test (2B): RPC byte count ...
+Found 2 just killed
+Server: 2 Timeout
+Candidate: 2 become leader with term
+1Server: 2 commitIndex change from 0 to 1
+with the last commited log's term is: 1
+apply msg with Index 1
+Server: 1 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 0 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 2 commitIndex change from 1 to 2
+with the last commited log's term is: 1
+apply msg with Index 2
+Server: 1 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 0 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 2 commitIndex change from 2 to 3
+with the last commited log's term is: 1
+apply msg with Index 3
+Server: 1 commitIndex change from 2 to 3
+apply msg with Index 3
+Server: 0 commitIndex change from 2 to 3
+apply msg with Index 3
+Server: 2 commitIndex change from 3 to 4
+with the last commited log's term is: 1
+apply msg with Index 4
+Server: 1 commitIndex change from 3 to 4
+apply msg with Index 4
+Server: 0 commitIndex change from 3 to 4
+apply msg with Index 4
+Server: 2 commitIndex change from 4 to 5
+with the last commited log's term is: 1
+apply msg with Index 5
+Server: 0 commitIndex change from 4 to 5
+apply msg with Index 5
+Server: 1 commitIndex change from 4 to 5
+apply msg with Index 5
+Server: 2 commitIndex change from 5 to 6
+with the last commited log's term is: 1
+apply msg with Index 6
+Server: 1 commitIndex change from 5 to 6
+apply msg with Index 6
+Server: 0 commitIndex change from 5 to 6
+apply msg with Index 6
+Server: 2 commitIndex change from 6 to 7
+with the last commited log's term is: 1
+apply msg with Index 7
+Server: 0 commitIndex change from 6 to 7
+apply msg with Index 7
+Server: 1 commitIndex change from 6 to 7
+apply msg with Index 7
+Server: 2 commitIndex change from 7 to 8
+with the last commited log's term is: 1
+apply msg with Index 8
+Server: 0 commitIndex change from 7 to 8
+apply msg with Index 8
+Server: 1 commitIndex change from 7 to 8
+apply msg with Index 8
+Server: 2 commitIndex change from 8 to 9
+with the last commited log's term is: 1
+apply msg with Index 9
+Server: 0 commitIndex change from 8 to 9
+apply msg with Index 9
+Server: 1 commitIndex change from 8 to 9
+apply msg with Index 9
+Server: 2 commitIndex change from 9 to 10
+with the last commited log's term is: 1
+apply msg with Index 10
+Server: 0 commitIndex change from 9 to 10
+apply msg with Index 10
+Server: 1 commitIndex change from 9 to 10
+apply msg with Index 10
+Server: 2 commitIndex change from 10 to 11
+with the last commited log's term is: 1
+apply msg with Index 11
+Server: 0 commitIndex change from 10 to 11
+apply msg with Index 11
+Server: 1 commitIndex change from 10 to 11
+apply msg with Index 11
+  ... Passed --   2.7  3   50  113542   11
+Found 1 just killed
+Found 0 just killed
+Test (2B): agreement despite follower disconnection ...
+Found 2 just killed
+Server: 2 Timeout
+Candidate: 2 become leader with term
+1Server: 2 commitIndex change from 0 to 1
+with the last commited log's term is: 1
+apply msg with Index 1
+Server: 1 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 0 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 2 commitIndex change from 1 to 2
+with the last commited log's term is: 1
+apply msg with Index 2
+Server: 1 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 2 commitIndex change from 2 to 3
+with the last commited log's term is: 1
+apply msg with Index 3
+Server: 0 Timeout
+Server: 1 commitIndex change from 2 to 3
+apply msg with Index 3
+Server: 0 Timeout
+Server: 0 Timeout
+Leader: 2with term1 cannot send entry to 0
+Server: 0 Timeout
+Server: 2 commitIndex change from 3 to 4
+with the last commited log's term is: 1
+apply msg with Index 4
+Server: 0 Timeout
+Server: 1 commitIndex change from 3 to 4
+apply msg with Index 4
+Candidate: 0cannot send requestvote to 1
+Server: 2 commitIndex change from 4 to 5
+with the last commited log's term is: 1
+apply msg with Index 5
+Leader: 2with term1 cannot send entry to 0
+Server: 0 Timeout
+Server: 1 commitIndex change from 4 to 5
+apply msg with Index 5
+Candidate: 0cannot send requestvote to 1
+Leader: 2with term1 cannot send entry to 0
+Leader: 2with term1 cannot send entry to 0
+Sever: 2 becomes follower
+Server: 0 Timeout
+Server: 1 Timeout
+Sever: 1 becomes follower
+Candidate: 0cannot send requestvote to 1
+Server: 0 Timeout
+Leader: 2with term7 cannot send entry to 0
+Server: 1 Timeout
+Candidate: 1 become leader with term
+9Sever: 0 becomes follower
+Leader: 2with term9 cannot send entry to 0
+Server: 0 commitIndex change from 1 to 5
+apply msg with Index 2
+apply msg with Index 3
+apply msg with Index 4
+apply msg with Index 5
+Server: 1 commitIndex change from 5 to 6
+with the last commited log's term is: 1
+apply msg with Index 6
+Server: 0 commitIndex change from 5 to 6
+apply msg with Index 6
+Server: 2 commitIndex change from 5 to 6
+apply msg with Index 6
+Leader: 2with term9 cannot send entry to 0
+Leader: 2with term9 cannot send entry to 0
+Leader: 2with term9 cannot send entry to 0
+Leader: 2with term9 cannot send entry to 0
+Server: 1 commitIndex change from 6 to 7
+with the last commited log's term is: 9
+apply msg with Index 7
+Server: 2 commitIndex change from 6 to 7
+apply msg with Index 7
+Server: 0 commitIndex change from 6 to 7
+apply msg with Index 7
+  ... Passed --   5.4  3  108   25526    7
+Found 0 just killed
+Test (2B): no agreement if too many followers disconnect ...
+Found 1 just killed
+Server: 1 Timeout
+Server: 4 Timeout
+Candidate: 1 become leader with term
+1Sever: 4 becomes follower
+Candidate: 1 become leader with term
+1Server: 1 commitIndex change from 0 to 1
+with the last commited log's term is: 1
+apply msg with Index 1
+Server: 2 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 3 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 4 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 0 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 4 Timeout
+Server: 3 Timeout
+Server: 2 Timeout
+Server: 4 Timeout
+Server: 2 Timeout
+Server: 3 Timeout
+Leader: 1with term1 cannot send entry to 3
+Server: 2 Timeout
+Server: 4 Timeout
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 2
+Server: 4 Timeout
+Candidate: 2cannot send requestvote to 0
+Server: 3 Timeout
+Server: 2 Timeout
+Server: 3 Timeout
+Candidate: 2cannot send requestvote to 1
+Server: 4 Timeout
+Server: 2 Timeout
+Server: 3 Timeout
+Server: 4 Timeout
+Candidate: 4cannot send requestvote to 2
+Candidate: 4cannot send requestvote to 3
+Server: 3 Timeout
+Leader: 1with term1 cannot send entry to 4
+Server: 2 Timeout
+Candidate: 3cannot send requestvote to 4
+Candidate: 4cannot send requestvote to 0
+Candidate: 3cannot send requestvote to 4
+Server: 4 Timeout
+Sever: 1 becomes follower
+Sever: 3 becomes follower
+Sever: 2 becomes follower
+Server: 3 Timeout
+Candidate: 3 become leader with term
+9Server: 3 commitIndex change from 1 to 2
+with the last commited log's term is: 1
+apply msg with Index 2
+Server: 2 commitIndex change from 1 to 2
+Sever: 4 becomes follower
+apply msg with Index 2
+Leader: 1with term9 cannot send entry to 3
+Leader: 1with term9 cannot send entry to 4
+Candidate: 4cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 2
+Server: 4 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 1 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 0 commitIndex change from 1 to 2
+apply msg with Index 2
+Leader: 1with term9 cannot send entry to 2
+Leader: 1with term9 cannot send entry to 2
+Leader: 1with term9 cannot send entry to 4
+Leader: 1with term9 cannot send entry to 2
+Leader: 1with term9 cannot send entry to 3
+Leader: 1with term9 cannot send entry to 2
+Server: 3 commitIndex change from 2 to 4
+with the last commited log's term is: 9
+apply msg with Index 3
+apply msg with Index 4
+Server: 2 commitIndex change from 2 to 4
+apply msg with Index 3
+apply msg with Index 4
+Candidate: 2cannot send requestvote to 1
+Candidate: 4cannot send requestvote to 1
+Server: 0 commitIndex change from 2 to 4
+apply msg with Index 3
+apply msg with Index 4
+Server: 1 commitIndex change from 2 to 4
+apply msg with Index 3
+apply msg with Index 4
+Leader: 1with term9 cannot send entry to 4
+Leader: 1with term9 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 0
+Leader: 1with term9 cannot send entry to 4
+Server: 4 commitIndex change from 2 to 4
+apply msg with Index 3
+apply msg with Index 4
+  ... Passed --   4.0  5  232   45362    4
+Found 2 just killed
+Found 4 just killed
+Found 0 just killed
+Test (2B): concurrent Start()s ...
+Found 3 just killed
+Server: 1 Timeout
+Candidate: 1 become leader with term
+1Server: 1 commitIndex change from 0 to 6
+with the last commited log's term is: 1
+apply msg with Index 1
+apply msg with Index 2
+apply msg with Index 3
+apply msg with Index 4
+apply msg with Index 5
+apply msg with Index 6
+Server: 0 commitIndex change from 0 to 6
+apply msg with Index 1
+Server: 2 commitIndex change from 0 to 6
+apply msg with Index 1
+apply msg with Index 2
+apply msg with Index 3
+apply msg with Index 4
+apply msg with Index 2
+apply msg with Index 3
+apply msg with Index 5
+apply msg with Index 4
+apply msg with Index 5
+apply msg with Index 6
+apply msg with Index 6
+  ... Passed --   0.7  3   12    3090    6
+Found 2 just killed
+Found 0 just killed
+Test (2B): rejoin of partitioned leader ...
+Found 1 just killed
+Server: 1 Timeout
+Candidate: 1 become leader with term
+1Server: 1 commitIndex change from 0 to 1
+with the last commited log's term is: 1
+apply msg with Index 1
+Server: 0 commitIndex change from 0 to 1
+Server: 2 commitIndex change from 0 to 1
+apply msg with Index 1
+apply msg with Index 1
+Server: 2 Timeout
+Server: 0 Timeout
+Server: 2 Timeout
+Sever: 0 becomes follower
+Candidate: 2 become leader with term
+3Server: 2 commitIndex change from 1 to 2
+with the last commited log's term is: 3
+apply msg with Index 2
+Server: 0 commitIndex change from 1 to 2
+apply msg with Index 2
+Leader: 2with term3 cannot send entry to 1
+Leader: 1with term1 cannot send entry to 2
+Leader: 2with term3 cannot send entry to 1
+Sever: 1 becomes follower
+Leader: 1with term3 cannot send entry to 2
+Candidate: 2cannot send requestvote to 1
+Server: 0 Timeout
+Candidate: 0 become leader with term
+4Leader: 1with term4 cannot send entry to 0
+Server: 1 commitIndex change from 1 to 2
+apply msg with Index 2
+Leader: 2with term3 cannot send entry to 0
+Leader: 2with term3 cannot send entry to 0
+Leader: 0with term4 cannot send entry to 2
+Leader: 2with term3 cannot send entry to 0
+Leader: 2with term3 cannot send entry to 1
+Leader: 2with term3 cannot send entry to 1
+Leader: 1with term4 cannot send entry to 2
+Leader: 2with term3 cannot send entry to 0
+Leader: 0with term4 cannot send entry to 2
+Leader: 1with term4 cannot send entry to 2
+Leader: 2with term3 cannot send entry to 1
+Leader: 1with term4 cannot send entry to 2
+Leader: 2with term3 cannot send entry to 0
+Server: 0 commitIndex change from 2 to 3
+with the last commited log's term is: 4
+apply msg with Index 3
+Leader: 0with term4 cannot send entry to 2
+Server: 1 commitIndex change from 2 to 3
+apply msg with Index 3
+Sever: 2 becomes follower
+Server: 2 commitIndex change from 2 to 3
+apply msg with Index 3
+Leader: 2with term4 cannot send entry to 1
+Candidate: 2cannot send requestvote to 1
+Leader: 1with term4 cannot send entry to 2
+Leader: 2with term4 cannot send entry to 0
+Leader: 2with term4 cannot send entry to 0
+Leader: 1with term4 cannot send entry to 0
+Leader: 2with term4 cannot send entry to 0
+Leader: 0with term4 cannot send entry to 2
+Leader: 2with term4 cannot send entry to 0
+Leader: 0with term4 cannot send entry to 2
+Leader: 1with term4 cannot send entry to 0
+Leader: 1with term4 cannot send entry to 0
+Candidate: 0cannot send requestvote to 1
+Leader: 2with term4 cannot send entry to 0
+Leader: 1with term4 cannot send entry to 2
+Leader: 0with term4 cannot send entry to 2
+Leader: 2with term4 cannot send entry to 1
+Leader: 0with term4 cannot send entry to 2
+Leader: 2with term4 cannot send entry to 1
+Leader: 2with term4 cannot send entry to 1
+Leader: 2with term4 cannot send entry to 1
+Leader: 1with term4 cannot send entry to 2
+Candidate: 0cannot send requestvote to 2
+Leader: 0with term4 cannot send entry to 2
+Leader: 1with term4 cannot send entry to 0
+Leader: 2with term4 cannot send entry to 1
+Server: 0 commitIndex change from 3 to 4
+with the last commited log's term is: 4
+apply msg with Index 4
+Leader: 2with term4 cannot send entry to 1
+Server: 1 commitIndex change from 3 to 4
+apply msg with Index 4
+Server: 2 commitIndex change from 3 to 4
+apply msg with Index 4
+  ... Passed --   6.7  3  184   43636    4
+Test (2B): leader backs up quickly over incorrect follower logs ...
+Found 0 just killed
+Server: 0 Timeout
+Candidate: 0 become leader with term
+1Server: 0 commitIndex change from 0 to 1
+with the last commited log's term is: 1
+apply msg with Index 1
+Server: 1 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 2 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 3 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 4 commitIndex change from 0 to 1
+apply msg with Index 1
+Server: 4 Timeout
+Candidate: 4cannot send requestvote to 2
+Server: 4 Timeout
+Server: 3 Timeout
+Server: 2 Timeout
+Candidate: 4cannot send requestvote to 3
+Server: 2 Timeout
+Server: 1 Timeout
+Sever: 3 becomes follower
+Leader: 0with term1 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Candidate: 2cannot send requestvote to 0
+Server: 4 Timeout
+Sever: 2 becomes follower
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Candidate: 4cannot send requestvote to 1
+Server: 3 Timeout
+Server: 4 Timeout
+Candidate: 2cannot send requestvote to 4
+Sever: 3 becomes follower
+Candidate: 4 become leader with term
+5Server: 4 commitIndex change from 1 to 2
+with the last commited log's term is: 5
+apply msg with Index 2
+Server: 2 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 3 commitIndex change from 1 to 2
+apply msg with Index 2
+Server: 1 Timeout
+Server: 4 commitIndex change from 2 to 3
+with the last commited log's term is: 5
+apply msg with Index 3
+Candidate: 2cannot send requestvote to 1
+Server: 3 commitIndex change from 2 to 3
+apply msg with Index 3
+Server: 2 commitIndex change from 2 to 3
+apply msg with Index 3
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 3 to 4
+with the last commited log's term is: 5
+apply msg with Index 4
+Candidate: 4cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 4
+Server: 3 commitIndex change from 3 to 4
+apply msg with Index 4
+Server: 2 commitIndex change from 3 to 4
+apply msg with Index 4
+Server: 1 Timeout
+Candidate: 1cannot send requestvote to 3
+Server: 4 commitIndex change from 4 to 5
+with the last commited log's term is: 5
+apply msg with Index 5
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Server: 3 commitIndex change from 4 to 5
+apply msg with Index 5
+Server: 2 commitIndex change from 4 to 5
+apply msg with Index 5
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 2
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 3
+Server: 4 commitIndex change from 5 to 6
+with the last commited log's term is: 5
+apply msg with Index 6
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 5 to 6
+apply msg with Index 6
+Server: 2 commitIndex change from 5 to 6
+apply msg with Index 6
+Leader: 0with term1 cannot send entry to 2
+Candidate: 2cannot send requestvote to 1
+Leader: 0with term1 cannot send entry to 1
+Candidate: 4cannot send requestvote to 2
+Candidate: 1cannot send requestvote to 3
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Server: 4 commitIndex change from 6 to 7
+with the last commited log's term is: 5
+apply msg with Index 7
+Candidate: 1cannot send requestvote to 0
+Server: 3 commitIndex change from 6 to 7
+apply msg with Index 7
+Server: 2 commitIndex change from 6 to 7
+apply msg with Index 7
+Candidate: 3cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 2
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Server: 4 commitIndex change from 7 to 8
+with the last commited log's term is: 5
+apply msg with Index 8
+Leader: 4with term5 cannot send entry to 0
+Candidate: 4cannot send requestvote to 0
+Candidate: 1cannot send requestvote to 4
+Server: 3 commitIndex change from 7 to 8
+apply msg with Index 8
+Server: 2 commitIndex change from 7 to 8
+apply msg with Index 8
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 2
+Candidate: 4cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 8 to 9
+with the last commited log's term is: 5
+apply msg with Index 9
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Server: 3 commitIndex change from 8 to 9
+apply msg with Index 9
+Server: 2 commitIndex change from 8 to 9
+apply msg with Index 9
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Server: 1 Timeout
+Server: 4 commitIndex change from 9 to 10
+with the last commited log's term is: 5
+apply msg with Index 10
+Leader: 0with term1 cannot send entry to 3
+Candidate: 4cannot send requestvote to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Server: 3 commitIndex change from 9 to 10
+apply msg with Index 10
+Server: 2 commitIndex change from 9 to 10
+apply msg with Index 10
+Candidate: 1cannot send requestvote to 2
+Server: 4 commitIndex change from 10 to 11
+with the last commited log's term is: 5
+apply msg with Index 11
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 1 Timeout
+Server: 3 commitIndex change from 10 to 11
+apply msg with Index 11
+Server: 2 commitIndex change from 10 to 11
+apply msg with Index 11
+Candidate: 4cannot send requestvote to 0
+Candidate: 4cannot send requestvote to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 11 to 12
+with the last commited log's term is: 5
+apply msg with Index 12
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Server: 3 commitIndex change from 11 to 12
+apply msg with Index 12
+Server: 2 commitIndex change from 11 to 12
+apply msg with Index 12
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 2
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 3
+Server: 4 commitIndex change from 12 to 13
+with the last commited log's term is: 5
+apply msg with Index 13
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 1
+Server: 3 commitIndex change from 12 to 13
+apply msg with Index 13
+Server: 2 commitIndex change from 12 to 13
+apply msg with Index 13
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Server: 4 commitIndex change from 13 to 14
+with the last commited log's term is: 5
+apply msg with Index 14
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 13 to 14
+apply msg with Index 14
+Server: 2 commitIndex change from 13 to 14
+apply msg with Index 14
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Server: 4 commitIndex change from 14 to 15
+with the last commited log's term is: 5
+apply msg with Index 15
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Server: 3 commitIndex change from 14 to 15
+apply msg with Index 15
+Server: 2 commitIndex change from 14 to 15
+apply msg with Index 15
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Server: 4 commitIndex change from 15 to 16
+with the last commited log's term is: 5
+apply msg with Index 16
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 15 to 16
+apply msg with Index 16
+Server: 2 commitIndex change from 15 to 16
+apply msg with Index 16
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 3
+Server: 1 Timeout
+Server: 4 commitIndex change from 16 to 17
+with the last commited log's term is: 5
+apply msg with Index 17
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Server: 2 commitIndex change from 16 to 17
+apply msg with Index 17
+Server: 3 commitIndex change from 16 to 17
+apply msg with Index 17
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Server: 4 commitIndex change from 17 to 18
+with the last commited log's term is: 5
+apply msg with Index 18
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 17 to 18
+apply msg with Index 18
+Server: 2 commitIndex change from 17 to 18
+apply msg with Index 18
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 18 to 19
+with the last commited log's term is: 5
+apply msg with Index 19
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 1
+Server: 3 commitIndex change from 18 to 19
+apply msg with Index 19
+Server: 2 commitIndex change from 18 to 19
+apply msg with Index 19
+Leader: 0with term1 cannot send entry to 2
+Candidate: 2cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 4 commitIndex change from 19 to 20
+with the last commited log's term is: 5
+apply msg with Index 20
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Server: 1 Timeout
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 19 to 20
+apply msg with Index 20
+Server: 2 commitIndex change from 19 to 20
+apply msg with Index 20
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 20 to 21
+with the last commited log's term is: 5
+apply msg with Index 21
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 20 to 21
+apply msg with Index 21
+Server: 2 commitIndex change from 20 to 21
+apply msg with Index 21
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Server: 4 commitIndex change from 21 to 22
+with the last commited log's term is: 5
+apply msg with Index 22
+Leader: 0with term1 cannot send entry to 3
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Server: 3 commitIndex change from 21 to 22
+apply msg with Index 22
+Server: 2 commitIndex change from 21 to 22
+apply msg with Index 22
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 22 to 23
+with the last commited log's term is: 5
+apply msg with Index 23
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 3
+Candidate: 1cannot send requestvote to 0
+Server: 3 commitIndex change from 22 to 23
+apply msg with Index 23
+Server: 2 commitIndex change from 22 to 23
+apply msg with Index 23
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 23 to 24
+with the last commited log's term is: 5
+apply msg with Index 24
+Candidate: 1cannot send requestvote to 4
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 1
+Candidate: 4cannot send requestvote to 0
+Server: 3 commitIndex change from 23 to 24
+apply msg with Index 24
+Server: 2 commitIndex change from 23 to 24
+apply msg with Index 24
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 24 to 25
+with the last commited log's term is: 5
+apply msg with Index 25
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Candidate: 2cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 24 to 25
+apply msg with Index 25
+Server: 2 commitIndex change from 24 to 25
+apply msg with Index 25
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Server: 4 commitIndex change from 25 to 26
+with the last commited log's term is: 5
+apply msg with Index 26
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Server: 1 Timeout
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 2
+Server: 2 commitIndex change from 25 to 26
+Server: 3 commitIndex change from 25 to 26
+apply msg with Index 26
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+apply msg with Index 26
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Server: 4 commitIndex change from 26 to 27
+with the last commited log's term is: 5
+apply msg with Index 27
+Candidate: 4cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 26 to 27
+apply msg with Index 27
+Server: 2 commitIndex change from 26 to 27
+apply msg with Index 27
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Candidate: 3cannot send requestvote to 1
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 27 to 28
+with the last commited log's term is: 5
+apply msg with Index 28
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 27 to 28
+apply msg with Index 28
+Server: 2 commitIndex change from 27 to 28
+apply msg with Index 28
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Server: 4 commitIndex change from 28 to 29
+with the last commited log's term is: 5
+apply msg with Index 29
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 28 to 29
+apply msg with Index 29
+Server: 2 commitIndex change from 28 to 29
+apply msg with Index 29
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Server: 4 commitIndex change from 29 to 30
+with the last commited log's term is: 5
+apply msg with Index 30
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 1
+Server: 3 commitIndex change from 29 to 30
+apply msg with Index 30
+Server: 2 commitIndex change from 29 to 30
+apply msg with Index 30
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 0
+Server: 4 commitIndex change from 30 to 31
+with the last commited log's term is: 5
+apply msg with Index 31
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 30 to 31
+apply msg with Index 31
+Server: 2 commitIndex change from 30 to 31
+apply msg with Index 31
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Candidate: 1cannot send requestvote to 4
+Server: 4 commitIndex change from 31 to 32
+with the last commited log's term is: 5
+apply msg with Index 32
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Server: 3 commitIndex change from 31 to 32
+apply msg with Index 32
+Server: 2 commitIndex change from 31 to 32
+apply msg with Index 32
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 0
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Server: 4 commitIndex change from 32 to 33
+with the last commited log's term is: 5
+apply msg with Index 33
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 32 to 33
+apply msg with Index 33
+Server: 2 commitIndex change from 32 to 33
+apply msg with Index 33
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 0
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 3
+Candidate: 1cannot send requestvote to 2
+Server: 1 Timeout
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Server: 4 commitIndex change from 33 to 34
+with the last commited log's term is: 5
+apply msg with Index 34
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Server: 3 commitIndex change from 33 to 34
+apply msg with Index 34
+Server: 2 commitIndex change from 33 to 34
+apply msg with Index 34
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Server: 4 commitIndex change from 34 to 35
+with the last commited log's term is: 5
+apply msg with Index 35
+Candidate: 1cannot send requestvote to 3
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 34 to 35
+apply msg with Index 35
+Server: 2 commitIndex change from 34 to 35
+apply msg with Index 35
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 35 to 36
+with the last commited log's term is: 5
+apply msg with Index 36
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Server: 3 commitIndex change from 35 to 36
+apply msg with Index 36
+Server: 2 commitIndex change from 35 to 36
+apply msg with Index 36
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 36 to 37
+with the last commited log's term is: 5
+apply msg with Index 37
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Server: 2 commitIndex change from 36 to 37
+apply msg with Index 37
+Server: 3 commitIndex change from 36 to 37
+apply msg with Index 37
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 0
+Server: 4 commitIndex change from 37 to 38
+with the last commited log's term is: 5
+apply msg with Index 38
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 3 commitIndex change from 37 to 38
+apply msg with Index 38
+Server: 2 commitIndex change from 37 to 38
+apply msg with Index 38
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 38 to 39
+with the last commited log's term is: 5
+apply msg with Index 39
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 38 to 39
+apply msg with Index 39
+Server: 2 commitIndex change from 38 to 39
+apply msg with Index 39
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Server: 4 commitIndex change from 39 to 40
+with the last commited log's term is: 5
+apply msg with Index 40
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 4
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 39 to 40
+apply msg with Index 40
+Server: 2 commitIndex change from 39 to 40
+apply msg with Index 40
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 40 to 41
+with the last commited log's term is: 5
+apply msg with Index 41
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 2
+Server: 3 commitIndex change from 40 to 41
+apply msg with Index 41
+Server: 2 commitIndex change from 40 to 41
+apply msg with Index 41
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Server: 4 commitIndex change from 41 to 42
+with the last commited log's term is: 5
+apply msg with Index 42
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Server: 3 commitIndex change from 41 to 42
+apply msg with Index 42
+Server: 2 commitIndex change from 41 to 42
+apply msg with Index 42
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Server: 4 commitIndex change from 42 to 43
+with the last commited log's term is: 5
+apply msg with Index 43
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Server: 3 commitIndex change from 42 to 43
+apply msg with Index 43
+Server: 2 commitIndex change from 42 to 43
+apply msg with Index 43
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 2
+Server: 4 commitIndex change from 43 to 44
+with the last commited log's term is: 5
+apply msg with Index 44
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 3
+Server: 1 Timeout
+Server: 3 commitIndex change from 43 to 44
+apply msg with Index 44
+Server: 2 commitIndex change from 43 to 44
+apply msg with Index 44
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 44 to 45
+with the last commited log's term is: 5
+apply msg with Index 45
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 3 commitIndex change from 44 to 45
+apply msg with Index 45
+Server: 2 commitIndex change from 44 to 45
+apply msg with Index 45
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 4
+Server: 4 commitIndex change from 45 to 46
+with the last commited log's term is: 5
+apply msg with Index 46
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 45 to 46
+apply msg with Index 46
+Server: 2 commitIndex change from 45 to 46
+apply msg with Index 46
+Leader: 0with term1 cannot send entry to 2
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Server: 4 commitIndex change from 46 to 47
+with the last commited log's term is: 5
+apply msg with Index 47
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 2
+Server: 3 commitIndex change from 46 to 47
+apply msg with Index 47
+Server: 2 commitIndex change from 46 to 47
+apply msg with Index 47
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Server: 4 commitIndex change from 47 to 48
+with the last commited log's term is: 5
+apply msg with Index 48
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Candidate: 1cannot send requestvote to 0
+Server: 3 commitIndex change from 47 to 48
+apply msg with Index 48
+Server: 2 commitIndex change from 47 to 48
+apply msg with Index 48
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Server: 4 commitIndex change from 48 to 49
+with the last commited log's term is: 5
+apply msg with Index 49
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Server: 3 commitIndex change from 48 to 49
+apply msg with Index 49
+Leader: 0with term1 cannot send entry to 4
+Server: 2 commitIndex change from 48 to 49
+apply msg with Index 49
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Server: 4 commitIndex change from 49 to 50
+with the last commited log's term is: 5
+apply msg with Index 50
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 0
+Server: 3 commitIndex change from 49 to 50
+apply msg with Index 50
+Server: 2 commitIndex change from 49 to 50
+apply msg with Index 50
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 4 commitIndex change from 50 to 51
+with the last commited log's term is: 5
+apply msg with Index 51
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Server: 3 commitIndex change from 50 to 51
+apply msg with Index 51
+Server: 2 commitIndex change from 50 to 51
+apply msg with Index 51
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 2
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 4
+Server: 1 Timeout
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 2
+Candidate: 1cannot send requestvote to 4
+Server: 1 Timeout
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term1 cannot send entry to 3
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Server: 2 Timeout
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term1 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term1 cannot send entry to 3
+Leader: 0with term1 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 4
+Leader: 0with term1 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Server: 1 Timeout
+Sever: 2 becomes follower
+Sever: 0 becomes follower
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term40 cannot send entry to 4
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 1
+Leader: 0with term40 cannot send entry to 3
+Server: 3 Timeout
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term40 cannot send entry to 4
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 1
+Server: 1 Timeout
+Leader: 0with term40 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term40 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term40 cannot send entry to 1
+Leader: 0with term40 cannot send entry to 1
+Server: 2 Timeout
+Candidate: 1cannot send requestvote to 4
+Leader: 0with term40 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 4
+Leader: 0with term40 cannot send entry to 2
+Leader: 0with term40 cannot send entry to 1
+Leader: 0with term40 cannot send entry to 2
+Leader: 0with term40 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term40 cannot send entry to 3
+Leader: 0with term40 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term40 cannot send entry to 2
+Leader: 0with term40 cannot send entry to 1
+Leader: 0with term40 cannot send entry to 2
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Server: 2 Timeout
+Sever: 1 becomes follower
+Candidate: 2 become leader with term
+42Candidate: 1cannot send requestvote to 4
+Leader: 0with term42 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 1
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 4
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 2cannot send requestvote to 4
+Leader: 0with term42 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 3
+Candidate: 1cannot send requestvote to 0
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 2cannot send requestvote to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 2
+Candidate: 3cannot send requestvote to 1
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Candidate: 1cannot send requestvote to 3
+Candidate: 3cannot send requestvote to 2
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 2
+Candidate: 3cannot send requestvote to 0
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Candidate: 2cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 2
+Leader: 0with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 2
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term42 cannot send entry to 4
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Candidate: 2cannot send requestvote to 0
+Candidate: 2cannot send requestvote to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 3
+Leader: 0with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Candidate: 1cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 1cannot send requestvote to 3
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 2
+Candidate: 1cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Candidate: 1cannot send requestvote to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Candidate: 1cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 2cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Candidate: 1cannot send requestvote to 2
+Leader: 0with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Candidate: 1cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 2cannot send requestvote to 3
+Candidate: 1cannot send requestvote to 4
+Server: 3 Timeout
+Candidate: 1cannot send requestvote to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 0with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 2
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Candidate: 1cannot send requestvote to 4
+Server: 3 Timeout
+Leader: 0with term42 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 1 to 51
+apply msg with Index 2
+Server: 0 commitIndex change from 1 to 51
+apply msg with Index 2
+apply msg with Index 3
+apply msg with Index 4
+apply msg with Index 5
+apply msg with Index 6
+apply msg with Index 7
+apply msg with Index 8
+apply msg with Index 9
+apply msg with Index 10
+apply msg with Index 11
+apply msg with Index 12
+apply msg with Index 13
+apply msg with Index 14
+apply msg with Index 15
+apply msg with Index 16
+apply msg with Index 17
+apply msg with Index 18
+apply msg with Index 19
+apply msg with Index 20
+apply msg with Index 21
+apply msg with Index 22
+apply msg with Index 23
+apply msg with Index 24
+apply msg with Index 3
+apply msg with Index 4
+apply msg with Index 25
+apply msg with Index 26
+apply msg with Index 5
+apply msg with Index 27
+apply msg with Index 28
+apply msg with Index 6
+apply msg with Index 29
+apply msg with Index 30
+apply msg with Index 31
+apply msg with Index 32
+apply msg with Index 7
+apply msg with Index 8
+apply msg with Index 9
+apply msg with Index 33
+apply msg with Index 34
+apply msg with Index 35
+apply msg with Index 10
+apply msg with Index 11
+apply msg with Index 36
+apply msg with Index 37
+apply msg with Index 12
+apply msg with Index 13
+apply msg with Index 38
+apply msg with Index 39
+apply msg with Index 14
+apply msg with Index 15
+apply msg with Index 16
+apply msg with Index 17
+apply msg with Index 18
+apply msg with Index 19
+apply msg with Index 20
+apply msg with Index 21
+apply msg with Index 22
+apply msg with Index 23
+apply msg with Index 24
+apply msg with Index 25
+apply msg with Index 40
+apply msg with Index 41
+apply msg with Index 26
+apply msg with Index 27
+apply msg with Index 42
+apply msg with Index 43
+apply msg with Index 28
+apply msg with Index 29
+apply msg with Index 44
+apply msg with Index 45
+apply msg with Index 30
+apply msg with Index 31
+apply msg with Index 46
+apply msg with Index 47
+apply msg with Index 32
+apply msg with Index 33
+apply msg with Index 34
+apply msg with Index 35
+apply msg with Index 36
+apply msg with Index 37
+apply msg with Index 38
+apply msg with Index 39
+apply msg with Index 40
+apply msg with Index 48
+apply msg with Index 49
+apply msg with Index 41
+apply msg with Index 42
+apply msg with Index 50
+apply msg with Index 51
+apply msg with Index 43
+apply msg with Index 44
+apply msg with Index 45
+apply msg with Index 46
+apply msg with Index 47
+apply msg with Index 48
+apply msg with Index 49
+apply msg with Index 50
+apply msg with Index 51
+Server: 2 commitIndex change from 51 to 54
+with the last commited log's term is: 42
+apply msg with Index 52
+apply msg with Index 53
+apply msg with Index 54
+Leader: 4with term5 cannot send entry to 2
+Leader: 0with term42 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 0
+Server: 1 commitIndex change from 51 to 54
+apply msg with Index 52
+Server: 0 commitIndex change from 51 to 54
+apply msg with Index 52
+apply msg with Index 53
+apply msg with Index 54
+apply msg with Index 53
+apply msg with Index 54
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Server: 2 commitIndex change from 54 to 55
+with the last commited log's term is: 42
+apply msg with Index 55
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 1 commitIndex change from 54 to 55
+apply msg with Index 55
+Server: 0 commitIndex change from 54 to 55
+apply msg with Index 55
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 2
+Server: 2 commitIndex change from 55 to 56
+with the last commited log's term is: 42
+apply msg with Index 56
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 1 commitIndex change from 55 to 56
+apply msg with Index 56
+Server: 0 commitIndex change from 55 to 56
+apply msg with Index 56
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 0with term42 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 56 to 57
+with the last commited log's term is: 42
+apply msg with Index 57
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 1
+Server: 0 commitIndex change from 56 to 57
+apply msg with Index 57
+Server: 1 commitIndex change from 56 to 57
+apply msg with Index 57
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 2cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 57 to 58
+with the last commited log's term is: 42
+apply msg with Index 58
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Server: 1 commitIndex change from 57 to 58
+apply msg with Index 58
+Server: 0 commitIndex change from 57 to 58
+apply msg with Index 58
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 2 commitIndex change from 58 to 59
+with the last commited log's term is: 42
+apply msg with Index 59
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 58 to 59
+apply msg with Index 59
+Server: 0 commitIndex change from 58 to 59
+apply msg with Index 59
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 59 to 60
+with the last commited log's term is: 42
+apply msg with Index 60
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 1 commitIndex change from 59 to 60
+apply msg with Index 60
+Server: 0 commitIndex change from 59 to 60
+apply msg with Index 60
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 0
+Server: 2 commitIndex change from 60 to 61
+with the last commited log's term is: 42
+apply msg with Index 61
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Server: 1 commitIndex change from 60 to 61
+apply msg with Index 61
+Server: 0 commitIndex change from 60 to 61
+apply msg with Index 61
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 61 to 62
+with the last commited log's term is: 42
+apply msg with Index 62
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Server: 0 commitIndex change from 61 to 62
+apply msg with Index 62
+Server: 1 commitIndex change from 61 to 62
+Leader: 2with term42 cannot send entry to 3
+apply msg with Index 62
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 62 to 63
+with the last commited log's term is: 42
+apply msg with Index 63
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 0
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Server: 1 commitIndex change from 62 to 63
+apply msg with Index 63
+Server: 0 commitIndex change from 62 to 63
+apply msg with Index 63
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 63 to 64
+with the last commited log's term is: 42
+apply msg with Index 64
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 0
+Server: 0 commitIndex change from 63 to 64
+apply msg with Index 64
+Server: 1 commitIndex change from 63 to 64
+apply msg with Index 64
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 64 to 65
+with the last commited log's term is: 42
+apply msg with Index 65
+Candidate: 3cannot send requestvote to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 2
+Server: 1 commitIndex change from 64 to 65
+apply msg with Index 65
+Server: 0 commitIndex change from 64 to 65
+apply msg with Index 65
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Server: 2 commitIndex change from 65 to 66
+with the last commited log's term is: 42
+apply msg with Index 66
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 4
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Server: 1 commitIndex change from 65 to 66
+apply msg with Index 66
+Server: 0 commitIndex change from 65 to 66
+apply msg with Index 66
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 0
+Server: 2 commitIndex change from 66 to 67
+with the last commited log's term is: 42
+apply msg with Index 67
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 66 to 67
+apply msg with Index 67
+Server: 0 commitIndex change from 66 to 67
+apply msg with Index 67
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 67 to 68
+with the last commited log's term is: 42
+apply msg with Index 68
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 67 to 68
+apply msg with Index 68
+Server: 0 commitIndex change from 67 to 68
+apply msg with Index 68
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Server: 2 commitIndex change from 68 to 69
+with the last commited log's term is: 42
+apply msg with Index 69
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Server: 1 commitIndex change from 68 to 69
+apply msg with Index 69
+Server: 0 commitIndex change from 68 to 69
+apply msg with Index 69
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 69 to 70
+with the last commited log's term is: 42
+apply msg with Index 70
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Server: 1 commitIndex change from 69 to 70
+apply msg with Index 70
+Server: 0 commitIndex change from 69 to 70
+apply msg with Index 70
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 70 to 71
+with the last commited log's term is: 42
+apply msg with Index 71
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 1 commitIndex change from 70 to 71
+apply msg with Index 71
+Server: 0 commitIndex change from 70 to 71
+apply msg with Index 71
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 2 commitIndex change from 71 to 72
+with the last commited log's term is: 42
+apply msg with Index 72
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 4
+Server: 1 commitIndex change from 71 to 72
+apply msg with Index 72
+Server: 0 commitIndex change from 71 to 72
+apply msg with Index 72
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 72 to 73
+with the last commited log's term is: 42
+apply msg with Index 73
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Server: 0 commitIndex change from 72 to 73
+apply msg with Index 73
+Server: 1 commitIndex change from 72 to 73
+apply msg with Index 73
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 73 to 74
+with the last commited log's term is: 42
+apply msg with Index 74
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Server: 0 commitIndex change from 73 to 74
+apply msg with Index 74
+Server: 1 commitIndex change from 73 to 74
+apply msg with Index 74
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 0
+Server: 2 commitIndex change from 74 to 75
+with the last commited log's term is: 42
+apply msg with Index 75
+Candidate: 3cannot send requestvote to 2
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 2
+Server: 0 commitIndex change from 74 to 75
+Server: 1 commitIndex change from 74 to 75
+apply msg with Index 75
+apply msg with Index 75
+Candidate: 3cannot send requestvote to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 75 to 76
+with the last commited log's term is: 42
+apply msg with Index 76
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 4
+Server: 1 commitIndex change from 75 to 76
+apply msg with Index 76
+Server: 0 commitIndex change from 75 to 76
+apply msg with Index 76
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 76 to 77
+with the last commited log's term is: 42
+apply msg with Index 77
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 0
+Server: 1 commitIndex change from 76 to 77
+apply msg with Index 77
+Server: 0 commitIndex change from 76 to 77
+apply msg with Index 77
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 77 to 78
+with the last commited log's term is: 42
+apply msg with Index 78
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 77 to 78
+Server: 0 commitIndex change from 77 to 78
+apply msg with Index 78
+apply msg with Index 78
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Server: 3 Timeout
+Server: 2 commitIndex change from 78 to 79
+with the last commited log's term is: 42
+apply msg with Index 79
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Server: 1 commitIndex change from 78 to 79
+apply msg with Index 79
+Server: 0 commitIndex change from 78 to 79
+apply msg with Index 79
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 79 to 80
+with the last commited log's term is: 42
+apply msg with Index 80
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Server: 0 commitIndex change from 79 to 80
+apply msg with Index 80
+Server: 1 commitIndex change from 79 to 80
+apply msg with Index 80
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Server: 2 commitIndex change from 80 to 81
+with the last commited log's term is: 42
+apply msg with Index 81
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 0 commitIndex change from 80 to 81
+apply msg with Index 81
+Server: 1 commitIndex change from 80 to 81
+apply msg with Index 81
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 81 to 82
+with the last commited log's term is: 42
+apply msg with Index 82
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Server: 0 commitIndex change from 81 to 82
+apply msg with Index 82
+Server: 1 commitIndex change from 81 to 82
+apply msg with Index 82
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Server: 2 commitIndex change from 82 to 83
+with the last commited log's term is: 42
+apply msg with Index 83
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Server: 1 commitIndex change from 82 to 83
+apply msg with Index 83
+Server: 0 commitIndex change from 82 to 83
+apply msg with Index 83
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Server: 2 commitIndex change from 83 to 84
+with the last commited log's term is: 42
+apply msg with Index 84
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 2
+Server: 0 commitIndex change from 83 to 84
+apply msg with Index 84
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 83 to 84
+Leader: 4with term5 cannot send entry to 3
+apply msg with Index 84
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 2 commitIndex change from 84 to 85
+with the last commited log's term is: 42
+apply msg with Index 85
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 4
+Server: 1 commitIndex change from 84 to 85
+apply msg with Index 85
+Server: 0 commitIndex change from 84 to 85
+apply msg with Index 85
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 2 commitIndex change from 85 to 86
+with the last commited log's term is: 42
+apply msg with Index 86
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 1 commitIndex change from 85 to 86
+apply msg with Index 86
+Server: 0 commitIndex change from 85 to 86
+apply msg with Index 86
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Server: 2 commitIndex change from 86 to 87
+with the last commited log's term is: 42
+apply msg with Index 87
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Server: 0 commitIndex change from 86 to 87
+apply msg with Index 87
+Server: 1 commitIndex change from 86 to 87
+apply msg with Index 87
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Server: 2 commitIndex change from 87 to 88
+with the last commited log's term is: 42
+apply msg with Index 88
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Server: 0 commitIndex change from 87 to 88
+apply msg with Index 88
+Server: 1 commitIndex change from 87 to 88
+apply msg with Index 88
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 88 to 89
+with the last commited log's term is: 42
+apply msg with Index 89
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 0 commitIndex change from 88 to 89
+apply msg with Index 89
+Server: 1 commitIndex change from 88 to 89
+apply msg with Index 89
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 89 to 90
+with the last commited log's term is: 42
+Leader: 4with term5 cannot send entry to 2
+apply msg with Index 90
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 2
+Server: 0 commitIndex change from 89 to 90
+apply msg with Index 90
+Server: 1 commitIndex change from 89 to 90
+apply msg with Index 90
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Server: 2 commitIndex change from 90 to 91
+with the last commited log's term is: 42
+apply msg with Index 91
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 1
+Server: 1 commitIndex change from 90 to 91
+apply msg with Index 91
+Server: 0 commitIndex change from 90 to 91
+apply msg with Index 91
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 91 to 92
+with the last commited log's term is: 42
+apply msg with Index 92
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Server: 1 commitIndex change from 91 to 92
+apply msg with Index 92
+Server: 0 commitIndex change from 91 to 92
+apply msg with Index 92
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Server: 3 Timeout
+Server: 2 commitIndex change from 92 to 93
+with the last commited log's term is: 42
+apply msg with Index 93
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 3
+Server: 1 commitIndex change from 92 to 93
+apply msg with Index 93
+Server: 0 commitIndex change from 92 to 93
+apply msg with Index 93
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 2
+Candidate: 3cannot send requestvote to 1
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 1
+Server: 2 commitIndex change from 93 to 94
+with the last commited log's term is: 42
+apply msg with Index 94
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Server: 1 commitIndex change from 93 to 94
+apply msg with Index 94
+Server: 0 commitIndex change from 93 to 94
+apply msg with Index 94
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 2
+Server: 2 commitIndex change from 94 to 95
+with the last commited log's term is: 42
+apply msg with Index 95
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Server: 1 commitIndex change from 94 to 95
+apply msg with Index 95
+Server: 0 commitIndex change from 94 to 95
+apply msg with Index 95
+Candidate: 3cannot send requestvote to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 95 to 96
+with the last commited log's term is: 42
+apply msg with Index 96
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Server: 0 commitIndex change from 95 to 96
+apply msg with Index 96
+Server: 1 commitIndex change from 95 to 96
+apply msg with Index 96
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 96 to 97
+with the last commited log's term is: 42
+apply msg with Index 97
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Server: 0 commitIndex change from 96 to 97
+apply msg with Index 97
+Server: 1 commitIndex change from 96 to 97
+apply msg with Index 97
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 0
+Server: 2 commitIndex change from 97 to 98
+with the last commited log's term is: 42
+apply msg with Index 98
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Server: 0 commitIndex change from 97 to 98
+apply msg with Index 98
+Server: 1 commitIndex change from 97 to 98
+apply msg with Index 98
+Leader: 4with term5 cannot send entry to 1
+Candidate: 3cannot send requestvote to 2
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 98 to 99
+with the last commited log's term is: 42
+apply msg with Index 99
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Server: 0 commitIndex change from 98 to 99
+apply msg with Index 99
+Server: 1 commitIndex change from 98 to 99
+apply msg with Index 99
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 2
+Server: 2 commitIndex change from 99 to 100
+with the last commited log's term is: 42
+apply msg with Index 100
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Server: 0 commitIndex change from 99 to 100
+apply msg with Index 100
+Server: 1 commitIndex change from 99 to 100
+apply msg with Index 100
+Candidate: 3cannot send requestvote to 0
+Candidate: 3cannot send requestvote to 4
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 2 commitIndex change from 100 to 101
+with the last commited log's term is: 42
+apply msg with Index 101
+Server: 3 Timeout
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 0
+Leader: 2with term42 cannot send entry to 4
+Server: 0 commitIndex change from 100 to 101
+apply msg with Index 101
+Server: 1 commitIndex change from 100 to 101
+apply msg with Index 101
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 2
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 0
+Leader: 4with term5 cannot send entry to 1
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 0
+Server: 2 commitIndex change from 101 to 102
+with the last commited log's term is: 42
+apply msg with Index 102
+Leader: 4with term5 cannot send entry to 2
+Leader: 4with term5 cannot send entry to 1
+Leader: 2with term42 cannot send entry to 4
+Server: 3 Timeout
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Server: 0 commitIndex change from 101 to 102
+apply msg with Index 102
+Server: 1 commitIndex change from 101 to 102
+apply msg with Index 102
+Leader: 2with term42 cannot send entry to 4
+Leader: 2with term42 cannot send entry to 3
+Candidate: 3cannot send requestvote to 0
+Leader: 4with term5 cannot send entry to 3
+Server: 2 commitIndex change from 102 to 103
+with the last commited log's term is: 42
+apply msg with Index 103
+Leader: 4with term5 cannot send entry to 0
+Leader: 2with term42 cannot send entry to 4
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 2
+Candidate: 3cannot send requestvote to 4
+Leader: 4with term5 cannot send entry to 0
+Candidate: 3cannot send requestvote to 4
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Server: 1 commitIndex change from 102 to 103
+apply msg with Index 103
+Server: 0 commitIndex change from 102 to 103
+apply msg with Index 103
+Leader: 2with term42 cannot send entry to 3
+Leader: 4with term5 cannot send entry to 1
+Sever: 4 becomes follower
+Sever: 2 becomes follower
+Server: 3 Timeout
+Candidate: 3cannot send requestvote to 1
+Candidate: 3 become leader with term
+56Server: 3 commitIndex change from 51 to 101
+with the last commited log's term is: 5
+apply msg with Index 52
+Candidate: 3cannot send requestvote to 0
+2022/04/02 22:33:42 apply error: commit index=52 server=3 8441028730653206896 != server=2 7440259845336697636
+exit status 1
+FAIL	_/C_/Users/wonde/ECE428MP/distributed-system/mp2/src/raft	60.532s
