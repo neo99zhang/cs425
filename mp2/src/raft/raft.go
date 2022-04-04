@@ -249,9 +249,14 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 	// 5. Return failure if log doesn’t contain an entry at
 	// PrevLogIndex whose Term matches PrevLogTerm'
+	fmt.Printf("len(rf.log)-1: %v, args.PrevLogIndex: %v \n", len(rf.log)-1, args.PrevLogIndex)
+	if len(rf.log)-1 >= args.PrevLogIndex {
+		fmt.Printf("rf.log[(args.PrevLogIndex)].Term: %v , args.PrevLogTerm: %v\n", rf.log[(args.PrevLogIndex)].Term, args.PrevLogTerm)
+	}
 	if (len(rf.log)-1 < args.PrevLogIndex) || (rf.log[(args.PrevLogIndex)].Term != args.PrevLogTerm) {
 		reply.Term = rf.currentTerm
 		reply.Success = false
+		fmt.Print("inside log check\n")
 		return
 	}
 	// 6. If existing Entries conflict with new Entries, delete all
