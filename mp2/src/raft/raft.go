@@ -143,15 +143,21 @@ type AppendEntriesReply struct {
 }
 
 func (rf *Raft) TurnFollower(Term int, voteFor int) {
-	// if rf.state == FOLLOWER {
-	// 	return
-	// }
-	// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
+	if rf.state == FOLLOWER {
+		// fmt.Print("Server: ", rf.me, " changes term from ", rf.currentTerm, " to ", Term, "\n")
+		rf.currentTerm = Term
+		rf.votedFor = voteFor
+
+		return
+	} else {
+		// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
+	}
+
 	rf.state = FOLLOWER
 	rf.currentTerm = Term
 	rf.votedFor = voteFor
 	rf.heartBeatTimer.Stop()
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	//rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 }
 
 func (rf *Raft) TurnCandidate() {
@@ -239,23 +245,22 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	// 2. If Term > currentTerm, currentTerm ← Term
 	if args.Term > rf.currentTerm {
 		rf.currentTerm = args.Term
-
+		rf.TurnFollower(args.Term, NULL)
 	}
-	rf.TurnFollower(args.Term, NULL)
+
 	// 3. If candidate or leader, step down
 
 	// 4. Reset election timeout
 	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 	// 5. Return failure if log doesn’t contain an entry at
 	// PrevLogIndex whose Term matches PrevLogTerm'
-	// fmt.Printf("len(rf.log)-1: %v, args.PrevLogIndex: %v \n", len(rf.log)-1, args.PrevLogIndex)
-	if len(rf.log)-1 >= args.PrevLogIndex {
-		// fmt.Printf("rf.log[(args.PrevLogIndex)].Term: %v , args.PrevLogTerm: %v\n", rf.log[(args.PrevLogIndex)].Term, args.PrevLogTerm)
-	}
+	// fmt.Printf("Server: %v len(rf.log)-1: %v, args.PrevLogIndex: %v \n", rf.me, len(rf.log)-1, args.PrevLogIndex)
+	// if len(rf.log)-1 >= args.PrevLogIndex {
+	// 	fmt.Printf("Server: %v rf.log[(args.PrevLogIndex)].Term: %v , args.PrevLogTerm: %v\n", rf.me, rf.log[(args.PrevLogIndex)].Term, args.PrevLogTerm)
+	// }
 	if (len(rf.log)-1 < args.PrevLogIndex) || (rf.log[(args.PrevLogIndex)].Term != args.PrevLogTerm) {
 		reply.Term = rf.currentTerm
 		reply.Success = false
-		// fmt.Print("inside log check\n")
 		return
 	}
 	// 6. If existing Entries conflict with new Entries, delete all
@@ -271,13 +276,14 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	// 7. Append any new Entries not already in the log
 	if point != NULL {
 		rf.log = append(rf.log[:point], args.Entries[point-1-args.PrevLogIndex:]...)
-	} else {
-		// fmt.Printf("Point is NULL, PrevLogIndex: %v, PrevLogTerm: %v, entries length: %v, self log length: %v \n", args.PrevLogIndex, args.PrevLogTerm, len(args.Entries), len(rf.log))
 	}
+	//  else {
+	// 	fmt.Printf("Server: %v Point is NULL, PrevLogIndex: %v, PrevLogTerm: %v,  self log length: %v \n", rf.me, args.PrevLogIndex, args.PrevLogTerm, len(rf.log))
+	// }
 	// 8. Advance state machine with newly committed Entries
 
 	if args.LeaderCommit > rf.commitIndex {
-		// fmt.Print("Server: ", rf.me, "match at point: ", point, "\n")
+		// fmt.Print("Server: ", rf.me, " match at point: ", point, "\n")
 		// fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
 		rf.commitIndex = Min(len(rf.log), args.LeaderCommit)
 	}
@@ -465,7 +471,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 		// fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " cannot send entry to ", peerId, "\n")
 		return
 	}
-	//fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " successfully sent entry to ", peerId, "\n")
+	// fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " successfully sent entry to ", peerId, "\n")
 
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
@@ -637,11 +643,11 @@ func (rf *Raft) applymsg() {
 		}
 
 		rf.applyMsgCh <- msg
-		// if rf.state == LEADER {
-		// 	// fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		// } else {
-		// 	fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		// }
+		if rf.state == LEADER {
+			// fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		} else {
+			// fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		}
 
 	}
 	// rf.mu.Lock()
