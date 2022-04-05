@@ -153,7 +153,7 @@ func (rf *Raft) TurnFollower(Term int, voteFor int) {
 	rf.currentTerm = Term
 	rf.votedFor = voteFor
 	rf.heartBeatTimer.Stop()
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 }
 
 func (rf *Raft) TurnCandidate() {
@@ -162,7 +162,7 @@ func (rf *Raft) TurnCandidate() {
 	rf.currentTerm += 1
 	rf.votedFor = rf.me
 	rf.heartBeatTimer.Stop()
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 }
 
 func (rf *Raft) TurnLeader() {
@@ -182,7 +182,9 @@ func (rf *Raft) TurnLeader() {
 			go rf.sendHeartBeat(i)
 		}
 	}
-	rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+	// rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+	resetTimer(rf.heartBeatTimer, HEARTBEAT_INTERVAL)
+
 }
 
 //
@@ -206,9 +208,12 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	}
 	if args.Term > rf.currentTerm {
 		//set as follower
-		// rf.TurnFollower(args.Term, NULL)
 		rf.currentTerm = args.Term
 		rf.votedFor = NULL
+		if rf.state != FOLLOWER {
+			rf.TurnFollower(args.Term, NULL)
+		}
+
 	} //check
 	// 2. If votedFor is null or CandidateId, and candidate’s log is at
 	// least as up-to-date as receiver’s log, grant vote (§5.2, §5.4)
@@ -218,7 +223,9 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			(rf.log[len(rf.log)-1].Term == args.LastLogTerm && len(rf.log)-1 <= args.LastLogIndex) {
 
 			reply.VoteGranted = true
-			rf.TurnFollower(args.Term, args.CandidateId)
+			// rf.TurnFollower(args.Term, args.CandidateId)
+			rf.votedFor = args.CandidateId
+			resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 			return
 		}
 	}
@@ -251,7 +258,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		rf.TurnFollower(args.Term, NULL)
 	}
 	// 4. Reset election timeout
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 	// 5. Return failure if log doesn’t contain an entry at
 	// PrevLogIndex whose Term matches PrevLogTerm'
 	// fmt.Printf("Server: %v len(rf.log)-1: %v, args.PrevLogIndex: %v \n", rf.me, len(rf.log)-1, args.PrevLogIndex)
@@ -423,7 +430,7 @@ func (rf *Raft) maintain() {
 			// fmt.Print("Found ", rf.me, " just killed\n")
 			break
 		}
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(20 * time.Millisecond)
 	}
 	return
 }
@@ -444,7 +451,9 @@ func (rf *Raft) handleLeader() {
 				go rf.sendHeartBeat(i)
 			}
 		}
-		rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+		// rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+		resetTimer(rf.heartBeatTimer, HEARTBEAT_INTERVAL)
+
 	}
 
 }
@@ -656,14 +665,25 @@ func (rf *Raft) applymsg() {
 		}
 
 		rf.applyMsgCh <- msg
-		// if rf.state == LEADER {
-		// 	fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		// } else {
-		// 	fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		// }
+		if rf.state == LEADER {
+			// fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		} else {
+			// fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		}
 
 	}
 	// rf.mu.Lock()
 	rf.lastApplied = rf.commitIndex
 	// rf.mu.Unlock()
+}
+
+// Reset a timer
+func resetTimer(timer *time.Timer, Duration time.Duration) {
+	if !timer.Stop() {
+		select {
+		case <-timer.C:
+		default:
+		}
+	}
+	timer.Reset((Duration))
 }
