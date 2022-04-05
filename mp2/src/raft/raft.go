@@ -18,7 +18,6 @@ package raft
 //
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -145,9 +144,9 @@ type AppendEntriesReply struct {
 
 func (rf *Raft) TurnFollower(Term int, voteFor int) {
 	if rf.state == FOLLOWER {
-		fmt.Print("Server: ", rf.me, " changes term to ", Term, "\n")
+		// fmt.Print("Server: ", rf.me, " changes term to ", Term, "\n")
 	} else {
-		fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
+		// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
 	}
 
 	rf.state = FOLLOWER
@@ -159,7 +158,7 @@ func (rf *Raft) TurnFollower(Term int, voteFor int) {
 
 func (rf *Raft) TurnCandidate() {
 	rf.state = CANDIDATE
-	fmt.Print("Server: ", rf.me, " becomes candidate at term: ", rf.currentTerm, "\n")
+	// fmt.Print("Server: ", rf.me, " becomes candidate at term: ", rf.currentTerm, "\n")
 	rf.currentTerm += 1
 	rf.votedFor = rf.me
 	rf.heartBeatTimer.Stop()
@@ -169,7 +168,7 @@ func (rf *Raft) TurnCandidate() {
 func (rf *Raft) TurnLeader() {
 	rf.mu.Lock()
 	rf.state = LEADER
-	fmt.Print("Server: ", rf.me, " becomes Leader at term: ", rf.currentTerm, "\n")
+	// fmt.Print("Server: ", rf.me, " becomes Leader at term: ", rf.currentTerm, "\n")
 	rf.electionTimer.Stop()
 
 	for i := range rf.peers {
@@ -276,7 +275,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	}
 	// 7. Append any new Entries not already in the log
 	if point != NULL {
-		fmt.Printf("Server: %v append entries with length %v at %v\n", rf.me, len(args.Entries[point-1-args.PrevLogIndex:]), point)
+		// fmt.Printf("Server: %v append entries with length %v at %v\n", rf.me, len(args.Entries[point-1-args.PrevLogIndex:]), point)
 		rf.log = append(rf.log[:point], args.Entries[point-1-args.PrevLogIndex:]...)
 	}
 	//  else {
@@ -286,7 +285,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 	if args.LeaderCommit > rf.commitIndex {
 		// fmt.Print("Server: ", rf.me, " match at point: ", point, "\n")
-		fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
+		// fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
 		rf.commitIndex = Min(len(rf.log), args.LeaderCommit)
 	}
 
@@ -373,9 +372,9 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	rf.matchIndex[rf.me] = len(rf.log) - 1
 	rf.nextIndex[rf.me] = len(rf.log)
 	index = len(rf.log) - 1
-	if isLeader {
-		fmt.Printf("Leader: %v get new entry at index %v\n", rf.me, index)
-	}
+	// if isLeader {
+	// 	fmt.Printf("Leader: %v get new entry at index %v\n", rf.me, index)
+	// }
 	rf.mu.Unlock()
 
 	return index, Term, isLeader
@@ -507,7 +506,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 			}
 			half := len(rf.peers) / 2
 			if total > half {
-				fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i, "\n")
+				// fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i, "\n")
 				rf.commitIndex = Max(i, rf.commitIndex)
 				// fmt.Print(" with the last commited log's term is: ", rf.log[rf.commitIndex].Term, "\n")
 				break
@@ -517,7 +516,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 
 		return
 	} else {
-		fmt.Print("Leader: ", rf.me, " sends heart beat with nextIndex ", rf.nextIndex[peerId], " to ", peerId, " fail\n")
+		// fmt.Print("Leader: ", rf.me, " sends heart beat with nextIndex ", rf.nextIndex[peerId], " to ", peerId, " fail\n")
 		rf.nextIndex[peerId]--
 	}
 }
@@ -573,7 +572,7 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 	}
 	if reply.VoteGranted && (rf.state == CANDIDATE) {
 		atomic.AddInt32(voteNum, 1)
-		fmt.Print("Candidate: ", rf.me, " get votes from ", peerId, " Total votes: ", atomic.LoadInt32(voteNum), "\n")
+		// fmt.Print("Candidate: ", rf.me, " get votes from ", peerId, " Total votes: ", atomic.LoadInt32(voteNum), "\n")
 		if atomic.LoadInt32(voteNum) > int32(len(rf.peers)/2) {
 			rf.state = LEADER
 			rf.mu.Unlock()
@@ -591,7 +590,7 @@ func (rf *Raft) checkElectionTimeout() {
 	rf.mu.Lock()
 	select {
 	case <-rf.electionTimer.C:
-		fmt.Print("Server: ", rf.me, " Timeout\n")
+		// fmt.Print("Server: ", rf.me, " Timeout\n")
 		rf.TurnCandidate()
 		rf.mu.Unlock()
 		rf.startElection()
