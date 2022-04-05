@@ -18,6 +18,7 @@ package raft
 //
 
 import (
+	"fmt"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -86,9 +87,9 @@ const (
 	CANDIDATE           = 1
 	FOLLOWER            = 2
 	NULL                = -1
-	ELECTIONTIMEOUT_MAX = 500
-	ELECTIONTIMEOUT_MIN = 150
-	HEARTBEAT_INTERVAL  = 110 * time.Millisecond
+	ELECTIONTIMEOUT_MAX = 400
+	ELECTIONTIMEOUT_MIN = 200
+	HEARTBEAT_INTERVAL  = 150 * time.Millisecond
 )
 
 // return currentTerm and whether this server
@@ -144,25 +145,21 @@ type AppendEntriesReply struct {
 
 func (rf *Raft) TurnFollower(Term int, voteFor int) {
 	if rf.state == FOLLOWER {
-		// fmt.Print("Server: ", rf.me, " changes term from ", rf.currentTerm, " to ", Term, "\n")
-		rf.currentTerm = Term
-		rf.votedFor = voteFor
-
-		return
+		fmt.Print("Server: ", rf.me, " changes term to ", Term, "\n")
 	} else {
-		// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
+		fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
 	}
 
 	rf.state = FOLLOWER
 	rf.currentTerm = Term
 	rf.votedFor = voteFor
 	rf.heartBeatTimer.Stop()
-	//rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 }
 
 func (rf *Raft) TurnCandidate() {
 	rf.state = CANDIDATE
-	// fmt.Print("Server: ", rf.me, " becomes candidate at term: ", rf.currentTerm, "\n")
+	fmt.Print("Server: ", rf.me, " becomes candidate at term: ", rf.currentTerm, "\n")
 	rf.currentTerm += 1
 	rf.votedFor = rf.me
 	rf.heartBeatTimer.Stop()
@@ -172,7 +169,7 @@ func (rf *Raft) TurnCandidate() {
 func (rf *Raft) TurnLeader() {
 	rf.mu.Lock()
 	rf.state = LEADER
-	// fmt.Print("Server: ", rf.me, " becomes Leader at term: ", rf.currentTerm, "\n")
+	fmt.Print("Server: ", rf.me, " becomes Leader at term: ", rf.currentTerm, "\n")
 	rf.electionTimer.Stop()
 
 	for i := range rf.peers {
@@ -210,17 +207,19 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	}
 	if args.Term > rf.currentTerm {
 		//set as follower
-		rf.TurnFollower(args.Term, NULL)
+		// rf.TurnFollower(args.Term, NULL)
+		rf.currentTerm = args.Term
+		rf.votedFor = NULL
 	} //check
 	// 2. If votedFor is null or CandidateId, and candidate’s log is at
 	// least as up-to-date as receiver’s log, grant vote (§5.2, §5.4)
-	reply.Term = args.Term
+	reply.Term = rf.currentTerm
 	if rf.votedFor == NULL || rf.votedFor == args.CandidateId {
-		if len(rf.log) == 0 || rf.log[len(rf.log)-1].Term < args.LastLogTerm ||
+		if rf.log[len(rf.log)-1].Term < args.LastLogTerm ||
 			(rf.log[len(rf.log)-1].Term == args.LastLogTerm && len(rf.log)-1 <= args.LastLogIndex) {
-			rf.votedFor = args.CandidateId
+
 			reply.VoteGranted = true
-			rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+			rf.TurnFollower(args.Term, args.CandidateId)
 			return
 		}
 	}
@@ -245,11 +244,13 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	// 2. If Term > currentTerm, currentTerm ← Term
 	if args.Term > rf.currentTerm {
 		rf.currentTerm = args.Term
-		rf.TurnFollower(args.Term, NULL)
+		rf.votedFor = NULL
 	}
 
 	// 3. If candidate or leader, step down
-
+	if rf.state != FOLLOWER {
+		rf.TurnFollower(args.Term, NULL)
+	}
 	// 4. Reset election timeout
 	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 	// 5. Return failure if log doesn’t contain an entry at
@@ -275,6 +276,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	}
 	// 7. Append any new Entries not already in the log
 	if point != NULL {
+		fmt.Printf("Server: %v append entries with length %v at %v\n", rf.me, len(args.Entries[point-1-args.PrevLogIndex:]), point)
 		rf.log = append(rf.log[:point], args.Entries[point-1-args.PrevLogIndex:]...)
 	}
 	//  else {
@@ -284,7 +286,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 
 	if args.LeaderCommit > rf.commitIndex {
 		// fmt.Print("Server: ", rf.me, " match at point: ", point, "\n")
-		// fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
+		fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
 		rf.commitIndex = Min(len(rf.log), args.LeaderCommit)
 	}
 
@@ -371,6 +373,9 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	rf.matchIndex[rf.me] = len(rf.log) - 1
 	rf.nextIndex[rf.me] = len(rf.log)
 	index = len(rf.log) - 1
+	if isLeader {
+		fmt.Printf("Leader: %v get new entry at index %v\n", rf.me, index)
+	}
 	rf.mu.Unlock()
 
 	return index, Term, isLeader
@@ -450,6 +455,10 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 		return
 	}
 	rf.mu.Lock()
+	if rf.state != LEADER {
+		rf.mu.Unlock()
+		return
+	}
 	entries := make([]LogEntry, len(rf.log[(rf.nextIndex[peerId]):]))
 	copy(entries, rf.log[(rf.nextIndex[peerId]):])
 	args := AppendEntriesArgs{
@@ -498,7 +507,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 			}
 			half := len(rf.peers) / 2
 			if total > half {
-				// fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i)
+				fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i, "\n")
 				rf.commitIndex = Max(i, rf.commitIndex)
 				// fmt.Print(" with the last commited log's term is: ", rf.log[rf.commitIndex].Term, "\n")
 				break
@@ -508,7 +517,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 
 		return
 	} else {
-		// fmt.Print("Leader: ", rf.me, " sends heart beat with nextIndex ", rf.nextIndex[peerId], " to ", peerId, " fail\n")
+		fmt.Print("Leader: ", rf.me, " sends heart beat with nextIndex ", rf.nextIndex[peerId], " to ", peerId, " fail\n")
 		rf.nextIndex[peerId]--
 	}
 }
@@ -543,22 +552,28 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 	}
 	reply := RequestVoteReply{}
 	Success := rf.sendRequestVote(peerId, args, &reply)
+	rf.mu.Lock()
+
 	if rf.killed() {
+		rf.mu.Unlock()
+		return
+	}
+	if rf.state != CANDIDATE {
+		rf.mu.Unlock()
 		return
 	}
 	if !Success {
 		// fmt.Print("Candidate: ", rf.me, "cannot send requestvote to ", peerId, "\n")
+		rf.mu.Unlock()
 		return
 	}
 	// step down if get a larger Term
 	if reply.Term > rf.currentTerm {
-		rf.mu.Lock()
 		rf.TurnFollower(reply.Term, NULL)
-		rf.mu.Unlock()
 	}
-	rf.mu.Lock()
 	if reply.VoteGranted && (rf.state == CANDIDATE) {
 		atomic.AddInt32(voteNum, 1)
+		fmt.Print("Candidate: ", rf.me, " get votes from ", peerId, " Total votes: ", atomic.LoadInt32(voteNum), "\n")
 		if atomic.LoadInt32(voteNum) > int32(len(rf.peers)/2) {
 			rf.state = LEADER
 			rf.mu.Unlock()
@@ -567,7 +582,6 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 		}
 	}
 	rf.mu.Unlock()
-
 }
 
 func (rf *Raft) checkElectionTimeout() {
@@ -577,7 +591,7 @@ func (rf *Raft) checkElectionTimeout() {
 	rf.mu.Lock()
 	select {
 	case <-rf.electionTimer.C:
-		// fmt.Print("Server: ", rf.me, " Timeout\n")
+		fmt.Print("Server: ", rf.me, " Timeout\n")
 		rf.TurnCandidate()
 		rf.mu.Unlock()
 		rf.startElection()
@@ -643,11 +657,11 @@ func (rf *Raft) applymsg() {
 		}
 
 		rf.applyMsgCh <- msg
-		if rf.state == LEADER {
-			// fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		} else {
-			// fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		}
+		// if rf.state == LEADER {
+		// 	fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		// } else {
+		// 	fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		// }
 
 	}
 	// rf.mu.Lock()
