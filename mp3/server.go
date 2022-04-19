@@ -32,7 +32,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -47,9 +49,27 @@ var conn net.Conn
 var err error
 
 type Server struct {
-	me      string // self name , e.g. A
-	address map[string](string)
-	port    map[string](string)
+	me        string // self name , e.g. A
+	address   map[string](string)
+	port      map[string](string)
+	accounts  map[string](Account)
+	send_conn net.Conn
+	read_conn net.Conn
+}
+
+type Transaction struct {
+	method  string
+	branch  string
+	account string
+	amount  int
+}
+
+type Account struct {
+	name               string
+	committedValue     int
+	committedTimestamp int
+	TW                 []int
+	RTS                []int
 }
 
 func (sv *Server) readFromConfig(config_file string) {
@@ -62,47 +82,65 @@ func (sv *Server) readFromConfig(config_file string) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		arr := strings.Split(line, " ")
-		fmt.Println(arr[0], arr[1])
 		sv.address[arr[0]] = arr[1]
 		sv.port[arr[0]] = arr[2]
-		fmt.Println(sv.address, sv.port)
 	}
 }
 
-func handle_transaction() {
-	reader := bufio.NewReader(os.Stdin)
+func (sv *Server) handleClient() {
+	var buf [512]byte
+	result := bytes.NewBuffer(nil)
 	for {
-		text, _ := reader.ReadString('\n')
-		fmt.Fprintf(conn, "%s", text)
+		n, err := sv.read_conn.Read(buf[0:])
+		result.Write(buf[0:n])
+		if err != nil {
+			fmt.Println(err)
+			if err == io.EOF {
+				break
+			}
+			return
+		}
+		fmt.Println(result)
 	}
+	fmt.Println(result.Bytes())
 }
 
+func (sv *Server) connect_client() {
+	ln, err := net.Listen("tcp", strings.Join([]string{sv.address[sv.me], sv.port[sv.me]}, ":"))
+	if err != nil {
+		panic(err)
+	}
+	conn, err := ln.Accept()
+	if err != nil {
+		panic(err)
+	}
+	sv.read_conn = conn
+
+	addr := conn.RemoteAddr().String()
+	clientAddr := strings.Split(addr, ":")[0]
+	fmt.Println(clientAddr)
+	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1023"}, ":"))
+	if err != nil {
+		panic(err)
+	}
+	sv.send_conn = send_conn
+
+}
 func main() {
 	argv := os.Args[1:]
 	if len(argv) != ARG_NUM_CLIENT {
 		fmt.Fprintf(os.Stderr, "usage: ./server <Server Name [A,B,C,D,E]> <config.txt>\n")
 		os.Exit(1)
 	}
-	sv := &Server{}
-	sv.me = argv[0]
-	sv.address = make(map[string]string)
-	sv.port = make(map[string]string)
+	sv := Server{
+		me:       argv[0],
+		address:  make(map[string]string),
+		port:     make(map[string]string),
+		accounts: make(map[string]Account),
+	}
 	config_file := argv[1]
 
 	sv.readFromConfig(config_file)
-
-	// file.Close()
-
-	// conn, err = net.Dial("tcp", strings.Join([]string{serv_addr, serv_port}, ":"))
-
-	// if err != nil {
-	// 	fmt.Fprintf(os.Stderr, "%s\n", err)
-	// 	os.Exit(1)
-	// }
-
-	// fmt.Fprintf(conn, "%s\n", node_name)
-
-	// wg.Add(1)
-	// go handle_transaction()
-	// wg.Wait()
+	sv.connect_client()
+	sv.handleClient()
 }

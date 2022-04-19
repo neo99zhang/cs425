@@ -1,5 +1,5 @@
-A sp22-cs425-g03-01.cs.illinois.edu 1234
-B sp22-cs425-g03-02.cs.illinois.edu 1234
-C sp22-cs425-g03-03.cs.illinois.edu 1234
-D sp22-cs425-g03-04.cs.illinois.edu 1234
-E sp22-cs425-g03-05.cs.illinois.edu 1234
+A 127.0.0.1 1234
+B 127.0.0.1 1234
+C 127.0.0.1 1234
+D 127.0.0.1 1234
+E 127.0.0.1 1234
