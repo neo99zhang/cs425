@@ -1,40 +1,9 @@
-// Write Rule
-// Transaction Tc requests a write operation on object D
-// if (Tc ≥ max. read timestamp on D
-// && Tc > write timestamp on committed version of D)
-// Perform a tentative write on D:
-// If Tc already has an entry in the TW list for D, update it.
-// Else, add Tc and its write value to the TW list.
-// else
-// abort transaction Tc
-// //too late; a transaction with later timestamp has already read or
-// written the object.
-
-// //Read Rule
-// Transaction Tc requests a read operation on object D
-// if (Tc > write timestamp on committed version of D) {
-// Ds = version of D with the maximum write timestamp that is ≤ Tc
-// //search across the committed timestamp and the TW list for object D.
-// if (Ds is committed)
-// read Ds and add Tc to RTS list (if not already added)
-// else
-// if Ds was written by Tc, simply read Ds
-// else
-// wait until the transaction that wrote Ds is committed or aborted, and
-// reapply the read rule.
-// // if the transaction is committed, Tc will read its value after the wait.
-// // if the transaction is aborted, Tc will read the value from an older
-// transaction.
-// } else
-// abort transaction Tc
-// //too late; a transaction with later timestamp has already written the object.
 package main
 
 import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -52,24 +21,114 @@ type Server struct {
 	me        string // self name , e.g. A
 	address   map[string](string)
 	port      map[string](string)
-	accounts  map[string](Account)
+	accounts  sync.Map
 	send_conn net.Conn
 	read_conn net.Conn
 }
 
-type Transaction struct {
-	method  string
-	branch  string
-	account string
-	amount  int
+type Operation struct {
+	method    string
+	branch    string
+	account   string
+	amount    int
+	timestamp int
+}
+
+type write_vale struct {
+	timestamp int
+	value     int
 }
 
 type Account struct {
+	mu *sync.RWMutex
+
 	name               string
 	committedValue     int
 	committedTimestamp int
-	TW                 []int
+	TW                 []write_vale
 	RTS                []int
+	amount             int
+}
+
+func (sv *Server) read(op Operation) {
+	// //Read Rule
+	// Transaction Tc requests a read operation on object D
+	// if (Tc > write timestamp on committed version of D) {
+	// Ds = version of D with the maximum write timestamp that is ≤ Tc
+	// //search across the committed timestamp and the TW list for object D.
+	// if (Ds is committed)
+	// read Ds and add Tc to RTS list (if not already added)
+	// else
+	// if Ds was written by Tc, simply read Ds
+	// else
+	// wait until the transaction that wrote Ds is committed or aborted, and
+	// reapply the read rule.
+	// // if the transaction is committed, Tc will read its value after the wait.
+	// // if the transaction is aborted, Tc will read the value from an older
+	// transaction.
+	// } else
+	// abort transaction Tc
+	// //too late; a transaction with later timestamp has already written the object.
+	account, ok := sv.accounts.Load(op.account)
+	if !ok {
+		//abort
+		return
+	}
+
+	account.mu.RLock()
+	defer account.mu.RUnlock()
+
+	// if (Tc > write timestamp on committed version of D)
+	sv.acc_mutex.Lock()
+	sv.accounts[op.account]
+	sv.acc_mutex.Unlock()
+	if op.timestamp > .committedTimestamp {
+
+	} else {
+
+	}
+
+}
+
+func (sv *Server) write(op Operation) {
+	// Write Rule
+	// Transaction Tc requests a write operation on object D
+	sv.accounts[op.account].mu.Lock()
+	defer sv.accounts[op.account].mu.Unlock()
+	// if (Tc ≥ max. read timestamp on D
+	// && Tc > write timestamp on committed version of D)
+	if (op.timestamp >= sv.accounts.Load(op.account).RTS[0] || len(sv.accounts[op.account].RTS) == 0) && (op.timestamp > sv.accounts[op.account].TW[0].timestamp || len(sv.accounts[op.account].TW) == 0) {
+		// Perform a tentative write on D:
+		// If Tc already has an entry in the TW list for D, update it.
+		foundFlag := false
+		for i := range sv.accounts[op.account].TW {
+			if sv.accounts[op.account].TW[i].timestamp == op.timestamp {
+				foundFlag = true
+				sv.accounts[op.account].amount += op.amount
+				break
+			}
+		}
+		if foundFlag == false {
+			// Else, add Tc and its write value to the TW list.
+			tuple := write_vale{
+				timestamp: op.timestamp,
+				value:     op.amount,
+			}
+			if op.method == "WITHDRAW" {
+				tuple.value *= -1
+			}
+			sv.accounts[op.account].TW = append(sv.accounts[op.account].TW)
+			//TODO sort here
+
+		}
+
+	} else {
+		// else
+		// abort transaction Tc
+		// //too late; a transaction with later timestamp has already read or
+		// written the object.
+	}
+
 }
 
 func (sv *Server) readFromConfig(config_file string) {
@@ -87,6 +146,14 @@ func (sv *Server) readFromConfig(config_file string) {
 	}
 }
 
+// Send a message to client
+// Notice: Need to set connection before
+func (sv *Server) sendtoClient(text string) {
+	fmt.Fprintf(sv.send_conn, "%s\n", text)
+}
+
+// Continuously read message from the client
+// Notice: Need to set connection before
 func (sv *Server) handleClient() {
 	var buf [512]byte
 	result := bytes.NewBuffer(nil)
@@ -95,14 +162,13 @@ func (sv *Server) handleClient() {
 		result.Write(buf[0:n])
 		if err != nil {
 			fmt.Println(err)
-			if err == io.EOF {
-				break
-			}
+			// if err == io.EOF {
+			// 	break
+			// }
 			return
 		}
 		fmt.Println(result)
 	}
-	fmt.Println(result.Bytes())
 }
 
 func (sv *Server) connect_client() {
@@ -126,6 +192,11 @@ func (sv *Server) connect_client() {
 	sv.send_conn = send_conn
 
 }
+
+func abort() {
+
+}
+
 func main() {
 	argv := os.Args[1:]
 	if len(argv) != ARG_NUM_CLIENT {
@@ -142,5 +213,9 @@ func main() {
 
 	sv.readFromConfig(config_file)
 	sv.connect_client()
-	sv.handleClient()
+
+	wg.Add(1)
+	go sv.handleClient()
+	sv.sendtoClient()
+	wg.Wait()
 }

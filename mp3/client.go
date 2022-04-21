@@ -32,6 +32,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"log"
 	"math/rand"
@@ -117,6 +118,24 @@ func (cl *Client) wait_response() {
 	}
 }
 
+func (cl *Client) handleServer() {
+	var buf [512]byte
+	result := bytes.NewBuffer(nil)
+	for {
+		n, err := cl.read_conn.Read(buf[0:])
+		result.Write(buf[0:n])
+		if err != nil {
+			fmt.Println(err)
+			// if err == io.EOF {
+			// 	break
+			// }
+			return
+		}
+		fmt.Println(result)
+	}
+
+}
+
 func main() {
 	argv := os.Args[1:]
 	if len(argv) != ARG_NUM_CLIENT {
@@ -134,6 +153,7 @@ func main() {
 	cl.connect_server()
 	go cl.wait_response()
 	wg.Add(1)
-	fmt.Fprintf(cl.send_conn, "hello, my name is %s \n", cl.me)
+	go fmt.Fprintf(cl.send_conn, "Msg from client: Hello, my name is %s \n", cl.me)
+	go cl.handleServer()
 	wg.Wait()
 }
