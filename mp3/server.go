@@ -79,10 +79,7 @@ func (sv *Server) read(op Operation) {
 	defer account.mu.RUnlock()
 
 	// if (Tc > write timestamp on committed version of D)
-	sv.acc_mutex.Lock()
-	sv.accounts[op.account]
-	sv.acc_mutex.Unlock()
-	if op.timestamp > .committedTimestamp {
+	if op.timestamp > sv.accounts[op.account].committedTimestamp {
 
 	} else {
 
