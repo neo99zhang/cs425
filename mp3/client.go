@@ -38,6 +38,7 @@ import (
 	"math/rand"
 	"net"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -53,11 +54,12 @@ var conn net.Conn
 var err error
 
 type Client struct {
-	me        string // self name , e.g. A
-	address   map[string](string)
-	port      map[string](string)
-	send_conn net.Conn
-	read_conn net.Conn
+	me                 string // self name , e.g. A
+	address            map[string](string)
+	port               map[string](string)
+	send_conn          net.Conn
+	read_conn          net.Conn
+	currentTransaction bool
 }
 
 func (cl *Client) readFromConfig(config_file string) {
@@ -151,9 +153,51 @@ func main() {
 	config_file := argv[1]
 	cl.readFromConfig(config_file)
 	cl.connect_server()
-	go cl.wait_response()
-	wg.Add(1)
-	go fmt.Fprintf(cl.send_conn, "Msg from client: Hello, my name is %s \n", cl.me)
-	go cl.handleServer()
-	wg.Wait()
+	// cl.wait_response()
+	// go fmt.Fprintf(cl.send_conn, "Msg from client: Hello, my name is %s \n", cl.me)
+
+	//TODO make connections to servers
+	// wg.Add(1)
+	reader := bufio.NewReader(os.Stdin)
+	cl.currentTransaction = true
+	for {
+		if cl.currentTransaction == false {
+			break
+		}
+		input, _ := reader.ReadString('\n')
+		if len(input) == 0 {
+			continue
+		}
+
+		input = strings.TrimSpace(input)
+		// fmt.Println(input)
+		if "BEGIN" == input { // trimmed to the last before \n
+			// if cl.currentTransaction {
+			// 	continue
+			// }
+			fmt.Println("OK")
+		} else {
+			if cl.currentTransaction {
+				tmsp := time.Now().UnixNano()
+				stmsp := strconv.FormatInt(tmsp, 10)
+				toServer := input + " " + stmsp
+				fmt.Println(toServer)
+				fmt.Fprintf(cl.send_conn, "%s\n", toServer)
+				reader := bufio.NewReader(cl.read_conn)
+				response, error1 := reader.ReadString('\n')
+				if error1 != nil {
+					fmt.Println("Have error when listening for ", cl.read_conn)
+				} else {
+					fmt.Println(response)
+					response = strings.TrimSpace(response)
+					if response == "NOT FOUND, ABORTED" || response == "ABORTED" || response == "COMMIT OK" {
+						cl.currentTransaction = false
+						fmt.Println("Debug Message: Ends at ", response)
+					}
+				}
+			}
+		}
+	}
+	// go cl.handleServer()
+	// wg.Wait()
 }

@@ -20,8 +20,8 @@ var wg sync.WaitGroup
 var conn net.Conn
 var err error
 
-func FindMax(array []int) int {
-	var max int = array[0]
+func FindMax(array []int64) int64 {
+	var max int64 = array[0]
 	for _, value := range array {
 		if max < value {
 			max = value
@@ -40,7 +40,7 @@ type Server struct {
 	send_conn map[string](net.Conn) // [client's name](connection)
 	read_conn map[string](net.Conn) // [client's name](connection)
 	TW        map[string][]write_vale
-	RTS       map[string][]int
+	RTS       map[string][]int64
 	ln        net.Listener
 }
 
@@ -49,14 +49,31 @@ type Operation struct {
 	branch    string
 	account   string
 	amount    int
-	timestamp int
+	timestamp int64
+}
+
+type write_vale struct {
+	timestamp int64
+	value     int
+}
+
+type Account struct {
+	mu *sync.RWMutex
+	// mu_RTS             *sync.Mutex
+	name               string
+	committedValue     int
+	committedTimestamp int64
+	// TW                 []write_vale
+	// RTS                []int
+	amount int
+	// temAmount int
 }
 
 func (op *Operation) Init(operation string) {
 	words := strings.Fields(operation)
 	op.method = words[0]
 	switch op.method {
-	case "DEPOSITE":
+	case "DEPOSIT":
 		if len(words) != 4 {
 			panic("DEPOSITE missing info")
 		}
@@ -66,13 +83,13 @@ func (op *Operation) Init(operation string) {
 			panic(err)
 		}
 		op.amount = amount
-		timestamp, err := strconv.Atoi(words[3])
+		timestamp, err := strconv.ParseInt(words[3], 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		op.timestamp = timestamp
 
-	case "WIDTHDRAW":
+	case "WITHDRAW":
 		if len(words) != 4 {
 			panic("WIDTHDRAW missing info")
 		}
@@ -82,7 +99,7 @@ func (op *Operation) Init(operation string) {
 			panic(err)
 		}
 		op.amount = -amount
-		timestamp, err := strconv.Atoi(words[3])
+		timestamp, err := strconv.ParseInt(words[3], 10, 64)
 		if err != nil {
 			panic(err)
 		}
@@ -96,14 +113,14 @@ func (op *Operation) Init(operation string) {
 		if err != nil {
 			panic(err)
 		}
-		timestamp, err := strconv.Atoi(words[2])
+		timestamp, err := strconv.ParseInt(words[2], 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		op.timestamp = timestamp
 
 	case "COMMIT":
-		timestamp, err := strconv.Atoi(words[1])
+		timestamp, err := strconv.ParseInt(words[1], 10, 64)
 		if err != nil {
 			panic(err)
 		}
@@ -113,23 +130,6 @@ func (op *Operation) Init(operation string) {
 		panic("The operation is not found.")
 	}
 
-}
-
-type write_vale struct {
-	timestamp int
-	value     int
-}
-
-type Account struct {
-	mu *sync.RWMutex
-	// mu_RTS             *sync.Mutex
-	name               string
-	committedValue     int
-	committedTimestamp int
-	// TW                 []write_vale
-	// RTS                []int
-	amount int
-	// temAmount int
 }
 
 //check if ac exists in server
@@ -238,12 +238,25 @@ func (sv *Server) write(op Operation) bool {
 	abort := false
 	// Write Rule
 	// Transaction Tc requests a write operation on object D
+
+	if check_inList(op.account, sv.accounts) == false {
+		if op.method == "WITHDRAW" {
+			abort = true
+			return abort
+		} else if op.method == "DEPOSIT" {
+			newAccount := Account{
+				mu:                 &sync.RWMutex{},
+				name:               op.account,
+				committedValue:     0,
+				committedTimestamp: 0,
+				amount:             op.amount,
+			}
+			sv.accounts[op.account] = newAccount
+		}
+
+	}
 	sv.accounts[op.account].mu.Lock()
 	defer sv.accounts[op.account].mu.Unlock()
-	if check_inList(op.account, sv.accounts) == false && op.method == "WITHDRAW" {
-		abort = true
-		return abort
-	}
 	// if (Tc ≥ max. read timestamp on D
 	// && Tc > write timestamp on committed version of D)
 	sv.mu_RTS.Lock()
@@ -264,13 +277,7 @@ func (sv *Server) write(op Operation) bool {
 				// 	amount:             sv.accounts[op.account].amount + op.amount,
 				// }
 				// sv.accounts[op.account] = newAccount
-				am := 0
-				if op.method == "DEPOSIT" {
-					am = op.amount
-				} else if op.method == "WITHDRAW" {
-					am = -1 * op.amount
-				}
-
+				am := op.amount
 				// newWriteValue := write_vale{
 				// 	timestamp: op.timestamp,
 				// 	value:     am,
@@ -284,9 +291,6 @@ func (sv *Server) write(op Operation) bool {
 			tuple := write_vale{
 				timestamp: op.timestamp,
 				value:     op.amount,
-			}
-			if op.method == "WITHDRAW" {
-				tuple.value *= -1
 			}
 			sv.TW[op.account] = append(sv.TW[op.account], tuple)
 		}
@@ -381,7 +385,7 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 		panic(err)
 	}
 
-	addr := conn.RemoteAddr().String()
+	addr := read_conn.RemoteAddr().String()
 	clientAddr := strings.Split(addr, ":")[0]
 	fmt.Println(clientAddr)
 	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1023"}, ":"))
@@ -391,26 +395,26 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	return read_conn, send_conn
 }
 
-func (sv *Server) abort(timestamp string) {
+func (sv *Server) DoAbort(timestamp int64) {
 
-	for acc:= range sv.TW {
-		for i := 0; i < len(sv.TW[acc]);{
-			if timestamp == sv.TW[acc][i].timestamp  {
-					sv.TW[acc] = append(sv.TW[acc][:i], sv.TW[acc][i+1:]...)
-					// sv.TW[acc][i] = sv.TW[acc][len(sv.TW[acc])-1] // Copy last element to index i.
-					// sv.TW[acc][len(sv.TW[acc])-1] = ""   // Erase last element (write zero value).
-					// sv.TW[acc] = sv.TW[acc][:len(sv.TW[acc])-1]
-			}else {
+	for acc := range sv.TW {
+		for i := 0; i < len(sv.TW[acc]); {
+			if timestamp == sv.TW[acc][i].timestamp {
+				sv.TW[acc] = append(sv.TW[acc][:i], sv.TW[acc][i+1:]...)
+				// sv.TW[acc][i] = sv.TW[acc][len(sv.TW[acc])-1] // Copy last element to index i.
+				// sv.TW[acc][len(sv.TW[acc])-1] = ""   // Erase last element (write zero value).
+				// sv.TW[acc] = sv.TW[acc][:len(sv.TW[acc])-1]
+			} else {
 				i++
 			}
 		}
 
 	}
-	for acc:= range sv.RTS {
-		for i := 0; i < len(sv.RTS);{
-			if timestamp == sv.RTS[i] {
+	for acc := range sv.RTS {
+		for i := 0; i < len(sv.RTS); {
+			if timestamp == sv.RTS[acc][i] {
 				sv.RTS[acc] = append(sv.RTS[acc][:i], sv.RTS[acc][i+1:]...)
-			}else {
+			} else {
 				i++
 			}
 		}
@@ -419,9 +423,10 @@ func (sv *Server) abort(timestamp string) {
 	//TODO send abort message back
 }
 
-func (sv *Server) commit(timestamp int) bool {
+func (sv *Server) commit(timestamp int64) bool {
 	abort := false
 	// iterate every account, check whether the final balance is negative
+	sv.mu_TW.Lock()
 	for name, TW := range sv.TW {
 		Ds := sv.accounts[name].committedValue
 		for i := range TW {
@@ -431,89 +436,107 @@ func (sv *Server) commit(timestamp int) bool {
 		}
 		if Ds < 0 {
 			// abort the transaction
-			sv.abort(timestamp)
+			sv.mu_TW.Unlock()
+			sv.DoAbort(timestamp)
 			abort = true
+			return abort
 		}
 	}
+
 	// commit the transaction
-	for name, TW := range sv.TW {
+	for name := range sv.TW {
 		Ds := sv.accounts[name].committedValue
-		TS := sv.accounts[name].committedTimestamp
 		flag := false
-		for i := 0; i <  len(TW);{
-			if TW[i].timestamp <= timestamp {
-				Ds += TW[i].value
-				if TW[i].timestamp == timestamp{
+		for i := 0; i < len(sv.TW[name]); {
+			if sv.TW[name][i].timestamp <= timestamp {
+				Ds += sv.TW[name][i].value
+				if sv.TW[name][i].timestamp == timestamp {
 					flag = true
-					sv.TW[acc] = append(sv.TW[acc][:i], sv.TW[acc][i+1:]...)
+					sv.TW[name] = append(sv.TW[name][:i], sv.TW[name][i+1:]...)
+				} else {
+					i++
 				}
-			}else{
-				i++
 			}
 		}
-		if flag{
-			sv.accounts[name].committedValue = Ds
-			sv.accounts[name].committedTimestamp = timestamp 
+		if flag {
+			sv.accounts[name].mu.Lock()
+			defer sv.accounts[name].mu.Unlock()
+			newAccount := Account{
+				name:               sv.accounts[name].name,
+				committedValue:     Ds,
+				committedTimestamp: timestamp,
+				amount:             sv.accounts[name].amount,
+			}
+			sv.accounts[name] = newAccount
 		}
 	}
-	sv.
+	sv.mu_TW.Unlock()
+	// sv.
 
 	return abort
 }
-func (sv *Server) handleOperation(op Operation, send_conn net.Conn) {
+func (sv *Server) handleOperation(op Operation, send_conn net.Conn) (bool, bool) {
+	abort := false
+	commit := false
 	switch op.method {
-	case "DEPOSITE":
-		abort := sv.write(op)
+	case "DEPOSIT":
+		abort = sv.write(op)
 		if abort {
 			sv.sendtoClient("ABORTED", send_conn)
-			sv.abort(op.timestamp)
+			sv.DoAbort(op.timestamp)
 		} else {
 			sv.sendtoClient("OK", send_conn)
 		}
 
-	case "WIDTHDRAW":
-		abort := sv.write(op)
+	case "WITHDRAW":
+		abort = sv.write(op)
 		if abort {
-			sv.sendtoClient("ABORTED", send_conn)
-			sv.abort(op.timestamp)
+			sv.sendtoClient("NOT FOUND, ABORTED", send_conn)
+			sv.DoAbort(op.timestamp)
 		} else {
 			sv.sendtoClient("OK", send_conn)
 		}
 
 	case "BALANCE":
-		value, abort := sv.read(op)
+		value, aborted := sv.read(op)
+		abort = aborted
 		if abort {
-			sv.sendtoClient("ABORTED", send_conn)
-			sv.abort(op.timestamp)
+			sv.sendtoClient("NOT FOUND, ABORTED", send_conn)
+			sv.DoAbort(op.timestamp)
 		} else {
 			sv.sendtoClient(strconv.Itoa(value), send_conn)
 		}
 
 	case "COMMIT":
-		abort := sv.commit(op.timestamp)
+		abort = sv.commit(op.timestamp)
 		if abort {
 			sv.sendtoClient("ABORTED", send_conn)
-			sv.abort(op.timestamp)
+			sv.DoAbort(op.timestamp)
 		} else {
-			sv.sendtoClient("OK", send_conn)
+			sv.sendtoClient("COMMIT OK", send_conn)
+			commit = true
 		}
 	}
+	return abort, commit
 }
 
 func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 	//handle all from one connection(IP)
 	//TODO judge branch or client
-	operations := sv.readClient(read_conn)
-	operations_list := strings.Split(operations, "\n")
-	for _, operation := range operations_list {
+	for {
+		operation := sv.readClient(read_conn)
+		operation = strings.TrimSpace(operation)
 		op := new(Operation)
 		op.Init(operation)
 		// TODO handle operation based on the operation types
-		sv.handleOperation(op, send_conn)
+		abort, commit := sv.handleOperation(*op, send_conn)
+		if abort || commit {
+			break
+		}
+
 	}
-
-	defer conn.Close()
-
+	read_conn.Close()
+	send_conn.Close()
 }
 
 func main() {
@@ -523,10 +546,16 @@ func main() {
 		os.Exit(1)
 	}
 	sv := Server{
-		me:       argv[0],
-		address:  make(map[string]string),
-		port:     make(map[string]string),
-		accounts: make(map[string]Account),
+		mu_RTS:    &sync.Mutex{},
+		mu_TW:     &sync.Mutex{},
+		me:        argv[0],
+		address:   make(map[string]string),
+		port:      make(map[string]string),
+		accounts:  make(map[string]Account),
+		send_conn: make(map[string]net.Conn),
+		read_conn: make(map[string]net.Conn),
+		TW:        make(map[string][]write_vale),
+		RTS:       make(map[string][]int64),
 	}
 	config_file := argv[1]
 
@@ -535,7 +564,7 @@ func main() {
 	sv.start_listen()
 	for {
 		read_conn, send_conn := sv.connect_client() // connect once, always listen self' port
-		go handleConnection(read_conn, send_conn)
+		go sv.handleConnection(read_conn, send_conn)
 	}
 	// wg.Add(1)
 	// go sv.handleClient()
