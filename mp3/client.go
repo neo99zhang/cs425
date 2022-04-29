@@ -60,6 +60,7 @@ type Client struct {
 	send_conn          net.Conn
 	read_conn          net.Conn
 	currentTransaction bool
+	stmsp              string
 }
 
 func (cl *Client) readFromConfig(config_file string) {
@@ -175,12 +176,13 @@ func main() {
 			// if cl.currentTransaction {
 			// 	continue
 			// }
+			//init timestamp and store it in client struct
+			tmsp := time.Now().UnixNano()
+			cl.stmsp = strconv.FormatInt(tmsp, 10)
 			fmt.Println("OK")
 		} else {
 			if cl.currentTransaction {
-				tmsp := time.Now().UnixNano()
-				stmsp := strconv.FormatInt(tmsp, 10)
-				toServer := input + " " + stmsp
+				toServer := input + " " + cl.stmsp
 				fmt.Println(toServer)
 				fmt.Fprintf(cl.send_conn, "%s\n", toServer)
 				reader := bufio.NewReader(cl.read_conn)

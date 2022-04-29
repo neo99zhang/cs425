@@ -77,7 +77,8 @@ func (op *Operation) Init(operation string) {
 		if len(words) != 4 {
 			panic("DEPOSITE missing info")
 		}
-		op.branch = words[1]
+		op.branch = strings.Split(words[1], ".")[0]
+		op.account = strings.Split(words[1], ".")[1]
 		amount, err := strconv.Atoi(words[2])
 		if err != nil {
 			panic(err)
@@ -93,7 +94,8 @@ func (op *Operation) Init(operation string) {
 		if len(words) != 4 {
 			panic("WIDTHDRAW missing info")
 		}
-		op.branch = words[1]
+		op.branch = strings.Split(words[1], ".")[0]
+		op.account = strings.Split(words[1], ".")[1]
 		amount, err := strconv.Atoi(words[2])
 		if err != nil {
 			panic(err)
@@ -109,7 +111,8 @@ func (op *Operation) Init(operation string) {
 		if len(words) != 3 {
 			panic("BALANCE missing info")
 		}
-		op.branch = words[1]
+		op.branch = strings.Split(words[1], ".")[0]
+		op.account = strings.Split(words[1], ".")[1]
 		if err != nil {
 			panic(err)
 		}
@@ -245,7 +248,7 @@ func (sv *Server) write(op Operation) bool {
 			return abort
 		} else if op.method == "DEPOSIT" {
 			newAccount := Account{
-				mu:                 &sync.RWMutex{},
+				mu:                 &(make([]sync.RWMutex, 1)[0]),
 				name:               op.account,
 				committedValue:     0,
 				committedTimestamp: 0,
@@ -462,6 +465,7 @@ func (sv *Server) commit(timestamp int64) bool {
 			sv.accounts[name].mu.Lock()
 			defer sv.accounts[name].mu.Unlock()
 			newAccount := Account{
+				mu:                 &(make([]sync.RWMutex, 1)[0]),
 				name:               sv.accounts[name].name,
 				committedValue:     Ds,
 				committedTimestamp: timestamp,
@@ -539,6 +543,32 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 	send_conn.Close()
 }
 
+func (sv *Server) build_branches() {
+	// send connection to all other branches
+	for name := range sv.address {
+		if name != sv.me {
+			send_conn, err := net.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	read_conn, err := sv.ln.Accept()
+	if err != nil {
+		panic(err)
+	}
+
+	addr := read_conn.RemoteAddr().String()
+	clientAddr := strings.Split(addr, ":")[0]
+	fmt.Println(clientAddr)
+	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1023"}, ":"))
+	if err != nil {
+		panic(err)
+	}
+	return read_conn, send_conn
+}
+
 func main() {
 	argv := os.Args[1:]
 	if len(argv) != ARG_NUM_CLIENT {
@@ -560,8 +590,8 @@ func main() {
 	config_file := argv[1]
 
 	sv.readFromConfig(config_file)
-	// sv.build_branches()	// connect to all other branches
 	sv.start_listen()
+	sv.build_branches() // connect to all other branches
 	for {
 		read_conn, send_conn := sv.connect_client() // connect once, always listen self' port
 		go sv.handleConnection(read_conn, send_conn)
