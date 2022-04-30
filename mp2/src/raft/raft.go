@@ -143,9 +143,9 @@ type AppendEntriesReply struct {
 }
 
 func (rf *Raft) TurnFollower(Term int, voteFor int) {
-	if rf.state == FOLLOWER {
-		return
-	}
+	// if rf.state == FOLLOWER {
+	// 	return
+	// }
 	// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
 	rf.state = FOLLOWER
 	rf.currentTerm = Term
