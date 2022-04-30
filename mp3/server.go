@@ -14,11 +14,17 @@ import (
 	"time"
 )
 
-const ARG_NUM_CLIENT int = 2
+const PORT_DELTA int = 10000
 
-var wg sync.WaitGroup
-var conn net.Conn
-var err error
+var lookup = map[string]int{"AB": 1012, "AC": 1013, "AD": 1014, "AE": 1015,
+	"BA": 1021, "BC": 1023, "BD": 1024, "BE": 1025,
+	"CA": 1031, "CB": 1032, "CD": 1034, "CE": 1035,
+	"DA": 1041, "DB": 1042, "DC": 1043, "DE": 1045,
+	"EA": 1051, "EB": 1052, "EC": 1053, "ED": 1054}
+
+// var wg sync.WaitGroup
+// var conn net.Conn
+// var err error
 
 func FindMax(array []int64) int64 {
 	var max int64 = array[0]
@@ -37,11 +43,12 @@ type Server struct {
 	address   map[string](string)
 	port      map[string](string)
 	accounts  map[string](Account)
-	send_conn map[string](net.Conn) // [client's name](connection)
-	read_conn map[string](net.Conn) // [client's name](connection)
+	send_conn map[string](net.Conn) // [server or client's name](connection)
+	read_conn map[string](net.Conn) // [server or client's name](connection)
 	TW        map[string][]write_vale
 	RTS       map[string][]int64
 	ln        net.Listener
+	name      map[IP](string)
 }
 
 type Operation struct {
@@ -65,7 +72,8 @@ type Account struct {
 	committedTimestamp int64
 	// TW                 []write_vale
 	// RTS                []int
-	amount int
+	amount           int
+	createdTimestamp int64
 	// temAmount int
 }
 
@@ -253,6 +261,7 @@ func (sv *Server) write(op Operation) bool {
 				committedValue:     0,
 				committedTimestamp: 0,
 				amount:             op.amount,
+				createdTimestamp:   op.timestamp,
 			}
 			sv.accounts[op.account] = newAccount
 		}
@@ -322,17 +331,28 @@ func (sv *Server) judgeClient(conn net.Conn) (bool, string) {
 	// }
 
 	addr := conn.RemoteAddr().String()
-	straddr := strings.Split(addr, ":")[0]
-	fmt.Println("Connected to addr ", straddr)
-	for i := range sv.address {
-		if sv.address[i] == straddr {
-			fmt.Println("Connected to a server with IP", straddr)
-			return false, straddr
+	// straddr := strings.Split(addr, ":")[0]
+	strport := strings.Split(addr, ":")[1]
+	intport, _ := strconv.Atoi(strport)
+	// intport -= PORT_DELTA
+	// strport = strconv.Itoa(intport)
+	// ip := IP{straddr, strport}
+	// fmt.Println("Connected to addr ", ip)
+
+	for names, port := range lookup {
+		if port == intport {
+			strRes := names[0:1]
+			// fmt.Println("Connected to a server with name ", strRes)
+			return false, strRes
 		}
 	}
 	rtstr := ""
 	return true, rtstr
 
+}
+
+type IP struct {
+	X, Y string
 }
 
 func (sv *Server) readFromConfig(config_file string) {
@@ -347,6 +367,7 @@ func (sv *Server) readFromConfig(config_file string) {
 		arr := strings.Split(line, " ")
 		sv.address[arr[0]] = arr[1]
 		sv.port[arr[0]] = arr[2]
+		sv.name[IP{arr[1], arr[2]}] = arr[0]
 	}
 }
 
@@ -374,6 +395,7 @@ func (sv *Server) readClient(read_conn net.Conn) string {
 
 func (sv *Server) start_listen() {
 	ln, err := net.Listen("tcp", strings.Join([]string{sv.address[sv.me], sv.port[sv.me]}, ":"))
+	fmt.Println("Start listening on port: ", sv.port[sv.me])
 	if err != nil {
 		panic(err)
 	}
@@ -391,7 +413,7 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	addr := read_conn.RemoteAddr().String()
 	clientAddr := strings.Split(addr, ":")[0]
 	fmt.Println(clientAddr)
-	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1023"}, ":"))
+	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1050"}, ":"))
 	if err != nil {
 		panic(err)
 	}
@@ -420,6 +442,12 @@ func (sv *Server) DoAbort(timestamp int64) {
 			} else {
 				i++
 			}
+		}
+	}
+	// delete the accounts that were created in this transaction
+	for account, value := range sv.accounts {
+		if value.createdTimestamp == timestamp {
+			delete(sv.accounts, account)
 		}
 	}
 	//TODO also notify other server to do abort
@@ -470,6 +498,7 @@ func (sv *Server) commit(timestamp int64) bool {
 				committedValue:     Ds,
 				committedTimestamp: timestamp,
 				amount:             sv.accounts[name].amount,
+				createdTimestamp:   sv.accounts[name].createdTimestamp,
 			}
 			sv.accounts[name] = newAccount
 		}
@@ -479,9 +508,10 @@ func (sv *Server) commit(timestamp int64) bool {
 
 	return abort
 }
-func (sv *Server) handleOperation(op Operation, send_conn net.Conn) (bool, bool) {
+func (sv *Server) handleOperation(op Operation, read_conn net.Conn, send_conn net.Conn) (bool, bool) {
 	abort := false
 	commit := false
+
 	switch op.method {
 	case "DEPOSIT":
 		abort = sv.write(op)
@@ -519,6 +549,13 @@ func (sv *Server) handleOperation(op Operation, send_conn net.Conn) (bool, bool)
 		} else {
 			sv.sendtoClient("COMMIT OK", send_conn)
 			commit = true
+			account_info := "Accounts Info: "
+			for account, value := range sv.accounts {
+				if value.committedValue > 0 {
+					account_info += account + " " + strconv.Itoa(value.committedValue)
+				}
+			}
+			fmt.Println(account_info)
 		}
 	}
 	return abort, commit
@@ -532,10 +569,33 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 		operation = strings.TrimSpace(operation)
 		op := new(Operation)
 		op.Init(operation)
+		// Add the client's connection
+		sv.read_conn[strconv.FormatInt(op.timestamp, 10)] = read_conn
+		sv.send_conn[strconv.FormatInt(op.timestamp, 10)] = send_conn
 		// TODO handle operation based on the operation types
-		abort, commit := sv.handleOperation(*op, send_conn)
-		if abort || commit {
-			break
+		if op.branch == sv.me || op.method == "COMMIT" {
+			abort, commit := sv.handleOperation(*op, read_conn, send_conn)
+			if abort {
+				msg := strings.Join([]string{"ABORT_Coordinator", strconv.FormatInt(op.timestamp, 10)}, " ")
+				for _, name := range sv.name {
+					send_conn := sv.send_conn[name]
+					sv.sendtoClient(msg, send_conn)
+				}
+				break
+			}
+			// if commit {
+			// 	msg := strings.Join([]string{"COMMIT", strconv.FormatInt(op.timestamp, 10)}, " ")
+			// 	for _, name := range sv.name {
+			// 		send_conn := sv.send_conn[name]
+			// 		sv.sendtoClient(msg, send_conn)
+			// 	}
+			// 	break
+			// }
+			if commit {
+				break
+			}
+		} else { //if not self account, send to others
+			fmt.Fprintf(sv.send_conn[op.branch], "%s\n", operation)
 		}
 
 	}
@@ -548,7 +608,14 @@ func (sv *Server) build_branches() {
 
 	for name := range sv.address {
 		if name != sv.me {
-			send_conn, err := net.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+			dialer := net.Dialer{
+				LocalAddr: &net.TCPAddr{
+					IP:   net.ParseIP(sv.address[sv.me]),
+					Port: lookup[sv.me+name],
+				},
+			}
+			//fmt.Println("name is ", name, ", me is", sv.me)
+			send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 			if err != nil {
 				panic(err)
 			}
@@ -556,26 +623,98 @@ func (sv *Server) build_branches() {
 		}
 	}
 
-	mu_count := sync.Mutex{}
+	// mu_count := sync.Mutex{}
 	count := 0
 	for {
 		read_conn, err := sv.ln.Accept()
-		go func() {
-			if err != nil {
-				panic(err)
-			}
-			is_client, name := sv.judgeClient(read_conn)
-			if is_client {
-				read_conn.Close()
-			} else {
-				sv.read_conn[name] = read_conn
-				mu_count.Lock()
-				count += 1
-				mu_count.Unlock()
-			}
-		}()
-		if count == 5 {
+		if err != nil {
+			panic(err)
+		}
+		is_client, name := sv.judgeClient(read_conn)
+		if is_client {
+			read_conn.Close()
+		} else {
+			sv.read_conn[name] = read_conn
+			// mu_count.Lock()
+			count += 1
+			// mu_count.UnLock()
+
+			fmt.Println("Connected to branch: ", name)
+		}
+		if count == 4 {
+			fmt.Println("Connected all the branch!!!")
 			break
+		}
+	}
+}
+
+func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Conn) {
+	for {
+		abort := false
+		operation := sv.readClient(read_conn)
+		operation = strings.TrimSpace(operation)
+		words := strings.Fields(operation)
+		switch words[0] {
+		case "DEPOSIT":
+			op := new(Operation)
+			op.Init(operation)
+			abort = sv.write(*op)
+			if abort {
+				msg := strings.Join([]string{"ABORTED", strconv.FormatInt(op.timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+				sv.DoAbort(op.timestamp)
+			} else {
+				msg := strings.Join([]string{"OK", strconv.FormatInt(op.timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+			}
+
+		case "WITHDRAW":
+			op := new(Operation)
+			op.Init(operation)
+			abort = sv.write(*op)
+			if abort {
+				msg := strings.Join([]string{"NOT FOUND, ABORTED", strconv.FormatInt(op.timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+				sv.DoAbort(op.timestamp)
+			} else {
+				msg := strings.Join([]string{"OK", strconv.FormatInt(op.timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+			}
+
+		case "BALANCE":
+			op := new(Operation)
+			op.Init(operation)
+			value, aborted := sv.read(*op)
+			abort = aborted
+			if abort {
+				msg := strings.Join([]string{"NOT FOUND, ABORTED", strconv.FormatInt(op.timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+				sv.DoAbort(op.timestamp)
+			} else {
+				msg := strings.Join([]string{strconv.Itoa(value), strconv.FormatInt(op.timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+			}
+
+		case "ABORT_Coordinator":
+			timestamp, _ := strconv.ParseInt(words[3], 10, 64)
+			sv.DoAbort(timestamp)
+
+		case "ABORTED", "NOT FOUND, ABORTED":
+			timestamp, _ := strconv.ParseInt(words[3], 10, 64)
+			sv.DoAbort(timestamp)
+			msg := strings.Join([]string{"ABORT_Coordinator", strconv.FormatInt(timestamp, 10)}, " ")
+			for _, name := range sv.name {
+				send_conn := sv.send_conn[name]
+				sv.sendtoClient(msg, send_conn)
+			}
+			sv.sendtoClient(words[0], sv.send_conn[words[3]])
+
+		case "COMMIT":
+			timestamp, _ := strconv.ParseInt(words[3], 10, 64)
+			abort = sv.commit(timestamp)
+		default:
+			text := strings.Join(words[:len(words)-1], " ")
+			sv.sendtoClient(text, sv.send_conn[words[len(words)-1]])
 		}
 	}
 }
@@ -592,6 +731,7 @@ func main() {
 		me:        argv[0],
 		address:   make(map[string]string),
 		port:      make(map[string]string),
+		name:      make(map[IP]string),
 		accounts:  make(map[string]Account),
 		send_conn: make(map[string]net.Conn),
 		read_conn: make(map[string]net.Conn),
@@ -602,10 +742,15 @@ func main() {
 
 	sv.readFromConfig(config_file)
 	sv.start_listen()
-	time.Sleep(5 * time.Second)
+	time.Sleep(15 * time.Second)
 
 	sv.build_branches() // connect to all other branches
 
+	for _, name := range sv.name {
+		if name != sv.me {
+			go sv.handleBranch(name, sv.read_conn[name], sv.send_conn[name])
+		}
+	}
 	for {
 		read_conn, send_conn := sv.connect_client() // connect once, always listen self' port
 		go sv.handleConnection(read_conn, send_conn)

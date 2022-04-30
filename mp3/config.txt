@@ -1,5 +1,5 @@
-A 127.0.0.1 1234
-B 127.0.0.1 1234
-C 127.0.0.1 1234
-D 127.0.0.1 1234
-E 127.0.0.1 1234
+A localhost 10001
+B localhost 10002
+C localhost 10003
+D localhost 10004
+E localhost 10005

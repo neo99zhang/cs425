@@ -35,7 +35,6 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -80,21 +79,19 @@ func (cl *Client) readFromConfig(config_file string) {
 }
 
 func random() string {
-	// gold method
-	// keys := reflect.ValueOf(cl.address).MapKeys()
-	// randomIndex := rand.Intn(len(keys))
-	// server := keys[randomIndex].String()
-	// shitty method
-	var list = []string{"A", "B", "C", "D", "E"}
-	rand.Seed(time.Now().UnixNano())
-	num := rand.Intn(100)
-	selected := list[num%5]
-	return selected
-	// return "A"
+
+	// var list = []string{"A", "B", "C", "D", "E"}
+	// rand.Seed(time.Now().UnixNano())
+	// num := rand.Intn(100)
+	// selected := list[num%5]
+	// //TODO for test return A
+	// return selected
+	return "A"
 }
 
 func (cl *Client) connect_server() {
 	coordinator := random()
+	fmt.Println("choose the coordinator: ", coordinator)
 	conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
 
 	if err != nil {
@@ -102,7 +99,7 @@ func (cl *Client) connect_server() {
 	}
 	cl.send_conn = conn
 
-	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "1023"}, ":"))
+	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "1050"}, ":"))
 	if err != nil {
 		panic(err)
 	}
