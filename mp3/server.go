@@ -543,30 +543,41 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 	send_conn.Close()
 }
 
+// send connection to all other branches
 func (sv *Server) build_branches() {
-	// send connection to all other branches
+
 	for name := range sv.address {
 		if name != sv.me {
 			send_conn, err := net.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 			if err != nil {
 				panic(err)
 			}
+			sv.send_conn[name] = send_conn
 		}
 	}
 
-	read_conn, err := sv.ln.Accept()
-	if err != nil {
-		panic(err)
+	mu_count := sync.Mutex{}
+	count := 0
+	for {
+		read_conn, err := sv.ln.Accept()
+		go func() {
+			if err != nil {
+				panic(err)
+			}
+			is_client, name := sv.judgeClient(read_conn)
+			if is_client {
+				read_conn.Close()
+			} else {
+				sv.read_conn[name] = read_conn
+				mu_count.Lock()
+				count += 1
+				mu_count.Unlock()
+			}
+		}()
+		if count == 5 {
+			break
+		}
 	}
-
-	addr := read_conn.RemoteAddr().String()
-	clientAddr := strings.Split(addr, ":")[0]
-	fmt.Println(clientAddr)
-	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1023"}, ":"))
-	if err != nil {
-		panic(err)
-	}
-	return read_conn, send_conn
 }
 
 func main() {
@@ -591,13 +602,12 @@ func main() {
 
 	sv.readFromConfig(config_file)
 	sv.start_listen()
+	time.Sleep(5 * time.Second)
+
 	sv.build_branches() // connect to all other branches
+
 	for {
 		read_conn, send_conn := sv.connect_client() // connect once, always listen self' port
 		go sv.handleConnection(read_conn, send_conn)
 	}
-	// wg.Add(1)
-	// go sv.handleClient()
-	// sv.sendtoClient("1")
-	// wg.Wait()
 }
