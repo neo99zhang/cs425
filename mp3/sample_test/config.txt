@@ -1,5 +1,5 @@
-A sp22-cs425-g01-01.cs.illinois.edu 1234
-B sp22-cs425-g01-02.cs.illinois.edu 1234
-C sp22-cs425-g01-03.cs.illinois.edu 1234
-D sp22-cs425-g01-04.cs.illinois.edu 1234
-E sp22-cs425-g01-05.cs.illinois.edu 1234
+A localhost 10001
+B localhost 10002
+C localhost 10003
+D localhost 10004
+E localhost 10005
