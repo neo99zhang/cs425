@@ -86,9 +86,9 @@ const (
 	CANDIDATE           = 1
 	FOLLOWER            = 2
 	NULL                = -1
-	ELECTIONTIMEOUT_MAX = 500
-	ELECTIONTIMEOUT_MIN = 150
-	HEARTBEAT_INTERVAL  = 110 * time.Millisecond
+	ELECTIONTIMEOUT_MAX = 400
+	ELECTIONTIMEOUT_MIN = 200
+	HEARTBEAT_INTERVAL  = 150 * time.Millisecond
 )
 
 // return currentTerm and whether this server
@@ -143,15 +143,17 @@ type AppendEntriesReply struct {
 }
 
 func (rf *Raft) TurnFollower(Term int, voteFor int) {
-	// if rf.state == FOLLOWER {
-	// 	return
-	// }
-	// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
+	if rf.state == FOLLOWER {
+		// fmt.Print("Server: ", rf.me, " changes term to ", Term, "\n")
+	} else {
+		// fmt.Print("Server: ", rf.me, " becomes follower at term: ", Term, "\n")
+	}
+
 	rf.state = FOLLOWER
 	rf.currentTerm = Term
 	rf.votedFor = voteFor
 	rf.heartBeatTimer.Stop()
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 }
 
 func (rf *Raft) TurnCandidate() {
@@ -160,7 +162,7 @@ func (rf *Raft) TurnCandidate() {
 	rf.currentTerm += 1
 	rf.votedFor = rf.me
 	rf.heartBeatTimer.Stop()
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 }
 
 func (rf *Raft) TurnLeader() {
@@ -180,7 +182,9 @@ func (rf *Raft) TurnLeader() {
 			go rf.sendHeartBeat(i)
 		}
 	}
-	rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+	// rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+	resetTimer(rf.heartBeatTimer, HEARTBEAT_INTERVAL)
+
 }
 
 //
@@ -204,17 +208,24 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	}
 	if args.Term > rf.currentTerm {
 		//set as follower
-		rf.TurnFollower(args.Term, NULL)
+		rf.currentTerm = args.Term
+		rf.votedFor = NULL
+		if rf.state != FOLLOWER {
+			rf.TurnFollower(args.Term, NULL)
+		}
+
 	} //check
 	// 2. If votedFor is null or CandidateId, and candidate’s log is at
 	// least as up-to-date as receiver’s log, grant vote (§5.2, §5.4)
-	reply.Term = args.Term
+	reply.Term = rf.currentTerm
 	if rf.votedFor == NULL || rf.votedFor == args.CandidateId {
-		if len(rf.log) == 0 || rf.log[len(rf.log)-1].Term < args.LastLogTerm ||
+		if rf.log[len(rf.log)-1].Term < args.LastLogTerm ||
 			(rf.log[len(rf.log)-1].Term == args.LastLogTerm && len(rf.log)-1 <= args.LastLogIndex) {
-			rf.votedFor = args.CandidateId
+
 			reply.VoteGranted = true
-			rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+			// rf.TurnFollower(args.Term, args.CandidateId)
+			rf.votedFor = args.CandidateId
+			resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 			return
 		}
 	}
@@ -239,23 +250,24 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	// 2. If Term > currentTerm, currentTerm ← Term
 	if args.Term > rf.currentTerm {
 		rf.currentTerm = args.Term
-
+		rf.votedFor = NULL
 	}
-	rf.TurnFollower(args.Term, NULL)
-	// 3. If candidate or leader, step down
 
+	// 3. If candidate or leader, step down
+	if rf.state != FOLLOWER {
+		rf.TurnFollower(args.Term, NULL)
+	}
 	// 4. Reset election timeout
-	rf.electionTimer.Reset(randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
+	resetTimer(rf.electionTimer, randomTimeoutVal(ELECTIONTIMEOUT_MIN, ELECTIONTIMEOUT_MAX))
 	// 5. Return failure if log doesn’t contain an entry at
 	// PrevLogIndex whose Term matches PrevLogTerm'
-	// fmt.Printf("len(rf.log)-1: %v, args.PrevLogIndex: %v \n", len(rf.log)-1, args.PrevLogIndex)
-	if len(rf.log)-1 >= args.PrevLogIndex {
-		// fmt.Printf("rf.log[(args.PrevLogIndex)].Term: %v , args.PrevLogTerm: %v\n", rf.log[(args.PrevLogIndex)].Term, args.PrevLogTerm)
-	}
+	// fmt.Printf("Server: %v len(rf.log)-1: %v, args.PrevLogIndex: %v \n", rf.me, len(rf.log)-1, args.PrevLogIndex)
+	// if len(rf.log)-1 >= args.PrevLogIndex {
+	// 	fmt.Printf("Server: %v rf.log[(args.PrevLogIndex)].Term: %v , args.PrevLogTerm: %v\n", rf.me, rf.log[(args.PrevLogIndex)].Term, args.PrevLogTerm)
+	// }
 	if (len(rf.log)-1 < args.PrevLogIndex) || (rf.log[(args.PrevLogIndex)].Term != args.PrevLogTerm) {
 		reply.Term = rf.currentTerm
 		reply.Success = false
-		// fmt.Print("inside log check\n")
 		return
 	}
 	// 6. If existing Entries conflict with new Entries, delete all
@@ -270,14 +282,16 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	}
 	// 7. Append any new Entries not already in the log
 	if point != NULL {
+		// fmt.Printf("Server: %v append entries with length %v at %v\n", rf.me, len(args.Entries[point-1-args.PrevLogIndex:]), point)
 		rf.log = append(rf.log[:point], args.Entries[point-1-args.PrevLogIndex:]...)
-	} else {
-		// fmt.Printf("Point is NULL, PrevLogIndex: %v, PrevLogTerm: %v, entries length: %v, self log length: %v \n", args.PrevLogIndex, args.PrevLogTerm, len(args.Entries), len(rf.log))
 	}
+	//  else {
+	// 	fmt.Printf("Server: %v Point is NULL, PrevLogIndex: %v, PrevLogTerm: %v,  self log length: %v \n", rf.me, args.PrevLogIndex, args.PrevLogTerm, len(rf.log))
+	// }
 	// 8. Advance state machine with newly committed Entries
 
 	if args.LeaderCommit > rf.commitIndex {
-		// fmt.Print("Server: ", rf.me, "match at point: ", point, "\n")
+		// fmt.Print("Server: ", rf.me, " match at point: ", point, "\n")
 		// fmt.Print("Server: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", args.LeaderCommit, "\n")
 		rf.commitIndex = Min(len(rf.log), args.LeaderCommit)
 	}
@@ -365,6 +379,9 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	rf.matchIndex[rf.me] = len(rf.log) - 1
 	rf.nextIndex[rf.me] = len(rf.log)
 	index = len(rf.log) - 1
+	// if isLeader {
+	// 	fmt.Printf("Leader: %v get new entry at index %v\n", rf.me, index)
+	// }
 	rf.mu.Unlock()
 
 	return index, Term, isLeader
@@ -413,7 +430,7 @@ func (rf *Raft) maintain() {
 			// fmt.Print("Found ", rf.me, " just killed\n")
 			break
 		}
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(20 * time.Millisecond)
 	}
 	return
 }
@@ -434,7 +451,9 @@ func (rf *Raft) handleLeader() {
 				go rf.sendHeartBeat(i)
 			}
 		}
-		rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+		// rf.heartBeatTimer.Reset(HEARTBEAT_INTERVAL)
+		resetTimer(rf.heartBeatTimer, HEARTBEAT_INTERVAL)
+
 	}
 
 }
@@ -444,6 +463,10 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 		return
 	}
 	rf.mu.Lock()
+	if rf.state != LEADER {
+		rf.mu.Unlock()
+		return
+	}
 	entries := make([]LogEntry, len(rf.log[(rf.nextIndex[peerId]):]))
 	copy(entries, rf.log[(rf.nextIndex[peerId]):])
 	args := AppendEntriesArgs{
@@ -465,7 +488,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 		// fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " cannot send entry to ", peerId, "\n")
 		return
 	}
-	//fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " successfully sent entry to ", peerId, "\n")
+	// fmt.Print("Leader: ", rf.me, "with term", rf.currentTerm, " successfully sent entry to ", peerId, "\n")
 
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
@@ -492,7 +515,7 @@ func (rf *Raft) sendHeartBeat(peerId int) {
 			}
 			half := len(rf.peers) / 2
 			if total > half {
-				// fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i)
+				// fmt.Print("Leader: ", rf.me, " commitIndex change from ", rf.commitIndex, " to ", i, "\n")
 				rf.commitIndex = Max(i, rf.commitIndex)
 				// fmt.Print(" with the last commited log's term is: ", rf.log[rf.commitIndex].Term, "\n")
 				break
@@ -537,22 +560,28 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 	}
 	reply := RequestVoteReply{}
 	Success := rf.sendRequestVote(peerId, args, &reply)
+	rf.mu.Lock()
+
 	if rf.killed() {
+		rf.mu.Unlock()
+		return
+	}
+	if rf.state != CANDIDATE {
+		rf.mu.Unlock()
 		return
 	}
 	if !Success {
 		// fmt.Print("Candidate: ", rf.me, "cannot send requestvote to ", peerId, "\n")
+		rf.mu.Unlock()
 		return
 	}
 	// step down if get a larger Term
 	if reply.Term > rf.currentTerm {
-		rf.mu.Lock()
 		rf.TurnFollower(reply.Term, NULL)
-		rf.mu.Unlock()
 	}
-	rf.mu.Lock()
 	if reply.VoteGranted && (rf.state == CANDIDATE) {
 		atomic.AddInt32(voteNum, 1)
+		// fmt.Print("Candidate: ", rf.me, " get votes from ", peerId, " Total votes: ", atomic.LoadInt32(voteNum), "\n")
 		if atomic.LoadInt32(voteNum) > int32(len(rf.peers)/2) {
 			rf.state = LEADER
 			rf.mu.Unlock()
@@ -561,7 +590,6 @@ func (rf *Raft) sendvote(peerId int, args *RequestVoteArgs, voteNum *int32) {
 		}
 	}
 	rf.mu.Unlock()
-
 }
 
 func (rf *Raft) checkElectionTimeout() {
@@ -637,14 +665,25 @@ func (rf *Raft) applymsg() {
 		}
 
 		rf.applyMsgCh <- msg
-		// if rf.state == LEADER {
-		// 	// fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		// } else {
-		// 	fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
-		// }
+		if rf.state == LEADER {
+			// fmt.Print("Leader: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		} else {
+			// fmt.Print("Follower: ", rf.me, " apply msg with Index ", msg.CommandIndex, "\n")
+		}
 
 	}
 	// rf.mu.Lock()
 	rf.lastApplied = rf.commitIndex
 	// rf.mu.Unlock()
+}
+
+// Reset a timer
+func resetTimer(timer *time.Timer, Duration time.Duration) {
+	if !timer.Stop() {
+		select {
+		case <-timer.C:
+		default:
+		}
+	}
+	timer.Reset((Duration))
 }

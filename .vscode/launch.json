@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "mp3/server.go",
+            "env": {},
+            "args": ["A", "mp3/config.txt"]
+        }
+    ]
+}
