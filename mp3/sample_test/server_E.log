@@ -1,0 +1,15 @@
+Start listening on port:  10005
+Connected to branch:  D
+Connected to branch:  B
+Connected to branch:  C
+Connected to branch:  A
+Connected to all other branch!
+panic: read tcp 127.0.0.1:10005->127.0.0.1:1025: wsarecv: An existing connection was forcibly closed by the remote host.
+
+goroutine 38 [running]:
+main.(*Server).readClient(0x100c00008e330?, {0x76b050, 0xc000196018})
+	C:/Users/feiyu/ECE428/distributed-system/mp3/server/server.go:396 +0x176
+main.(*Server).handleBranch(0xc000118000, {0x68e4e5?, 0xc0000a7fd0?}, {0x76b050, 0xc000196018}, {0x76b050?, 0xc00009c000})
+	C:/Users/feiyu/ECE428/distributed-system/mp3/server/server.go:685 +0x7e
+created by main.main
+	C:/Users/feiyu/ECE428/distributed-system/mp3/server/server.go:841 +0x4ff

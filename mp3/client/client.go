@@ -35,6 +35,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -80,18 +81,18 @@ func (cl *Client) readFromConfig(config_file string) {
 
 func random() string {
 
-	// var list = []string{"A", "B", "C", "D", "E"}
-	// rand.Seed(time.Now().UnixNano())
-	// num := rand.Intn(100)
-	// selected := list[num%5]
-	// //TODO for test return A
-	// return selected
-	return "A"
+	var list = []string{"A", "B", "C", "D", "E"}
+	rand.Seed(time.Now().UnixNano())
+	num := rand.Intn(100)
+	selected := list[num%5]
+	//TODO for test return A
+	return selected
+	// return "A"
 }
 
 func (cl *Client) connect_server() {
 	coordinator := random()
-	fmt.Println("choose the coordinator: ", coordinator)
+	//fmt.Println("choose the coordinator: ", coordinator)
 	conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
 
 	if err != nil {
@@ -180,18 +181,18 @@ func main() {
 		} else {
 			if cl.currentTransaction {
 				toServer := input + " " + cl.stmsp
-				fmt.Println(toServer)
-				//fmt.Fprintf(cl.send_conn, "%s\n", toServer)
+				// fmt.Println(toServer)
+				fmt.Fprintf(cl.send_conn, "%s\n", toServer)
 				reader := bufio.NewReader(cl.read_conn)
 				response, error1 := reader.ReadString('\n')
 				if error1 != nil {
 					fmt.Println("Have error when listening for ", cl.read_conn)
 				} else {
-					fmt.Println(response)
 					response = strings.TrimSpace(response)
+					fmt.Println(response)
 					if response == "NOT FOUND, ABORTED" || response == "ABORTED" || response == "COMMIT OK" {
 						cl.currentTransaction = false
-						fmt.Println("Debug Message: Ends at ", response)
+						// fmt.Println("Debug Message: Ends at ", response)
 					}
 				}
 			}

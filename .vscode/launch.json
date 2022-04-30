@@ -6,9 +6,9 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "server.go",
+            "program": "mp3/server.go",
             "env": {},
-            "args": ["B", "config.txt"]
+            "args": ["A", "mp3/config.txt"]
         }
     ]
 }

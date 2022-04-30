@@ -37,18 +37,20 @@ func FindMax(array []int64) int64 {
 }
 
 type Server struct {
-	me        string // self name , e.g. A
-	mu_RTS    *sync.Mutex
-	mu_TW     *sync.Mutex
-	address   map[string](string)
-	port      map[string](string)
-	accounts  map[string](Account)
-	send_conn map[string](net.Conn) // [server or client's name](connection)
-	read_conn map[string](net.Conn) // [server or client's name](connection)
-	TW        map[string][]write_vale
-	RTS       map[string][]int64
-	ln        net.Listener
-	name      map[IP](string)
+	me          string // self name , e.g. A
+	mu_RTS      *sync.Mutex
+	mu_TW       *sync.Mutex
+	mu_commit   *sync.Mutex
+	address     map[string](string)
+	port        map[string](string)
+	accounts    map[string](Account)
+	send_conn   map[string](net.Conn) // [server or client's name](connection)
+	read_conn   map[string](net.Conn) // [server or client's name](connection)
+	TW          map[string][]write_vale
+	RTS         map[string][]int64
+	ln          net.Listener
+	name        map[IP](string)
+	commitCount map[string]int
 }
 
 type Operation struct {
@@ -397,11 +399,9 @@ func (sv *Server) readClient(read_conn net.Conn) string {
 }
 
 func (sv *Server) start_listen() {
-	ln, err := net.Listen("tcp", strings.Join([]string{sv.address[sv.me], sv.port[sv.me]}, ":"))
+	ln, _ := net.Listen("tcp", strings.Join([]string{sv.address[sv.me], sv.port[sv.me]}, ":"))
+
 	fmt.Println("Start listening on port: ", sv.port[sv.me])
-	if err != nil {
-		panic(err)
-	}
 	sv.ln = ln
 }
 
@@ -457,27 +457,47 @@ func (sv *Server) DoAbort(timestamp int64) {
 	//TODO send abort message back
 }
 
-func (sv *Server) commit(timestamp int64) bool {
-	abort := false
+func (sv *Server) CheckCommit(timestamp int64) bool {
+	CanCommit := true
+	TxRelated := false
 	// iterate every account, check whether the final balance is negative
 	sv.mu_TW.Lock()
-	for name, TW := range sv.TW {
-		Ds := sv.accounts[name].committedValue
+
+	for _, TW := range sv.TW {
 		for i := range TW {
-			if TW[i].timestamp <= timestamp {
-				Ds += TW[i].value
+			if TW[i].timestamp == timestamp {
+				TxRelated = true
+				break
 			}
 		}
-		if Ds < 0 {
-			// abort the transaction
-			sv.mu_TW.Unlock()
-			sv.DoAbort(timestamp)
-			abort = true
-			return abort
+	}
+	if TxRelated {
+		for name, TW := range sv.TW {
+			Ds := sv.accounts[name].committedValue
+			for i := range TW {
+				if TW[i].timestamp <= timestamp {
+					Ds += TW[i].value
+
+				}
+			}
+			if Ds < 0 {
+				// abort the transaction
+				sv.mu_TW.Unlock()
+				sv.DoAbort(timestamp)
+				CanCommit = false
+				return CanCommit
+			}
 		}
 	}
 
+	sv.mu_TW.Unlock()
+	return CanCommit
+}
+
+func (sv *Server) DoCommit(timestamp int64) {
 	// commit the transaction
+	sv.mu_TW.Lock()
+	defer sv.mu_TW.Unlock()
 	for name := range sv.TW {
 		Ds := sv.accounts[name].committedValue
 		flag := false
@@ -506,14 +526,17 @@ func (sv *Server) commit(timestamp int64) bool {
 			sv.accounts[name] = newAccount
 		}
 	}
-	sv.mu_TW.Unlock()
-	// sv.
+	account_info := "Accounts Info: "
+	for account, value := range sv.accounts {
+		if value.committedValue > 0 {
+			account_info += account + " " + strconv.Itoa(value.committedValue)
+		}
+	}
+	fmt.Println(account_info)
 
-	return abort
 }
-func (sv *Server) handleOperation(op Operation, read_conn net.Conn, send_conn net.Conn) (bool, bool) {
+func (sv *Server) handleOperation(op Operation, read_conn net.Conn, send_conn net.Conn) bool {
 	abort := false
-	commit := false
 
 	switch op.method {
 	case "DEPOSIT":
@@ -541,27 +564,37 @@ func (sv *Server) handleOperation(op Operation, read_conn net.Conn, send_conn ne
 			sv.sendtoClient("NOT FOUND, ABORTED", send_conn)
 			sv.DoAbort(op.timestamp)
 		} else {
-			sv.sendtoClient(strconv.Itoa(value), send_conn)
+			sv.sendtoClient(op.branch+"."+op.account+" = "+strconv.Itoa(value), send_conn)
 		}
 
 	case "COMMIT":
-		abort = sv.commit(op.timestamp)
+		strtmsp := strconv.FormatInt(op.timestamp, 10)
+		sv.mu_commit.Lock()
+		sv.commitCount[strtmsp] = 0
+		sv.mu_commit.Unlock()
+		abort = !(sv.CheckCommit(op.timestamp))
 		if abort {
 			sv.sendtoClient("ABORTED", send_conn)
+			msg := strings.Join([]string{"ABORT_Coordinator", strtmsp}, " ")
+			for _, name := range sv.name {
+				if name != sv.me {
+					send_conn := sv.send_conn[name]
+					sv.sendtoClient(msg, send_conn)
+				}
+
+			}
 			sv.DoAbort(op.timestamp)
 		} else {
-			sv.sendtoClient("COMMIT OK", send_conn)
-			commit = true
-			account_info := "Accounts Info: "
-			for account, value := range sv.accounts {
-				if value.committedValue > 0 {
-					account_info += account + " " + strconv.Itoa(value.committedValue)
+			msg := strings.Join([]string{"COMMIT_PREPARE", strtmsp}, " ")
+			for _, name := range sv.name {
+				if name != sv.me {
+					send_conn := sv.send_conn[name]
+					sv.sendtoClient(msg, send_conn)
 				}
 			}
-			fmt.Println(account_info)
 		}
 	}
-	return abort, commit
+	return abort
 }
 
 func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
@@ -577,27 +610,12 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 		sv.send_conn[strconv.FormatInt(op.timestamp, 10)] = send_conn
 		// TODO handle operation based on the operation types
 		if op.branch == sv.me || op.method == "COMMIT" {
-			abort, commit := sv.handleOperation(*op, read_conn, send_conn)
+			abort := sv.handleOperation(*op, read_conn, send_conn)
 			if abort {
-				msg := strings.Join([]string{"ABORT_Coordinator", strconv.FormatInt(op.timestamp, 10)}, " ")
-				for _, name := range sv.name {
-					if name != sv.me {
-						send_conn := sv.send_conn[name]
-						sv.sendtoClient(msg, send_conn)
-					}
-
-				}
+				read_conn.Close()
+				send_conn.Close()
 				break
-			}
-			// if commit {
-			// 	msg := strings.Join([]string{"COMMIT", strconv.FormatInt(op.timestamp, 10)}, " ")
-			// 	for _, name := range sv.name {
-			// 		send_conn := sv.send_conn[name]
-			// 		sv.sendtoClient(msg, send_conn)
-			// 	}
-			// 	break
-			// }
-			if commit {
+			} else if op.method == "COMMIT" {
 				break
 			}
 		} else { //if not self account, send to others
@@ -605,8 +623,7 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 		}
 
 	}
-	read_conn.Close()
-	send_conn.Close()
+
 }
 
 // send connection to all other branches
@@ -623,8 +640,13 @@ func (sv *Server) build_branches() {
 			}
 			//fmt.Println("name is ", name, ", me is", sv.me)
 			send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
-			if err != nil {
-				panic(err)
+
+			for {
+				if err == nil {
+					break
+				}
+				send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+
 			}
 			sv.send_conn[name] = send_conn
 		}
@@ -649,6 +671,10 @@ func (sv *Server) build_branches() {
 			// mu_count.UnLock()
 
 			fmt.Println("Connected to branch: ", name)
+		}
+		if count == 4 {
+			fmt.Println("Connected to all other branch!")
+			break
 		}
 	}
 }
@@ -696,7 +722,8 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 				sv.sendtoClient(msg, send_conn)
 				sv.DoAbort(op.timestamp)
 			} else {
-				msg := strings.Join([]string{strconv.Itoa(value), strconv.FormatInt(op.timestamp, 10)}, " ")
+				msg := op.branch + "." + op.account + " = " + strconv.Itoa(value)
+				msg = strings.Join([]string{msg, strconv.FormatInt(op.timestamp, 10)}, " ")
 				sv.sendtoClient(msg, send_conn)
 			}
 
@@ -728,9 +755,51 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 			}
 			sv.sendtoClient(text, sv.send_conn[words[1]])
 
-		// case "COMMIT":
-		// 	timestamp, _ := strconv.ParseInt(words[3], 10, 64)
-		// 	abort = sv.commit(timestamp)
+		case "COMMIT_PREPARE":
+			timestamp, _ := strconv.ParseInt(words[1], 10, 64)
+			abort = !sv.CheckCommit(timestamp)
+			if abort {
+				msg := strings.Join([]string{"ABORTED", strconv.FormatInt(timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+				sv.DoAbort(timestamp)
+			} else {
+				msg := strings.Join([]string{"COMMIT_READY", strconv.FormatInt(timestamp, 10)}, " ")
+				sv.sendtoClient(msg, send_conn)
+			}
+
+		case "COMMIT_READY":
+			timestamp := words[1]
+			sv.mu_commit.Lock()
+			sv.commitCount[timestamp] += 1
+
+			// if all other branches allow to commit the transaction
+			if sv.commitCount[timestamp] == 4 {
+				sv.mu_commit.Unlock()
+				intstmp, err := strconv.ParseInt(words[1], 10, 64)
+				if err != nil {
+					panic(err)
+				}
+				sv.DoCommit(intstmp)
+				msg := strings.Join([]string{"COMMIT_OK", timestamp}, " ")
+				for _, name := range sv.name {
+					if name != sv.me {
+						sv.sendtoClient(msg, sv.send_conn[name])
+					}
+				}
+				sv.sendtoClient("COMMIT OK", sv.send_conn[timestamp])
+				sv.send_conn[timestamp].Close()
+				sv.read_conn[timestamp].Close()
+			} else {
+				sv.mu_commit.Unlock()
+			}
+
+		case "COMMIT_OK":
+			timestamp, err := strconv.ParseInt(words[1], 10, 64)
+			if err != nil {
+				panic(err)
+			}
+			sv.DoCommit(timestamp)
+
 		default:
 			text := strings.Join(words[:len(words)-1], " ")
 			sv.sendtoClient(text, sv.send_conn[words[len(words)-1]])
@@ -745,23 +814,25 @@ func main() {
 		os.Exit(1)
 	}
 	sv := Server{
-		mu_RTS:    &sync.Mutex{},
-		mu_TW:     &sync.Mutex{},
-		me:        argv[0],
-		address:   make(map[string]string),
-		port:      make(map[string]string),
-		name:      make(map[IP]string),
-		accounts:  make(map[string]Account),
-		send_conn: make(map[string]net.Conn),
-		read_conn: make(map[string]net.Conn),
-		TW:        make(map[string][]write_vale),
-		RTS:       make(map[string][]int64),
+		mu_RTS:      &sync.Mutex{},
+		mu_TW:       &sync.Mutex{},
+		mu_commit:   &sync.Mutex{},
+		me:          argv[0],
+		address:     make(map[string]string),
+		port:        make(map[string]string),
+		name:        make(map[IP]string),
+		accounts:    make(map[string]Account),
+		send_conn:   make(map[string]net.Conn),
+		read_conn:   make(map[string]net.Conn),
+		TW:          make(map[string][]write_vale),
+		RTS:         make(map[string][]int64),
+		commitCount: make(map[string]int),
 	}
 	config_file := argv[1]
 
 	sv.readFromConfig(config_file)
 	sv.start_listen()
-	time.Sleep(15 * time.Second)
+	// time.Sleep(1 * time.Second)
 
 	sv.build_branches() // connect to all other branches
 
