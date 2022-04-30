@@ -181,7 +181,7 @@ func main() {
 			if cl.currentTransaction {
 				toServer := input + " " + cl.stmsp
 				fmt.Println(toServer)
-				fmt.Fprintf(cl.send_conn, "%s\n", toServer)
+				//fmt.Fprintf(cl.send_conn, "%s\n", toServer)
 				reader := bufio.NewReader(cl.read_conn)
 				response, error1 := reader.ReadString('\n')
 				if error1 != nil {

@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const PORT_DELTA int = 10000
+const ARG_NUM_SERVER int = 2
 
 var lookup = map[string]int{"AB": 1012, "AC": 1013, "AD": 1014, "AE": 1015,
 	"BA": 1021, "BC": 1023, "BD": 1024, "BE": 1025,
@@ -24,7 +24,7 @@ var lookup = map[string]int{"AB": 1012, "AC": 1013, "AD": 1014, "AE": 1015,
 
 // var wg sync.WaitGroup
 // var conn net.Conn
-// var err error
+var err error
 
 func FindMax(array []int64) int64 {
 	var max int64 = array[0]
@@ -333,7 +333,10 @@ func (sv *Server) judgeClient(conn net.Conn) (bool, string) {
 	addr := conn.RemoteAddr().String()
 	// straddr := strings.Split(addr, ":")[0]
 	strport := strings.Split(addr, ":")[1]
-	intport, _ := strconv.Atoi(strport)
+	intport, err := strconv.Atoi(strport)
+	if err != nil {
+		panic(err)
+	}
 	// intport -= PORT_DELTA
 	// strport = strconv.Itoa(intport)
 	// ip := IP{straddr, strport}
@@ -578,8 +581,11 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 			if abort {
 				msg := strings.Join([]string{"ABORT_Coordinator", strconv.FormatInt(op.timestamp, 10)}, " ")
 				for _, name := range sv.name {
-					send_conn := sv.send_conn[name]
-					sv.sendtoClient(msg, send_conn)
+					if name != sv.me {
+						send_conn := sv.send_conn[name]
+						sv.sendtoClient(msg, send_conn)
+					}
+
 				}
 				break
 			}
@@ -607,6 +613,7 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 func (sv *Server) build_branches() {
 
 	for name := range sv.address {
+		// go func(name string) {
 		if name != sv.me {
 			dialer := net.Dialer{
 				LocalAddr: &net.TCPAddr{
@@ -621,6 +628,8 @@ func (sv *Server) build_branches() {
 			}
 			sv.send_conn[name] = send_conn
 		}
+		// }(name)
+
 	}
 
 	// mu_count := sync.Mutex{}
@@ -640,10 +649,6 @@ func (sv *Server) build_branches() {
 			// mu_count.UnLock()
 
 			fmt.Println("Connected to branch: ", name)
-		}
-		if count == 4 {
-			fmt.Println("Connected all the branch!!!")
-			break
 		}
 	}
 }
@@ -673,7 +678,7 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 			op.Init(operation)
 			abort = sv.write(*op)
 			if abort {
-				msg := strings.Join([]string{"NOT FOUND, ABORTED", strconv.FormatInt(op.timestamp, 10)}, " ")
+				msg := strings.Join([]string{"NOT", strconv.FormatInt(op.timestamp, 10)}, " ")
 				sv.sendtoClient(msg, send_conn)
 				sv.DoAbort(op.timestamp)
 			} else {
@@ -687,7 +692,7 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 			value, aborted := sv.read(*op)
 			abort = aborted
 			if abort {
-				msg := strings.Join([]string{"NOT FOUND, ABORTED", strconv.FormatInt(op.timestamp, 10)}, " ")
+				msg := strings.Join([]string{"NOT", strconv.FormatInt(op.timestamp, 10)}, " ")
 				sv.sendtoClient(msg, send_conn)
 				sv.DoAbort(op.timestamp)
 			} else {
@@ -696,22 +701,36 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 			}
 
 		case "ABORT_Coordinator":
-			timestamp, _ := strconv.ParseInt(words[3], 10, 64)
+			timestamp, err := strconv.ParseInt(words[1], 10, 64)
+			if err != nil {
+				panic(err)
+			}
 			sv.DoAbort(timestamp)
 
-		case "ABORTED", "NOT FOUND, ABORTED":
-			timestamp, _ := strconv.ParseInt(words[3], 10, 64)
+		case "ABORTED", "NOT":
+			text := ""
+			if words[0] == "NOT" {
+				text = "NOT FOUND, ABORTED"
+			} else {
+				text = words[0]
+			}
+			timestamp, err := strconv.ParseInt(words[1], 10, 64)
+			if err != nil {
+				panic(err)
+			}
 			sv.DoAbort(timestamp)
 			msg := strings.Join([]string{"ABORT_Coordinator", strconv.FormatInt(timestamp, 10)}, " ")
 			for _, name := range sv.name {
-				send_conn := sv.send_conn[name]
-				sv.sendtoClient(msg, send_conn)
+				if name != sv.me {
+					send_conn := sv.send_conn[name]
+					sv.sendtoClient(msg, send_conn)
+				}
 			}
-			sv.sendtoClient(words[0], sv.send_conn[words[3]])
+			sv.sendtoClient(text, sv.send_conn[words[1]])
 
-		case "COMMIT":
-			timestamp, _ := strconv.ParseInt(words[3], 10, 64)
-			abort = sv.commit(timestamp)
+		// case "COMMIT":
+		// 	timestamp, _ := strconv.ParseInt(words[3], 10, 64)
+		// 	abort = sv.commit(timestamp)
 		default:
 			text := strings.Join(words[:len(words)-1], " ")
 			sv.sendtoClient(text, sv.send_conn[words[len(words)-1]])
@@ -721,7 +740,7 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 
 func main() {
 	argv := os.Args[1:]
-	if len(argv) != ARG_NUM_CLIENT {
+	if len(argv) != ARG_NUM_SERVER {
 		fmt.Fprintf(os.Stderr, "usage: ./server <Server Name [A,B,C,D,E]> <config.txt>\n")
 		os.Exit(1)
 	}
