@@ -1,80 +1,19 @@
 Start listening on port:  10001
 waiting
 trying to dail to  E
-dial tcp :1015->[::1]:10005: bind: permission denied
 trying to dail to  B
-dial tcp :1012->[::1]:10002: bind: permission denied
 trying to dail to  C
-dial tcp :1013->[::1]:10003: bind: permission denied
 trying to dail to  D
-dial tcp :1014->[::1]:10004: bind: permission denied
-waiting
+dail to  E , me is A
+dail to  B , me is A
+dail to  C , me is A
+dail to  D , me is A
+Connected to branch:  E
 waiting
 Connected to branch:  D
-Connected to branch:  C
-trying to dail to  C
-trying to dail to  D
-trying to dail to  E
-trying to dail to  B
-dial tcp :1012->[::1]:10002: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1015->[::1]:10005: bind: permission denied
 waiting
-Connected to branch:  E
-trying to dail to  C
-trying to dail to  D
-trying to dail to  B
-trying to dail to  E
-dial tcp :1015->[::1]:10005: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1012->[::1]:10002: bind: permission denied
-trying to dail to  C
-trying to dail to  D
-trying to dail to  E
-trying to dail to  B
-dial tcp :1012->[::1]:10002: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1015->[::1]:10005: bind: permission denied
-trying to dail to  C
-trying to dail to  D
-trying to dail to  B
-trying to dail to  E
-dial tcp :1015->[::1]:10005: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1012->[::1]:10002: bind: permission denied
-trying to dail to  E
-trying to dail to  C
-trying to dail to  B
-dial tcp :1012->[::1]:10002: bind: permission denied
-trying to dail to  D
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1015->[::1]:10005: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-trying to dail to  B
-trying to dail to  E
-trying to dail to  C
-dial tcp :1013->[::1]:10003: bind: permission denied
-trying to dail to  D
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1012->[::1]:10002: bind: permission denied
-dial tcp :1015->[::1]:10005: bind: permission denied
-trying to dail to  C
-trying to dail to  B
-trying to dail to  E
-dial tcp :1015->[::1]:10005: bind: permission denied
-trying to dail to  D
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-dial tcp :1012->[::1]:10002: bind: permission denied
-trying to dail to  D
-trying to dail to  C
-trying to dail to  E
-trying to dail to  B
-dial tcp :1012->[::1]:10002: bind: permission denied
-dial tcp :1014->[::1]:10004: bind: permission denied
-dial tcp :1013->[::1]:10003: bind: permission denied
-dial tcp :1015->[::1]:10005: bind: permission denied
+Connected to branch:  B
+waiting
+Connected to branch:  C
+Connected to all other branch!
+before get client connection

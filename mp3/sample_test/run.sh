@@ -21,11 +21,12 @@ for server in ${servers[@]}; do
 done
 
 # run 2 tests
+# sleep 5
 # timeout -s SIGTERM 5s ./client a config.txt < ${curr_folder}input1.txt > ${curr_folder}output1.log 2>&1
 # timeout -s SIGTERM 5s ./client a config.txt < ${curr_folder}input2.txt > ${curr_folder}output2.log 2>&1
 
 ./client a config.txt < ${curr_folder}input1.txt > ${curr_folder}output1.log 2>&1
-./client a config.txt < ${curr_folder}input2.txt > ${curr_folder}output2.log 2>&1
+# ./client a config.txt < ${curr_folder}input2.txt > ${curr_folder}output2.log 2>&1
 
 
 cd $curr_folder

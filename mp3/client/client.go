@@ -92,11 +92,12 @@ func random() string {
 
 func (cl *Client) connect_server() {
 	coordinator := random()
-	//fmt.Println("choose the coordinator: ", coordinator)
+	fmt.Println("choose the coordinator: ", coordinator)
 	for {
 		conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
 
 		if err == nil {
+			fmt.Println("Connected to coordinator")
 			cl.send_conn = conn
 			break
 		}
@@ -104,12 +105,15 @@ func (cl *Client) connect_server() {
 		time.Sleep(20 * time.Millisecond)
 	}
 	
-
-	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "1050"}, ":"))
+	
+	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "10050"}, ":"))
+	
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("before listen")
 	read_conn, err := ln.Accept()
+	fmt.Println("after listen")
 	if err != nil {
 		panic(err)
 	}
@@ -162,19 +166,24 @@ func main() {
 
 	//TODO make connections to servers
 	// wg.Add(1)
+	fmt.Println("before reader")
 	reader := bufio.NewReader(os.Stdin)
 	cl.currentTransaction = true
 	for {
+		fmt.Println("begin for")
 		if cl.currentTransaction == false {
 			break
 		}
+		fmt.Println("get input from reader")
 		input, _ := reader.ReadString('\n')
 		if len(input) == 0 {
+			fmt.Println("get zero length input")
 			continue
 		}
-
+		
 		input = strings.TrimSpace(input)
 		// fmt.Println(input)
+		fmt.Println("get input.txt")
 		if "BEGIN" == input { // trimmed to the last before \n
 			// if cl.currentTransaction {
 			// 	continue
