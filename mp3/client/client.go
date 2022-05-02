@@ -105,8 +105,8 @@ func (cl *Client) connect_server() {
 		time.Sleep(20 * time.Millisecond)
 	}
 	
-	
-	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "10050"}, ":"))
+	hostaddr,_ := os.Hostname()
+	ln, err := net.Listen("tcp", strings.Join([]string{hostaddr, "10050"}, ":"))
 	
 	if err != nil {
 		panic(err)

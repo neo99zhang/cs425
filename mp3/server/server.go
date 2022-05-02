@@ -420,7 +420,9 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	var err1 error
 	for {
 		send_conn, err1 = net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
+		fmt.Println("Trying to dial client")
 		if err1 == nil {
+			fmt.Println("dial done")
 			break
 		}
 		time.Sleep(20 * time.Millisecond)
