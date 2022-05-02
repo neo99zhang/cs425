@@ -1,3 +1,62 @@
 Start listening on port:  10003
-Connected to branch:  E
+waiting
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+trying to dail to  A
+trying to dail to  B
+dial tcp :1032->[::1]:10002: bind: address already in use
+waiting
 Connected to branch:  D
+waiting
+Connected to branch:  E
+trying to dail to  B
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+dail to  A , me is C
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+trying to dail to  B
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  E
+trying to dail to  B
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+dial tcp :1035->[::1]:10005: bind: address already in use
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+trying to dail to  B
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  D
+trying to dail to  B
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  B
+trying to dail to  D
+dial tcp :1034->[::1]:10004: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  D
+trying to dail to  B
+dial tcp :1032->[::1]:10002: bind: address already in use
+trying to dail to  E
+dial tcp :1035->[::1]:10005: bind: address already in use
+dial tcp :1034->[::1]:10004: bind: address already in use

@@ -1,3 +1,26 @@
 Start listening on port:  10005
-Connected to branch:  C
-Connected to branch:  D
+waiting
+trying to dail to  A
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  C
+trying to dail to  D
+dail to  C , me is E
+dail to  D , me is E
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+dail to  A , me is E
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use
+trying to dail to  B
+dial tcp :1052->[::1]:10002: bind: address already in use

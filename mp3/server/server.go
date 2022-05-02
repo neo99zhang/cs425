@@ -24,7 +24,7 @@ var lookup = map[string]int{"AB": 1012, "AC": 1013, "AD": 1014, "AE": 1015,
 
 // var wg sync.WaitGroup
 // var conn net.Conn
-var err error
+var wg sync.WaitGroup
 
 func FindMax(array []int64) int64 {
 	var max int64 = array[0]
@@ -123,9 +123,6 @@ func (op *Operation) Init(operation string) {
 		}
 		op.branch = strings.Split(words[1], ".")[0]
 		op.account = strings.Split(words[1], ".")[1]
-		if err != nil {
-			panic(err)
-		}
 		timestamp, err := strconv.ParseInt(words[2], 10, 64)
 		if err != nil {
 			panic(err)
@@ -638,47 +635,60 @@ func (sv *Server) build_branches() {
 					Port: lookup[sv.me+name],
 				},
 			}
-			//fmt.Println("name is ", name, ", me is", sv.me)
-			send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
-
+			// fmt.Println("name is ", name, ", me is", sv.me)
+			// fmt.Println("trying to dail to ", name)
+			// send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+			var send_conn net.Conn
+			var err error
 			for {
+				fmt.Println("trying to dail to ", name)
+				send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				if err == nil {
 					break
 				}
-				time.Sleep(100 * time.Millisecond)
-				send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
-
+				fmt.Println(err)
+				time.Sleep(1 * time.Second)
+				// fmt.Println("trying to dail to ", name)
+				// send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 			}
+			fmt.Println("dail to ", name, ", me is", sv.me)
 			sv.send_conn[name] = send_conn
 		}
 		}(name)
 
 	}
 
-	// mu_count := sync.Mutex{}
+	mu_count := sync.Mutex{}
 	count := 0
+	wg.Add(4)
 	for {
-		fmt.Println("for debug")
-		read_conn, err := sv.ln.Accept()
-		if err != nil {
-			panic(err)
-		}
-		is_client, name := sv.judgeClient(read_conn)
-		if is_client {
-			read_conn.Close()
-		} else {
-			sv.read_conn[name] = read_conn
-			// mu_count.Lock()
-			count += 1
-			// mu_count.UnLock()
-
-			fmt.Println("Connected to branch: ", name)
-		}
 		if count == 4 {
 			fmt.Println("Connected to all other branch!")
 			break
 		}
+		fmt.Println("waiting")
+		read_conn, err := sv.ln.Accept()
+		
+		if err != nil {
+			panic(err)
+		}
+		go func(read_conn net.Conn) {
+			is_client, name := sv.judgeClient(read_conn)
+			if is_client {
+				fmt.Println("Get client but closed it")
+				read_conn.Close()
+			} else {
+				mu_count.Lock()
+				count += 1
+				mu_count.Unlock()
+				sv.read_conn[name] = read_conn
+				fmt.Println("Connected to branch: ", name)
+				wg.Done()
+			}
+		}(read_conn)
 	}
+
+	wg.Wait()
 }
 
 func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Conn) {

@@ -1,1 +1,74 @@
 Start listening on port:  10002
+waiting
+trying to dail to  A
+dial tcp :1021->[::1]:10001: bind: permission denied
+trying to dail to  C
+dial tcp :1023->[::1]:10003: bind: permission denied
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+trying to dail to  E
+dial tcp :1025->[::1]:10005: bind: address already in use
+trying to dail to  E
+dial tcp :1025->[::1]:10005: bind: address already in use
+trying to dail to  A
+dial tcp :1021->[::1]:10001: bind: permission denied
+trying to dail to  C
+dial tcp :1023->[::1]:10003: bind: permission denied
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+trying to dail to  E
+trying to dail to  A
+trying to dail to  C
+dial tcp :1023->[::1]:10003: bind: permission denied
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+dial tcp :1021->[::1]:10001: bind: permission denied
+dial tcp :1025->[::1]:10005: bind: address already in use
+trying to dail to  C
+trying to dail to  E
+dial tcp :1025->[::1]:10005: bind: address already in use
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+trying to dail to  A
+dial tcp :1021->[::1]:10001: bind: permission denied
+dial tcp :1023->[::1]:10003: bind: permission denied
+trying to dail to  E
+trying to dail to  D
+trying to dail to  C
+dial tcp :1023->[::1]:10003: bind: permission denied
+dial tcp :1025->[::1]:10005: bind: address already in use
+dial tcp :1024->[::1]:10004: bind: address already in use
+trying to dail to  A
+dial tcp :1021->[::1]:10001: bind: permission denied
+trying to dail to  D
+trying to dail to  A
+trying to dail to  C
+trying to dail to  E
+dial tcp :1025->[::1]:10005: bind: address already in use
+dial tcp :1024->[::1]:10004: bind: address already in use
+dial tcp :1021->[::1]:10001: bind: permission denied
+dial tcp :1023->[::1]:10003: bind: permission denied
+trying to dail to  A
+trying to dail to  C
+trying to dail to  E
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+dial tcp :1021->[::1]:10001: bind: permission denied
+dial tcp :1023->[::1]:10003: bind: permission denied
+dial tcp :1025->[::1]:10005: bind: address already in use
+trying to dail to  A
+trying to dail to  C
+trying to dail to  E
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+dial tcp :1021->[::1]:10001: bind: permission denied
+dial tcp :1023->[::1]:10003: bind: permission denied
+dial tcp :1025->[::1]:10005: bind: address already in use
+trying to dail to  A
+trying to dail to  E
+trying to dail to  D
+dial tcp :1024->[::1]:10004: bind: address already in use
+trying to dail to  C
+dial tcp :1023->[::1]:10003: bind: permission denied
+dial tcp :1021->[::1]:10001: bind: permission denied
+dial tcp :1025->[::1]:10005: bind: address already in use

@@ -93,12 +93,17 @@ func random() string {
 func (cl *Client) connect_server() {
 	coordinator := random()
 	//fmt.Println("choose the coordinator: ", coordinator)
-	conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
+	for {
+		conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
 
-	if err != nil {
-		panic(err)
+		if err == nil {
+			cl.send_conn = conn
+			break
+		}
+		fmt.Println("Conn closed by server and try again")
+		time.Sleep(20 * time.Millisecond)
 	}
-	cl.send_conn = conn
+	
 
 	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "1050"}, ":"))
 	if err != nil {
