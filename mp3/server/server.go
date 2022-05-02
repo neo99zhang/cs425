@@ -637,24 +637,15 @@ func (sv *Server) build_branches() {
 						Port: lookup[sv.me+name],
 					},
 				}
-				// fmt.Println(err)
-				// time.Sleep(20 * time.Millisecond)
-				// fmt.Println("trying to dail to ", name)
-				// send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				var send_conn net.Conn
 				var err error
 				for {
-					// fmt.Println("trying to dail to ", name)
 					send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 					if err == nil {
 						break
 					}
-					// fmt.Println(err)
 					time.Sleep(20 * time.Millisecond)
-					// fmt.Println("trying to dail to ", name)
-					// send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				}
-				// fmt.Println("dail to ", name, ", me is", sv.me)
 				sv.send_conn[name] = send_conn
 				wg.Done()
 			}
@@ -845,8 +836,6 @@ func main() {
 
 	sv.readFromConfig(config_file)
 	sv.start_listen()
-	// time.Sleep(1 * time.Second)
-
 	sv.build_branches() // connect to all other branches
 
 	for _, name := range sv.name {
