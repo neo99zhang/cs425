@@ -416,10 +416,10 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	clientAddr := strings.Split(addr, ":")[0]
 	// fmt.Println(clientAddr)
 	var send_conn net.Conn
-	var err error
+	var err1 error
 	for {
 		send_conn, err = net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
-		if err == nil {
+		if err1 == nil {
 			break
 		}
 		time.Sleep(20 * time.Millisecond)
