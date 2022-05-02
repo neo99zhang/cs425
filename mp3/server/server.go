@@ -398,23 +398,23 @@ func (sv *Server) readClient(read_conn net.Conn) string {
 func (sv *Server) start_listen() {
 	ln, _ := net.Listen("tcp", strings.Join([]string{sv.address[sv.me], sv.port[sv.me]}, ":"))
 
-	fmt.Println("Start listening on port: ", sv.port[sv.me])
+	// fmt.Println("Start listening on port: ", sv.port[sv.me])
 	sv.ln = ln
 }
 
 // Tryting to connect to the client, once connect, it would return
 // the read channel and send channel
 func (sv *Server) connect_client() (net.Conn, net.Conn) {
-	fmt.Println("before get client connection")
+	// fmt.Println("before get client connection")
 	read_conn, err := sv.ln.Accept()
-	fmt.Println("after get client connection")
+	// fmt.Println("after get client connection")
 	if err != nil {
 		panic(err)
 	}
 
 	addr := read_conn.RemoteAddr().String()
 	clientAddr := strings.Split(addr, ":")[0]
-	fmt.Println(clientAddr)
+	// fmt.Println(clientAddr)
 	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
 	if err != nil {
 		panic(err)
@@ -637,30 +637,27 @@ func (sv *Server) build_branches() {
 						Port: lookup[sv.me+name],
 					},
 				}
-				fmt.Println(err)
+				// fmt.Println(err)
 				time.Sleep(20 * time.Millisecond)
 				// fmt.Println("trying to dail to ", name)
 				// send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				var send_conn net.Conn
 				var err error
 				for {
-					fmt.Println("trying to dail to ", name)
+					// fmt.Println("trying to dail to ", name)
 					send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 					if err == nil {
 						break
 					}
-					fmt.Println(err)
+					// fmt.Println(err)
 					time.Sleep(1 * time.Second)
 					// fmt.Println("trying to dail to ", name)
 					// send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				}
-				fmt.Println("dail to ", name, ", me is", sv.me)
+				// fmt.Println("dail to ", name, ", me is", sv.me)
 				sv.send_conn[name] = send_conn
+				wg.Done()
 			}
-			fmt.Println("dail to ", name, ", me is", sv.me)
-			sv.send_conn[name] = send_conn
-			wg.Done()
-		}
 		}(name)
 
 	}
@@ -668,7 +665,7 @@ func (sv *Server) build_branches() {
 	count := 0
 	for {
 		
-		fmt.Println("waiting")
+		// fmt.Println("waiting")
 		read_conn, err := sv.ln.Accept()
 
 		if err != nil {
@@ -677,16 +674,16 @@ func (sv *Server) build_branches() {
 
 		is_client, name := sv.judgeClient(read_conn)
 		if is_client {
-			fmt.Println("Get client but closed it")
+			// fmt.Println("Get client but closed it")
 			read_conn.Close()
 		} else {
 			count += 1
 			sv.read_conn[name] = read_conn
-			fmt.Println("Connected to branch: ", name)
+			// fmt.Println("Connected to branch: ", name)
 		}
 
 		if count == 4 {
-			fmt.Println("Connected to all other branch!")
+			// fmt.Println("Connected to all other branch!")
 			break
 		}
 	}

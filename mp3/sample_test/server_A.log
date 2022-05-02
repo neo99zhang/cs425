@@ -1,19 +1,2 @@
-Start listening on port:  10001
-waiting
-trying to dail to  E
-trying to dail to  B
-trying to dail to  C
-trying to dail to  D
-dail to  E , me is A
-dail to  B , me is A
-dail to  C , me is A
-dail to  D , me is A
-Connected to branch:  E
-waiting
-Connected to branch:  D
-waiting
-Connected to branch:  B
-waiting
-Connected to branch:  C
-Connected to all other branch!
-before get client connection
+Accounts Info: a 10
+Accounts Info: a 10

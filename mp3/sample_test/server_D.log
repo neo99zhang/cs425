@@ -1,25 +1,2 @@
-Start listening on port:  10004
-waiting
-trying to dail to  E
-trying to dail to  A
-trying to dail to  B
-trying to dail to  C
-dail to  E , me is D
-dial tcp :10041->[::1]:10001: connect: connection refused
-dial tcp :10042->[::1]:10002: connect: connection refused
-dial tcp :10043->[::1]:10003: connect: connection refused
-Connected to branch:  B
-waiting
-Connected to branch:  C
-waiting
-Connected to branch:  A
-waiting
-Connected to branch:  E
-Connected to all other branch!
-trying to dail to  C
-trying to dail to  A
-trying to dail to  B
-dail to  C , me is D
-dail to  A , me is D
-dail to  B , me is D
-before get client connection
+Accounts Info: a 5
+Accounts Info: a 1

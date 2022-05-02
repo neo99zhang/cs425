@@ -92,16 +92,16 @@ func random() string {
 
 func (cl *Client) connect_server() {
 	coordinator := random()
-	fmt.Println("choose the coordinator: ", coordinator)
+	// fmt.Println("choose the coordinator: ", coordinator)
 	for {
 		conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
 
 		if err == nil {
-			fmt.Println("Connected to coordinator")
+			// fmt.Println("Connected to coordinator")
 			cl.send_conn = conn
 			break
 		}
-		fmt.Println("Conn closed by server and try again")
+		// fmt.Println("Conn closed by server and try again")
 		time.Sleep(20 * time.Millisecond)
 	}
 	
@@ -111,9 +111,9 @@ func (cl *Client) connect_server() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("before listen")
+	// fmt.Println("before listen")
 	read_conn, err := ln.Accept()
-	fmt.Println("after listen")
+	// fmt.Println("after listen")
 	if err != nil {
 		panic(err)
 	}
@@ -135,13 +135,13 @@ func (cl *Client) handleServer() {
 		n, err := cl.read_conn.Read(buf[0:])
 		result.Write(buf[0:n])
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			// if err == io.EOF {
 			// 	break
 			// }
 			return
 		}
-		fmt.Println(result)
+		// fmt.Println(result)
 	}
 
 }
@@ -166,24 +166,24 @@ func main() {
 
 	//TODO make connections to servers
 	// wg.Add(1)
-	fmt.Println("before reader")
+	// fmt.Println("before reader")
 	reader := bufio.NewReader(os.Stdin)
 	cl.currentTransaction = true
 	for {
-		fmt.Println("begin for")
+		// fmt.Println("begin for")
 		if cl.currentTransaction == false {
 			break
 		}
-		fmt.Println("get input from reader")
+		// fmt.Println("get input from reader")
 		input, _ := reader.ReadString('\n')
 		if len(input) == 0 {
-			fmt.Println("get zero length input")
+			// fmt.Println("get zero length input")
 			continue
 		}
 		
 		input = strings.TrimSpace(input)
 		// fmt.Println(input)
-		fmt.Println("get input.txt")
+		// fmt.Println("get input.txt")
 		if "BEGIN" == input { // trimmed to the last before \n
 			// if cl.currentTransaction {
 			// 	continue

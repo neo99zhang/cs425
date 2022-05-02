@@ -1,7 +1,6 @@
-Connected to coordinator
-before listen
-after listen
-get input.txt
 OK
-get input.txt
-NOT FOUND, ABORTED
+A.a = 10
+B.b = 10
+OK
+D.a = 1
+COMMIT OK
