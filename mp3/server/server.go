@@ -628,32 +628,32 @@ func (sv *Server) build_branches() {
 
 	for name := range sv.address {
 		go func(name string) {
-		if name != sv.me {
-			dialer := net.Dialer{
-				LocalAddr: &net.TCPAddr{
-					IP:   net.ParseIP(sv.address[sv.me]),
-					Port: lookup[sv.me+name],
-				},
-			}
-			// fmt.Println("name is ", name, ", me is", sv.me)
-			// fmt.Println("trying to dail to ", name)
-			// send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
-			var send_conn net.Conn
-			var err error
-			for {
-				fmt.Println("trying to dail to ", name)
-				send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
-				if err == nil {
-					break
+			if name != sv.me {
+				dialer := net.Dialer{
+					LocalAddr: &net.TCPAddr{
+						IP:   net.ParseIP(sv.address[sv.me]),
+						Port: lookup[sv.me+name],
+					},
 				}
-				fmt.Println(err)
-				time.Sleep(1 * time.Second)
+				// fmt.Println("name is ", name, ", me is", sv.me)
 				// fmt.Println("trying to dail to ", name)
-				// send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+				// send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+				var send_conn net.Conn
+				var err error
+				for {
+					fmt.Println("trying to dail to ", name)
+					send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+					if err == nil {
+						break
+					}
+					fmt.Println(err)
+					time.Sleep(1 * time.Second)
+					// fmt.Println("trying to dail to ", name)
+					// send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+				}
+				fmt.Println("dail to ", name, ", me is", sv.me)
+				sv.send_conn[name] = send_conn
 			}
-			fmt.Println("dail to ", name, ", me is", sv.me)
-			sv.send_conn[name] = send_conn
-		}
 		}(name)
 
 	}
@@ -668,7 +668,7 @@ func (sv *Server) build_branches() {
 		}
 		fmt.Println("waiting")
 		read_conn, err := sv.ln.Accept()
-		
+
 		if err != nil {
 			panic(err)
 		}
@@ -766,6 +766,8 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 				}
 			}
 			sv.sendtoClient(text, sv.send_conn[words[1]])
+			sv.send_conn[strconv.FormatInt(timestamp, 10)].Close()
+			sv.read_conn[strconv.FormatInt(timestamp, 10)].Close()
 
 		case "COMMIT_PREPARE":
 			timestamp, _ := strconv.ParseInt(words[1], 10, 64)
