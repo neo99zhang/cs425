@@ -415,7 +415,7 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	addr := read_conn.RemoteAddr().String()
 	clientAddr := strings.Split(addr, ":")[0]
 	// fmt.Println(clientAddr)
-	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
+	send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "1235"}, ":"))
 	if err != nil {
 		panic(err)
 	}

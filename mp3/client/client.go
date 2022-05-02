@@ -106,7 +106,7 @@ func (cl *Client) connect_server() {
 	}
 	
 	
-	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "10050"}, ":"))
+	ln, err := net.Listen("tcp", strings.Join([]string{"127.0.0.1", "1235"}, ":"))
 	
 	if err != nil {
 		panic(err)
