@@ -638,7 +638,7 @@ func (sv *Server) build_branches() {
 					},
 				}
 				// fmt.Println(err)
-				time.Sleep(20 * time.Millisecond)
+				// time.Sleep(20 * time.Millisecond)
 				// fmt.Println("trying to dail to ", name)
 				// send_conn, err := dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				var send_conn net.Conn
@@ -650,7 +650,7 @@ func (sv *Server) build_branches() {
 						break
 					}
 					// fmt.Println(err)
-					time.Sleep(1 * time.Second)
+					time.Sleep(20 * time.Millisecond)
 					// fmt.Println("trying to dail to ", name)
 					// send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
 				}
