@@ -92,16 +92,16 @@ func random() string {
 
 func (cl *Client) connect_server() {
 	coordinator := random()
-	fmt.Println("choose the coordinator: ", coordinator)
+	// fmt.Println("choose the coordinator: ", coordinator)
 	for {
 		conn, err := net.Dial("tcp", strings.Join([]string{cl.address[coordinator], cl.port[coordinator]}, ":"))
 
 		if err == nil {
-			fmt.Println("Connected to coordinator")
+			// fmt.Println("Connected to coordinator")
 			cl.send_conn = conn
 			break
 		}
-		fmt.Println("Conn closed by server and try again")
+		// fmt.Println("Conn closed by server and try again")
 		time.Sleep(20 * time.Millisecond)
 	}
 	
@@ -111,9 +111,9 @@ func (cl *Client) connect_server() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("before listen")
+	// fmt.Println("before listen")
 	read_conn, err := ln.Accept()
-	fmt.Println("after listen")
+	// fmt.Println("after listen")
 	if err != nil {
 		panic(err)
 	}
@@ -195,7 +195,7 @@ func main() {
 		} else {
 			if cl.currentTransaction {
 				toServer := input + " " + cl.stmsp
-				fmt.Println("feeding ", toServer)
+				// fmt.Println("feeding ", toServer)
 				fmt.Fprintf(cl.send_conn, "%s\n", toServer)
 				reader := bufio.NewReader(cl.read_conn)
 				response, error1 := reader.ReadString('\n')
