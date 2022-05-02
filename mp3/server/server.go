@@ -80,6 +80,7 @@ type Account struct {
 }
 
 func (op *Operation) Init(operation string) {
+	fmt.Println("get operation", operation)
 	words := strings.Fields(operation)
 	op.method = words[0]
 	switch op.method {
@@ -418,7 +419,7 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	var send_conn net.Conn
 	var err1 error
 	for {
-		send_conn, err = net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
+		send_conn, err1 = net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
 		if err1 == nil {
 			break
 		}
@@ -428,6 +429,7 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	// if err != nil {
 	// 	panic(err)
 	// }
+	fmt.Println("Got client connection")
 	return read_conn, send_conn
 }
 
@@ -664,7 +666,7 @@ func (sv *Server) build_branches() {
 
 	count := 0
 	for {
-		
+
 		// fmt.Println("waiting")
 		read_conn, err := sv.ln.Accept()
 
@@ -683,7 +685,7 @@ func (sv *Server) build_branches() {
 		}
 
 		if count == 4 {
-			// fmt.Println("Connected to all other branch!")
+			fmt.Println("Connected to all other branch!")
 			break
 		}
 	}
