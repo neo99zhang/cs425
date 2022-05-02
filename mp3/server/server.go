@@ -418,7 +418,7 @@ func (sv *Server) connect_client() (net.Conn, net.Conn) {
 	var send_conn net.Conn
 	var err error
 	for {
-		send_conn, err := net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
+		send_conn, err = net.Dial("tcp", strings.Join([]string{clientAddr, "10050"}, ":"))
 		if err == nil {
 			break
 		}
