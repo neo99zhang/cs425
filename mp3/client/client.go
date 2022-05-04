@@ -104,10 +104,11 @@ func (cl *Client) connect_server() {
 		// fmt.Println("Conn closed by server and try again")
 		time.Sleep(20 * time.Millisecond)
 	}
-	
-	hostaddr,_ := os.Hostname()
+
+	hostaddr, _ := os.Hostname()
+	// hostaddr := "localhost"
 	ln, err := net.Listen("tcp", strings.Join([]string{hostaddr, "10050"}, ":"))
-	
+
 	if err != nil {
 		panic(err)
 	}
@@ -180,7 +181,7 @@ func main() {
 			// fmt.Println("get zero length input")
 			continue
 		}
-		
+
 		input = strings.TrimSpace(input)
 		// fmt.Println(input)
 		// fmt.Println("get input.txt")

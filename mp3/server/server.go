@@ -137,6 +137,13 @@ func (op *Operation) Init(operation string) {
 		}
 		op.timestamp = timestamp
 
+	case "ABORT":
+		timestamp, err := strconv.ParseInt(words[1], 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		op.timestamp = timestamp
+
 	default:
 		panic("The operation is not found.")
 	}
@@ -391,7 +398,7 @@ func (sv *Server) readClient(read_conn net.Conn) string {
 		if err == io.EOF {
 			return result.String()
 		}
-		panic(err)
+		return "Closed"
 	}
 	return result.String()
 }
@@ -614,6 +621,9 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 	//TODO judge branch or client
 	for {
 		operation := sv.readClient(read_conn)
+		if operation == "Closed" {
+			break
+		}
 		operation = strings.TrimSpace(operation)
 		op := new(Operation)
 		op.Init(operation)
@@ -630,6 +640,20 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 			} else if op.method == "COMMIT" {
 				break
 			}
+		} else if op.method == "ABORT" {
+			sv.DoAbort(op.timestamp)
+			msg := strings.Join([]string{"ABORT_Coordinator", strconv.FormatInt(op.timestamp, 10)}, " ")
+			for _, name := range sv.name {
+				if name != sv.me {
+					send_conn := sv.send_conn[name]
+					sv.sendtoClient(msg, send_conn)
+				}
+			}
+			text := "ABORTED"
+			sv.sendtoClient(text, sv.send_conn[strconv.FormatInt(op.timestamp, 10)])
+			sv.send_conn[strconv.FormatInt(op.timestamp, 10)].Close()
+			sv.read_conn[strconv.FormatInt(op.timestamp, 10)].Close()
+			break
 		} else { //if not self account, send to others
 			fmt.Fprintf(sv.send_conn[op.branch], "%s\n", operation)
 		}
@@ -640,29 +664,29 @@ func (sv *Server) handleConnection(read_conn net.Conn, send_conn net.Conn) {
 
 // send connection to all other branches
 func (sv *Server) build_branches() {
-	wg.Add(4)
+	// wg.Add(4)
 	for name := range sv.address {
-		go func(name string) {
-			if name != sv.me {
-				dialer := net.Dialer{
-					LocalAddr: &net.TCPAddr{
-						IP:   net.ParseIP(sv.address[sv.me]),
-						Port: lookup[sv.me+name],
-					},
-				}
-				var send_conn net.Conn
-				var err error
-				for {
-					send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
-					if err == nil {
-						break
-					}
-					time.Sleep(20 * time.Millisecond)
-				}
-				sv.send_conn[name] = send_conn
-				wg.Done()
+		// go func(name string) {
+		if name != sv.me {
+			dialer := net.Dialer{
+				LocalAddr: &net.TCPAddr{
+					IP:   net.ParseIP(sv.address[sv.me]),
+					Port: lookup[sv.me+name],
+				},
 			}
-		}(name)
+			var send_conn net.Conn
+			var err error
+			for {
+				send_conn, err = dialer.Dial("tcp", strings.Join([]string{sv.address[name], sv.port[name]}, ":"))
+				if err == nil {
+					break
+				}
+				time.Sleep(20 * time.Millisecond)
+			}
+			sv.send_conn[name] = send_conn
+			// wg.Done()
+		}
+		// }(name)
 
 	}
 
@@ -691,7 +715,7 @@ func (sv *Server) build_branches() {
 			break
 		}
 	}
-	wg.Wait()
+	// wg.Wait()
 }
 
 func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Conn) {
@@ -769,8 +793,8 @@ func (sv *Server) handleBranch(name string, read_conn net.Conn, send_conn net.Co
 				}
 			}
 			sv.sendtoClient(text, sv.send_conn[words[1]])
-			sv.send_conn[strconv.FormatInt(timestamp, 10)].Close()
-			sv.read_conn[strconv.FormatInt(timestamp, 10)].Close()
+			sv.send_conn[words[1]].Close()
+			sv.read_conn[words[1]].Close()
 
 		case "COMMIT_PREPARE":
 			timestamp, _ := strconv.ParseInt(words[1], 10, 64)
